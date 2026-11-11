@@ -59,3 +59,12 @@ house-tasks-site/
 ```
 
 > **Nota:** Este repositório contém a distribuição de produção. O código-fonte original está no repositório privado `houseburgertx-beep/house-tasks`, na branch `house-exclusivo`.
+
+## Entrada no aplicativo instalado
+
+O fluxo por redirecionamento usa o site `house-task-327d6.firebaseapp.com`,
+que também fornece o auxiliar de autenticação do Firebase. Publique o mesmo
+aplicativo nesse domínio com `./scripts/deploy-firebase.sh`, usando o Firebase
+CLI autenticado com permissão para publicar no projeto `house-task-327d6`.
+Após publicar, abra `/house-tasks-site/` nesse domínio e instale o aplicativo
+a partir desse endereço para usar a entrada por redirecionamento.

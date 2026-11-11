@@ -36,7 +36,6 @@
   };
 
   window.houseLaunchRocket = function () {
-    if (reduce.matches) return;
     document.querySelector(".house-rocket-flight")?.remove();
     const rocket = document.createElement("div");
     rocket.className = "house-rocket-flight";
@@ -73,11 +72,11 @@
             <circle cx="60" cy="124" r="13.5" fill="url(#de-g-ojo)"/>
             <path class="de-ojo-luz" d="M52 120a9 9 0 0 1 8-6"/>
           </svg>`;
-    document.body.appendChild(rocket);
+    requestAnimationFrame(() => document.body.appendChild(rocket));
     rocket.addEventListener("animationend", event => {
       if (event.target === rocket) rocket.remove();
     });
-    setTimeout(() => rocket.remove(), 1800);
+    setTimeout(() => rocket.remove(), 2500);
   };
 
   window.houseAnimateTask = function ({ id, from }) {

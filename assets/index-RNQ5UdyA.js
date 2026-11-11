@@ -24,8 +24,9 @@ async function ct(e,t,n=!1){
   await je(t?`/api/tasks/`+t.id:`/api/tasks`,t?`PATCH`:`POST`,{...e,...t?{version:t.version,approve:n}:{}});
   ke(null);Me(!1);
   f(t?`Tarefa atualizada`:`Tarefa criada`);
-  if(!t)window.houseLaunchRocket?.();
-  if(e.status===`done`&&t?.status!==`done`)window.confirmarTarefaConcluida?.();
+  const completed=e.status===`done`&&t?.status!==`done`;
+  if(!t||completed)window.houseLaunchRocket?.();
+  if(completed)window.confirmarTarefaConcluida?.();
   await et().catch(()=>u(`Salvo. Atualize a página para recarregar o quadro.`));
  }catch(error){u(error.message);throw error}finally{A(!1);saveInFlight.current=!1}
 }
@@ -88,46 +89,37 @@ return(0,O.jsxs)(A,{close:s,wide:!0,children:[(0,O.jsx)(`div`,{className:`modal-
   ]})
  ]})});
 }
-function Ze(){let[e,t]=(0,h.useState)(Xe),[n,r]=(0,h.useState)(null),[i,a]=(0,h.useState)(!!Te()),[o,s]=(0,h.useState)(!1),[c,l]=(0,h.useState)(``),[u,d]=(0,h.useState)(``),[f,p]=(0,h.useState)(``),[m,g]=(0,h.useState)(``),[loginAttempt,setLoginAttempt]=(0,h.useState)(!1),[linkStatus,setLinkStatus]=(0,h.useState)(``),
- [deviceCode,setDeviceCode]=(0,h.useState)(``),
- [browserCode,setBrowserCode]=(0,h.useState)(``),
- [deviceHelp,setDeviceHelp]=(0,h.useState)(()=>window.matchMedia(`(display-mode: standalone)`).matches||navigator.standalone===true);
- const browserMode=new URLSearchParams(location.search).get(`entrada`)===`app`;
- const browserUrl=`https://houseburgertx-beep.github.io/house-tasks-site/?entrada=app`;
-(0,h.useEffect)(()=>{if(Te()?.startsWith(`google-token-`)){De(),a(!1)}localStorage.removeItem(`house_auth_user`);browserMode&&a(!1);!browserMode&&Te()&&je(`/api/auth/me`).then(r).catch(()=>{De(),l(`Entre novamente para abrir sua operação.`)}).finally(()=>a(!1));let t=()=>{r(null),l(`Sua sessão expirou. Entre novamente.`)};return window.addEventListener(`house:unauthorized`,t),()=>window.removeEventListener(`house:unauthorized`,t)},[]);async function loginGoogle(){if(o)return;s(!0),l(``),setLoginAttempt(!0),setLinkStatus(``);try{if(!window.HouseGoogle)throw new Error(`Não foi possível carregar o login. Atualize a página e tente novamente.`);let e=await window.HouseGoogle.login(),t=await je(`/api/auth/google`,`POST`,{idToken:e,handoff:browserMode});if(browserMode)setBrowserCode(t.code);else{Ee(t.token);r(t)}}catch(e){l(e.message||`Erro ao entrar com Google`)}finally{s(!1)}}async function redeemDeviceCode(event){
- event.preventDefault();
- if(o)return;
+function Ze(){let[e,t]=(0,h.useState)(Xe),[n,r]=(0,h.useState)(null),[i,a]=(0,h.useState)(!!Te()),[o,s]=(0,h.useState)(!1),[c,l]=(0,h.useState)(``),[u,d]=(0,h.useState)(``),[f,p]=(0,h.useState)(``),[m,g]=(0,h.useState)(``),[googleReady,setGoogleReady]=(0,h.useState)(false);
+async function openGoogleSession(idToken){
+ if(!idToken)return;
+ const session=await je(`/api/auth/google`,`POST`,{idToken});
+ Ee(session.token);r(session);
+}
+(0,h.useEffect)(()=>{
+ let active=true;
+ async function restore(){
+  try{
+   if(Te()?.startsWith(`google-token-`))De();
+   localStorage.removeItem(`house_auth_user`);
+   if(Te())r(await je(`/api/auth/me`));
+   else if(window.HouseGoogle)await openGoogleSession(await window.HouseGoogle.resume());
+  }catch(error){
+   if(Te()&&error.status===401)De();
+   if(active)l(error.message);
+  }finally{if(active){a(false);setGoogleReady(true)}}
+ }
+ restore();
+ const unauthorized=()=>{r(null);l(`Sua sessão expirou. Entre novamente.`)};
+ window.addEventListener(`house:unauthorized`,unauthorized);
+ return ()=>{active=false;window.removeEventListener(`house:unauthorized`,unauthorized)};
+},[]);
+async function loginGoogle(){
+ if(o||!googleReady)return;
  s(true);l(``);
  try{
-  const session=await je(`/api/auth/handoff`,`POST`,{code:deviceCode.trim()});
-  Ee(session.token);r(session);setDeviceCode(``);
- }catch(error){l(error.message)}finally{s(false)}
+  if(!window.HouseGoogle)throw new Error(`Não foi possível carregar o login. Abra o site novamente.`);
+  await openGoogleSession(await window.HouseGoogle.login());
+ }catch(error){l(error.message||`Erro ao entrar com Google.`)}
+ finally{s(false)}
 }
-async function copyDeviceText(value,message){
- try{await navigator.clipboard.writeText(value);setLinkStatus(message)}
- catch{setLinkStatus(value)}
-}
-async function copyLoginLink(){
- const url=`https://houseburgertx-beep.github.io/house-tasks-site/`;
- try{await navigator.clipboard.writeText(url);setLinkStatus(`Link copiado. Cole-o no Safari ou Chrome.`)}
- catch{setLinkStatus(url)}
-}
-async function _(n){if(n.preventDefault(),!o){s(!0),l(``);try{Ee((await je(e?`/api/auth/activate`:`/api/auth/login`,`POST`,e?{token:e,name:f,password:m}:{email:u,password:m})).token),r(await je(`/api/auth/me`)),g(``),t(``),sessionStorage.removeItem(Ye)}catch(e){l(e.message)}finally{s(!1)}}}async function v(){try{await je(`/api/auth/logout`,`POST`)}catch{}De(),r(null),g(``),l(``)}return i?(0,O.jsxs)(`div`,{className:`auth-loading`,children:[(0,O.jsx)(fe,{className:`spin`}),`Abrindo sua operação…`]}):n?(0,O.jsx)(Ke,{displayName:n.user.displayName,onLogout:v,attachmentsEnabled:n.features.attachments,calendarReady:n.features.calendar,accountEmail:n.user.email,onProfileSaved:user=>r(session=>({...session,user}))}):(0,O.jsxs)(`div`,{className:`auth-shell`,children:[(0,O.jsxs)(`section`,{className:`auth-intro`,children:[(0,O.jsxs)(`a`,{className:`brand`,href:`/house-tasks-site/`,children:[(0,O.jsxs)(`span`,{className:`brand-symbol`,children:[`h`,(0,O.jsx)(`span`,{children:`·`})]}),(0,O.jsxs)(`div`,{children:[`HOUSE`,(0,O.jsx)(`span`,{children:`TASKS`})]})]}),(0,O.jsxs)(`div`,{className:`auth-intro-copy`,children:[(0,O.jsx)(`span`,{className:`eyebrow`,children:`FEITO PARA O RITMO DA HOUSE`}),(0,O.jsxs)(`h1`,{children:[`Gente alinhada.`,(0,O.jsx)(`br`,{}),`Operação leve.`]}),(0,O.jsxs)(`p`,{children:[`Tarefas, unidades e equipe.`,(0,O.jsx)(`br`,{}),`Tudo no lugar, do combinado à entrega.`]}),(0,O.jsx)(`div`,{className:`auth-art`,children:(0,O.jsx)(Re,{})}),(0,O.jsxs)(`span`,{className:`auth-footnote`,children:[(0,O.jsx)(te,{size:17}),`Uma tarefa bem feita faz toda a diferença.`]})]}),(0,O.jsx)(`footer`,{children:`Grupo House190`})]}),(0,O.jsx)(`main`,{className:`auth-panel`,children:(0,O.jsxs)(`div`,{className:`auth-card`,children:[(0,O.jsx)(`span`,{className:`auth-lock`,children:(0,O.jsx)(pe,{size:24})}),(0,O.jsx)(`span`,{className:`eyebrow`,children:e?`SUA PRIMEIRA CONTA`:`BEM-VINDO À HOUSE`}),(0,O.jsx)(`h2`,{children:e?`Vamos começar?`:`Bom ter você aqui.`}),(0,O.jsx)(`p`,{children:e?`Defina seu nome e uma senha para ativar sua conta de administrador.`:`Entre para acompanhar as tarefas e organizar a operação.`}),!e&&(!deviceHelp||browserMode)&&!browserCode&&(0,O.jsxs)(`button`,{type:`button`,className:`google-auth-btn`,onClick:loginGoogle,disabled:o,children:[(0,O.jsxs)(`svg`,{viewBox:`0 0 24 24`,width:18,height:18,children:[(0,O.jsx)(`path`,{fill:`#4285F4`,d:`M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z`}),(0,O.jsx)(`path`,{fill:`#34A853`,d:`M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z`}),(0,O.jsx)(`path`,{fill:`#FBBC05`,d:`M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z`}),(0,O.jsx)(`path`,{fill:`#EA4335`,d:`M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z`})]}),(0,O.jsx)(`span`,{children:o?`Aguardando o Google…`:`Entrar com Google`})]}),!e&&loginAttempt&&!browserCode&&(0,O.jsxs)(`div`,{className:`google-login-help`,children:[
- (0,O.jsx)(`p`,{role:`status`,children:o?`Escolha sua conta na janela do Google. Se a janela não abriu, copie o link e abra o site no Safari ou Chrome.`:`Se a janela do Google não abriu, copie o link e abra o site no Safari ou Chrome.`}),
- (0,O.jsx)(`button`,{type:`button`,className:`auth-login-link`,onClick:copyLoginLink,children:`Copiar link do HOUSE TASKS`}),
- linkStatus&&(0,O.jsx)(`p`,{role:`status`,children:linkStatus})
-]}),!e&&browserCode&&(0,O.jsxs)(`section`,{className:`house-device-login`,"data-update-blocked":true,children:[
- (0,O.jsx)(`p`,{children:`Volte ao aplicativo instalado e cole este código. Ele expira em cinco minutos e pode ser usado uma vez.`}),
- (0,O.jsx)(`input`,{"aria-label":`Código de entrada`,readOnly:true,value:browserCode,onFocus:event=>event.target.select()}),
- (0,O.jsx)(`button`,{type:`button`,className:`secondary`,onClick:()=>copyDeviceText(browserCode,`Código copiado.`),children:`Copiar código`}),
- linkStatus&&(0,O.jsx)(`p`,{role:`status`,children:linkStatus})
-]}),
-!e&&!browserMode&&(deviceHelp?(0,O.jsxs)(`form`,{className:`house-device-login`,"data-update-blocked":o||deviceCode?true:void 0,onSubmit:redeemDeviceCode,children:[
- (0,O.jsx)(`p`,{children:`Entre com Google no navegador. Depois, volte ao aplicativo e cole o código de entrada.`}),
- (0,O.jsx)(`a`,{className:`primary`,href:browserUrl,target:`_blank`,rel:`noopener noreferrer`,children:`Entrar com Google no navegador`}),
- (0,O.jsx)(`button`,{type:`button`,className:`auth-login-link`,onClick:()=>copyDeviceText(browserUrl,`Link copiado. Cole no Safari ou Chrome.`),children:`Copiar link para o navegador`}),
- linkStatus&&(0,O.jsx)(`p`,{role:`status`,children:linkStatus}),
- (0,O.jsxs)(`label`,{className:`field`,children:[`Código de entrada`,(0,O.jsx)(`input`,{value:deviceCode,onChange:event=>setDeviceCode(event.target.value),autoComplete:`off`,autoCapitalize:`none`,spellCheck:false,required:true})]}),
- (0,O.jsx)(`button`,{type:`submit`,className:`secondary`,disabled:o||!deviceCode.trim(),children:o?`Verificando…`:`Entrar no aplicativo`})
- ]}):loginAttempt&&(0,O.jsx)(`button`,{type:`button`,className:`auth-login-link`,disabled:o,onClick:()=>{setDeviceHelp(true);setLoginAttempt(false);l(``);setLinkStatus(``)},children:`Usar código de entrada`})),
-!e&&c&&(0,O.jsx)(`p`,{role:`alert`,className:`form-error`,children:c}),e&&(0,O.jsxs)(`form`,{onSubmit:_,children:[e?(0,O.jsxs)(`label`,{className:`field`,children:[`Seu nome`,(0,O.jsx)(`input`,{autoFocus:!0,autoComplete:`name`,maxLength:100,required:!0,value:f,onChange:e=>p(e.target.value),placeholder:`Como podemos chamar você?`})]}):(0,O.jsxs)(`label`,{className:`field`,children:[`Email`,(0,O.jsx)(`input`,{autoFocus:!0,autoComplete:`username`,type:`email`,required:!0,value:u,onChange:e=>d(e.target.value),placeholder:`seuemail@empresa.com`})]}),(0,O.jsxs)(`label`,{className:`field`,children:[e?`Crie sua senha`:`Senha`,(0,O.jsx)(`input`,{autoComplete:e?`new-password`:`current-password`,type:`password`,minLength:12,maxLength:128,required:!0,value:m,onChange:e=>g(e.target.value),placeholder:e?`Use pelo menos 12 caracteres`:`Sua senha de acesso`})]}),e&&(0,O.jsx)(`p`,{className:`password-hint`,children:`Use uma senha exclusiva, com pelo menos 12 caracteres.`}),c&&(0,O.jsx)(`p`,{role:`alert`,className:`form-error`,children:c}),(0,O.jsxs)(`button`,{className:`primary auth-submit`,disabled:o,children:[o?(0,O.jsx)(fe,{size:17,className:`spin`}):(0,O.jsx)(b,{size:17}),` `,o?`Só um instante…`:e?`Ativar minha conta`:`Entrar no HOUSE TASKS`]})]}),e&&(0,O.jsx)(`button`,{className:`auth-login-link`,onClick:()=>{t(``),sessionStorage.removeItem(Ye),l(``)},children:`Já ativei minha conta. Quero entrar.`}),(0,O.jsxs)(`span`,{className:`auth-security`,children:[(0,O.jsx)(_e,{size:14}),`Acesso autenticado à sua operação`]})]})})]})}(0,xe.createRoot)(document.getElementById(`root`)).render((0,O.jsx)(Ze,{}));
+async function _(n){if(n.preventDefault(),!o){s(!0),l(``);try{Ee((await je(e?`/api/auth/activate`:`/api/auth/login`,`POST`,e?{token:e,name:f,password:m}:{email:u,password:m})).token),r(await je(`/api/auth/me`)),g(``),t(``),sessionStorage.removeItem(Ye)}catch(e){l(e.message)}finally{s(!1)}}}async function v(){try{await je(`/api/auth/logout`,`POST`)}catch{}De(),r(null),g(``),l(``)}return i?(0,O.jsxs)(`div`,{className:`auth-loading`,children:[(0,O.jsx)(fe,{className:`spin`}),`Abrindo sua operação…`]}):n?(0,O.jsx)(Ke,{displayName:n.user.displayName,onLogout:v,attachmentsEnabled:n.features.attachments,calendarReady:n.features.calendar,accountEmail:n.user.email,onProfileSaved:user=>r(session=>({...session,user}))}):(0,O.jsxs)(`div`,{className:`auth-shell`,children:[(0,O.jsxs)(`section`,{className:`auth-intro`,children:[(0,O.jsxs)(`a`,{className:`brand`,href:`/house-tasks-site/`,children:[(0,O.jsxs)(`span`,{className:`brand-symbol`,children:[`h`,(0,O.jsx)(`span`,{children:`·`})]}),(0,O.jsxs)(`div`,{children:[`HOUSE`,(0,O.jsx)(`span`,{children:`TASKS`})]})]}),(0,O.jsxs)(`div`,{className:`auth-intro-copy`,children:[(0,O.jsx)(`span`,{className:`eyebrow`,children:`FEITO PARA O RITMO DA HOUSE`}),(0,O.jsxs)(`h1`,{children:[`Gente alinhada.`,(0,O.jsx)(`br`,{}),`Operação leve.`]}),(0,O.jsxs)(`p`,{children:[`Tarefas, unidades e equipe.`,(0,O.jsx)(`br`,{}),`Tudo no lugar, do combinado à entrega.`]}),(0,O.jsx)(`div`,{className:`auth-art`,children:(0,O.jsx)(Re,{})}),(0,O.jsxs)(`span`,{className:`auth-footnote`,children:[(0,O.jsx)(te,{size:17}),`Uma tarefa bem feita faz toda a diferença.`]})]}),(0,O.jsx)(`footer`,{children:`Grupo House190`})]}),(0,O.jsx)(`main`,{className:`auth-panel`,children:(0,O.jsxs)(`div`,{className:`auth-card`,children:[(0,O.jsx)(`span`,{className:`auth-lock`,children:(0,O.jsx)(pe,{size:24})}),(0,O.jsx)(`span`,{className:`eyebrow`,children:e?`SUA PRIMEIRA CONTA`:`BEM-VINDO À HOUSE`}),(0,O.jsx)(`h2`,{children:e?`Vamos começar?`:`Bom ter você aqui.`}),(0,O.jsx)(`p`,{children:e?`Defina seu nome e uma senha para ativar sua conta de administrador.`:`Entre para acompanhar as tarefas e organizar a operação.`}),!e&&(0,O.jsxs)(`button`,{type:`button`,className:`google-auth-btn`,onClick:loginGoogle,disabled:o||!googleReady,children:[(0,O.jsxs)(`svg`,{viewBox:`0 0 24 24`,width:18,height:18,children:[(0,O.jsx)(`path`,{fill:`#4285F4`,d:`M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z`}),(0,O.jsx)(`path`,{fill:`#34A853`,d:`M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z`}),(0,O.jsx)(`path`,{fill:`#FBBC05`,d:`M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z`}),(0,O.jsx)(`path`,{fill:`#EA4335`,d:`M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z`})]}),(0,O.jsx)(`span`,{children:o?`Aguardando o Google…`:`Entrar com Google`})]}),!e&&c&&(0,O.jsx)(`p`,{role:`alert`,className:`form-error`,children:c}),e&&(0,O.jsxs)(`form`,{onSubmit:_,children:[e?(0,O.jsxs)(`label`,{className:`field`,children:[`Seu nome`,(0,O.jsx)(`input`,{autoFocus:!0,autoComplete:`name`,maxLength:100,required:!0,value:f,onChange:e=>p(e.target.value),placeholder:`Como podemos chamar você?`})]}):(0,O.jsxs)(`label`,{className:`field`,children:[`Email`,(0,O.jsx)(`input`,{autoFocus:!0,autoComplete:`username`,type:`email`,required:!0,value:u,onChange:e=>d(e.target.value),placeholder:`seuemail@empresa.com`})]}),(0,O.jsxs)(`label`,{className:`field`,children:[e?`Crie sua senha`:`Senha`,(0,O.jsx)(`input`,{autoComplete:e?`new-password`:`current-password`,type:`password`,minLength:12,maxLength:128,required:!0,value:m,onChange:e=>g(e.target.value),placeholder:e?`Use pelo menos 12 caracteres`:`Sua senha de acesso`})]}),e&&(0,O.jsx)(`p`,{className:`password-hint`,children:`Use uma senha exclusiva, com pelo menos 12 caracteres.`}),c&&(0,O.jsx)(`p`,{role:`alert`,className:`form-error`,children:c}),(0,O.jsxs)(`button`,{className:`primary auth-submit`,disabled:o,children:[o?(0,O.jsx)(fe,{size:17,className:`spin`}):(0,O.jsx)(b,{size:17}),` `,o?`Só um instante…`:e?`Ativar minha conta`:`Entrar no HOUSE TASKS`]})]}),e&&(0,O.jsx)(`button`,{className:`auth-login-link`,onClick:()=>{t(``),sessionStorage.removeItem(Ye),l(``)},children:`Já ativei minha conta. Quero entrar.`}),(0,O.jsxs)(`span`,{className:`auth-security`,children:[(0,O.jsx)(_e,{size:14}),`Acesso autenticado à sua operação`]})]})})]})}(0,xe.createRoot)(document.getElementById(`root`)).render((0,O.jsx)(Ze,{}));
