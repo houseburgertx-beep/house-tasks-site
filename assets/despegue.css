@@ -2300,3 +2300,12 @@ textarea {
   .task-card,
   .task-action-btn { transition: none !important; animation: none !important; }
 }
+
+.google-login-help {
+  color: #53496b;
+  font-size: .9rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.google-login-help p { margin: 8px 0; }
+.google-login-help button { margin: 0; min-height: 44px; }
