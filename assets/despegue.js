@@ -48,20 +48,53 @@
     overlay.setAttribute("aria-hidden", "true");
     overlay.innerHTML = `
       <div class="house-rocket-halo"></div>
+      <div class="house-rocket-smoke">
+        <i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="house-rocket-speed"><i></i><i></i><i></i></div>
       <svg class="house-rocket-flight" viewBox="0 0 120 270" focusable="false">
-        <path fill="#f3a63a" d="M60 201C40 229 50 252 60 268 70 252 80 229 60 201Z"/>
-        <path fill="#fff0b8" d="M60 207C49 227 55 242 60 253 65 242 71 227 60 207Z"/>
-        <path fill="#8060cb" d="M34 145 5 208 34 192ZM86 145 115 208 86 192Z"/>
-        <path fill="#b69ce9" d="M30 150 17 201 34 192ZM90 150 103 201 86 192Z"/>
-        <path fill="#d9c9f4" stroke="#795fd2" stroke-width="1.5" d="M34 84H86L90 192 84 206H36L30 192Z"/>
-        <path fill="#fff" d="M35 85H60V196L31 191Z"/>
-        <path fill="#7961d0" d="M32 168H88L89 178H31Z"/>
-        <path fill="#f8c560" stroke="#c98432" stroke-width="1.5" d="M60 4C45 31 36 56 34 84H86C84 56 75 31 60 4Z"/>
-        <path fill="#ffe5a4" d="M60 7C46 33 37 58 35 83H60Z"/>
-        <path fill="none" stroke="#9a7bda" stroke-width="1" d="M60 85V164"/>
-        <circle cx="60" cy="123" r="19" fill="#614ab8"/>
-        <circle cx="60" cy="123" r="13" fill="#e1d4f8"/>
-        <path d="M52 120a9 9 0 0 1 8-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="house-rocket-shell" x2="1" y2=".65" gradientUnits="objectBoundingBox">
+            <stop stop-color="#fff"/>
+            <stop offset=".45" stop-color="#f4eaff"/>
+            <stop offset="1" stop-color="#9e7bd9"/>
+          </linearGradient>
+          <linearGradient id="house-rocket-nose" x2=".85" y2="1" gradientUnits="objectBoundingBox">
+            <stop stop-color="#fff4c5"/>
+            <stop offset=".55" stop-color="#ffc762"/>
+            <stop offset="1" stop-color="#e68435"/>
+          </linearGradient>
+          <linearGradient id="house-rocket-fin" x2="1" y2="1" gradientUnits="objectBoundingBox">
+            <stop stop-color="#b698f2"/>
+            <stop offset="1" stop-color="#503097"/>
+          </linearGradient>
+          <linearGradient id="house-rocket-flame" x2="0" y2="1" gradientUnits="objectBoundingBox">
+            <stop stop-color="#fff6c8"/>
+            <stop offset=".46" stop-color="#ffc358"/>
+            <stop offset="1" stop-color="#f07a62" stop-opacity=".15"/>
+          </linearGradient>
+          <radialGradient id="house-rocket-glass" cx=".32" cy=".25" r=".84">
+            <stop stop-color="#f7fcff"/>
+            <stop offset=".45" stop-color="#c3bdfb"/>
+            <stop offset="1" stop-color="#724fbd"/>
+          </radialGradient>
+        </defs>
+        <g class="house-rocket-flame">
+          <path fill="url(#house-rocket-flame)" d="M60 197C32 221 47 251 60 270 73 251 88 221 60 197Z"/>
+          <path fill="#fff4bd" d="M60 204C47 219 53 236 60 250 67 236 73 219 60 204Z"/>
+          <path fill="#fffdf2" d="M60 207C54 216 57 225 60 232 63 225 66 216 60 207Z"/>
+        </g>
+        <path fill="url(#house-rocket-fin)" stroke="#6643ad" stroke-width="1.3" d="M36 142 7 196 5 208 34 194ZM84 142 113 196 115 208 86 194Z"/>
+        <path fill="#dfcdfc" fill-opacity=".7" d="M34 151 13 194 31 185ZM86 151 107 194 89 185Z"/>
+        <path fill="url(#house-rocket-shell)" stroke="#7654bc" stroke-width="1.5" d="M34 81H86L91 178Q91 190 84 202H36Q29 190 29 178Z"/>
+        <path fill="url(#house-rocket-nose)" stroke="#ba7538" stroke-width="1.4" d="M60 4C48 24 36 53 34 84Q60 91 86 84C84 53 72 24 60 4Z"/>
+        <path fill="none" stroke="#fff3c3" stroke-width="2" stroke-linecap="round" d="M54 25Q42 47 40 69"/>
+        <path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8" d="M39 96 35 159"/>
+        <path fill="#7550bc" d="M30 169Q60 176 90 169L91 179Q60 187 29 179Z"/>
+        <path fill="url(#house-rocket-fin)" stroke="#6643ad" d="M36 196Q60 201 84 196L80 207H40Z"/>
+        <circle cx="60" cy="123" r="21" fill="#7550bc" stroke="#fff" stroke-width="1.4"/>
+        <circle cx="60" cy="123" r="15" fill="url(#house-rocket-glass)"/>
+        <path d="M51 120a9 9 0 0 1 8-6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
       </svg>`;
 
     if (typeof overlay.showPopover === "function") {
@@ -83,8 +116,10 @@
       overlay.remove();
       activeRocket = null;
     };
-    activeRocket = { overlay, timer: setTimeout(remove, 2400) };
-    rocket.addEventListener("animationend", remove, { once: true });
+    activeRocket = { overlay, timer: setTimeout(remove, 2800) };
+    rocket.addEventListener("animationend", event => {
+      if (event.target === rocket) remove();
+    });
   };
 
   window.houseAnimateTask = function ({ id, from }) {

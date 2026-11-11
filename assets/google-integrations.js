@@ -5,7 +5,8 @@
     "auth/unauthorized-domain": "O domínio do site precisa ser autorizado no Firebase.",
     "auth/operation-not-allowed": "O login Google ainda não foi ativado no Firebase.",
     "auth/popup-closed-by-user": "A janela do Google foi fechada. Tente novamente.",
-    "auth/popup-blocked": "Abra o HOUSE TASKS em uma aba do Safari ou Chrome para entrar.",
+    "auth/popup-blocked": "O navegador bloqueou a janela do Google. Toque em Entrar com Google novamente ou abra o site em uma aba do Safari ou Chrome.",
+    "auth/operation-not-supported-in-this-environment": "Abra o HOUSE TASKS em uma aba do Safari ou Chrome para entrar com Google.",
     "auth/network-request-failed": "Falha de conexão com o Google. Tente novamente.",
   };
 
@@ -62,4 +63,8 @@
   }
 
   window.HouseGoogle = { login, resume };
+
+  // Start Firebase initialization before the first tap. Login can then call
+  // signInWithPopup directly from the button without waiting on setup.
+  if (window.firebase && config?.apiKey) authClient();
 })();
