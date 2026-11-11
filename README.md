@@ -6,6 +6,14 @@ Interface React com suporte completo a **Progressive Web App (PWA)** publicada n
 
 ---
 
+## 🚀 Despegue · Barra de Ativação com Decolagem
+
+Ao criar uma nova tarefa ("Nova tarefa" / "Criar tarefa"), a interface apresenta o componente **Despegue**:
+- **Barra de Progresso com Foguete (Cohete)**: À medida que os campos da tarefa são preenchidos (Nome, Unidade/Responsável, Prazo/Prioridade e Detalhes/Checklist), a barra avança com efeito elástico e o foguete desliza ao longo da pista.
+- **Decolagem ao Criar**: No clique de confirmação ("Criar tarefa"), o propulsor do foguete entra em ignição com efeito de tremor (*rumble*), chamas ativas e nuvens de fumaça, disparando e decolando em direção ao topo da tela acompanhado de áudio sintético sutil via Web Audio API.
+
+---
+
 ## 📱 Suporte a PWA (Instalação em Celulares e Tablets)
 
 O aplicativo está configurado com `manifest.webmanifest` e `sw.js` (Service Worker):
@@ -33,7 +41,6 @@ Qualquer alteração neste arquivo é lida em tempo de execução pelo `index.ht
 
 ```text
 house-tasks-site/
-├── .github/workflows/pages.yml  # Deploy automático no GitHub Pages
 ├── .nojekyll                    # Evita descarte de assets pelo Jekyll
 ├── app-config.json              # Configuração dinâmica de endpoint
 ├── favicon.svg                  # Ícone vetorial da House
@@ -44,8 +51,10 @@ house-tasks-site/
 │   ├── apple-touch-icon.png     # Ícone para dispositivos Apple (180x180)
 │   ├── icon-192.png             # Ícone PWA (192x192)
 │   ├── icon-512.png             # Ícone PWA (512x512)
+│   ├── despegue.css             # Estilos e animações do Foguete Despegue
+│   ├── despegue.js              # Lógica de rastreamento de progresso e lançamento
 │   ├── index-*.js               # Bundle JS da aplicação
-│   └── index-*.css              # Folha de estilos
+│   └── index-*.css              # Folha de estilos base
 └── README.md
 ```
 

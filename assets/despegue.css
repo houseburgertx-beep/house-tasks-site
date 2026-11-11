@@ -1,0 +1,312 @@
+/* ==========================================================================
+   DESPEGUE · Lista de ativação com barra de progresso e cohete que despega
+   Inspirado no componente Moxen Despegue, adaptado ao estilo do Grupo House190
+   ========================================================================== */
+
+.despegue-container {
+  background: linear-gradient(135deg, #ffffff 0%, #faf8fe 60%, #f3eeff 100%);
+  border: 1.5px solid #e7dff8;
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin: 12px 0 20px 0;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 10px 28px -12px rgba(121, 95, 210, 0.18);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.despegue-container:hover {
+  border-color: #d6c8f4;
+  box-shadow: 0 14px 34px -14px rgba(121, 95, 210, 0.25);
+}
+
+/* Cabeçalho */
+.despegue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.despegue-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.despegue-tag {
+  background: #ede8fb;
+  color: #614ab8;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid #d9cbf7;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.despegue-tag span.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #795fd2;
+  box-shadow: 0 0 6px #795fd2;
+  animation: despeguePulseDot 1.8s infinite;
+}
+
+@keyframes despeguePulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.despegue-subtitle {
+  font-size: 13px;
+  color: #77768e;
+  font-weight: 500;
+}
+
+.despegue-percent {
+  font-size: 14px;
+  font-weight: 800;
+  color: #795fd2;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Pista e Barra com Foguete */
+.despegue-track-wrap {
+  position: relative;
+  margin: 16px 8px 18px 8px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.despegue-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #eeedf6;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(48, 45, 40, 0.08);
+}
+
+.despegue-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #795fd2 0%, #a283f0 60%, #ebb76c 100%);
+  border-radius: 999px;
+  transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 14px rgba(121, 95, 210, 0.45);
+}
+
+/* Nós sequenciais */
+.despegue-nodes {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 2;
+}
+
+.despegue-node {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #dcd7ea;
+  color: #8e8a9f;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 6px rgba(48, 47, 80, 0.06);
+  user-select: none;
+}
+
+.despegue-node.active {
+  border-color: #795fd2;
+  color: #795fd2;
+  background: #fbf9ff;
+  transform: scale(1.12);
+  box-shadow: 0 0 0 4px rgba(121, 95, 210, 0.16);
+}
+
+.despegue-node.completed {
+  border-color: #3c8777;
+  background: #3c8777;
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 2px 10px rgba(60, 135, 119, 0.3);
+}
+
+/* Rótulos dos nós */
+.despegue-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding: 0 2px;
+}
+
+.despegue-label-item {
+  font-size: 11px;
+  color: #8e8a9f;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+  transition: color 0.25s ease;
+}
+
+.despegue-label-item.active {
+  color: #614ab8;
+  font-weight: 700;
+}
+
+.despegue-label-item.completed {
+  color: #3c8777;
+}
+
+/* O Foguete (Cohete) */
+.despegue-rocket-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  transition: left 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.despegue-rocket-svg {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 4px 10px rgba(108, 85, 206, 0.38));
+  animation: despegueIdleHover 2.2s ease-in-out infinite;
+  transform-origin: center center;
+  display: block;
+}
+
+@keyframes despegueIdleHover {
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50% { transform: translateY(-4px) rotate(42deg); }
+}
+
+/* Propulsor e chamas */
+.despegue-fire-plume {
+  opacity: 0.8;
+  transform-origin: 18px 43px;
+  animation: despegueThrusterFlicker 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes despegueThrusterFlicker {
+  0% { transform: scale(0.9) rotate(-2deg); opacity: 0.75; }
+  100% { transform: scale(1.25) rotate(2deg); opacity: 1; }
+}
+
+/* Estado de Ignição / Tremor antes do lançamento */
+.despegue-rocket-wrapper.igniting .despegue-rocket-svg {
+  animation: despegueRumble 0.08s infinite alternate !important;
+}
+
+@keyframes despegueRumble {
+  0% { transform: translate(-1.5px, 1px) rotate(43deg); }
+  100% { transform: translate(1.5px, -1px) rotate(47deg); }
+}
+
+/* Estado de Decolagem (Despegue!) */
+.despegue-rocket-wrapper.launching {
+  animation: despegueBlastOff 1.1s cubic-bezier(0.2, 0.8, 0.25, 1) forwards !important;
+  z-index: 99999 !important;
+}
+
+@keyframes despegueBlastOff {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  15% {
+    transform: translate(-50%, -40%) scale(0.9) rotate(38deg);
+  }
+  30% {
+    transform: translate(-30%, -85%) scale(1.2) rotate(48deg);
+  }
+  65% {
+    transform: translate(60px, -260px) scale(1.4) rotate(54deg);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(180px, -650px) scale(1.8) rotate(58deg);
+    opacity: 0;
+  }
+}
+
+/* Partículas e Fumaça */
+.despegue-smoke-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 4;
+}
+
+.despegue-smoke-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(235, 183, 108, 0.65) 50%, rgba(121, 95, 210, 0) 80%);
+  animation: despegueSmokePuff 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes despegueSmokePuff {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.95; }
+  100% { transform: translate(-50%, 15px) scale(2.4); opacity: 0; }
+}
+
+.despegue-spark-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ebb76c;
+  box-shadow: 0 0 8px #ebb76c;
+  animation: despegueSparkBurst 0.7s ease-out forwards;
+}
+
+@keyframes despegueSparkBurst {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* Banner de Sucesso / Decolagem */
+.despegue-launch-banner {
+  background: linear-gradient(135deg, #795fd2 0%, #614ab8 100%);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(97, 74, 184, 0.35);
+  animation: despegueSlideDown 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes despegueSlideDown {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}

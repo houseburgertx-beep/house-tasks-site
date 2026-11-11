@@ -1,10 +1,12 @@
-const CACHE_NAME = 'house-tasks-shell-v1';
+const CACHE_NAME = 'house-tasks-shell-v2';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
   '/house-tasks-site/manifest.webmanifest',
   '/house-tasks-site/favicon.svg',
   '/house-tasks-site/app-config.json',
+  '/house-tasks-site/assets/despegue.css',
+  '/house-tasks-site/assets/despegue.js',
   '/house-tasks-site/assets/index-RNQ5UdyA.js',
   '/house-tasks-site/assets/index-B5_nnLOS.css',
   '/house-tasks-site/assets/icon-192.png',
