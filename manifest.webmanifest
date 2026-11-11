@@ -6,8 +6,8 @@
   "scope": "/house-tasks-site/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#f2f3fb",
-  "theme_color": "#795bc1",
+  "background_color": "#f2f5fa",
+  "theme_color": "#f2f5fa",
   "lang": "pt-BR",
   "icons": [
     {

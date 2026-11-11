@@ -1,13 +1,13 @@
 :root {
   --house-paper: #fff;
-  --house-page: #f3f3f8;
-  --house-raised: #ebebf3;
-  --house-text: #191827;
-  --house-muted: #5a596d;
-  --house-line: #dedeea;
-  --house-accent: #503ab0;
-  --house-tint: #eeebfb;
-  --house-radius: 18px;
+  --house-page: #f2f5fa;
+  --house-raised: #e8eef7;
+  --house-text: #142034;
+  --house-muted: #516078;
+  --house-line: #dce4ef;
+  --house-accent: #0064d9;
+  --house-tint: #e2efff;
+  --house-radius: 24px;
   --house-font: -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
 }
 
@@ -30,12 +30,12 @@ body.house-app, body.house-studio {
 .house-app :is(.primary, .approve-button), .house-studio .primary {
   background: var(--house-accent);
   color: #fff;
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: none;
 }
-.house-app :is(.primary, .approve-button):hover, .house-studio .primary:hover { background: #3d2990; }
+.house-app :is(.primary, .approve-button):hover, .house-studio .primary:hover { background: #0053b8; }
 .house-app :is(.secondary, .icon-button), .house-studio .quiet {
-  color: #3d315f;
+  color: #254066;
   background: var(--house-raised);
   border-radius: 11px;
   box-shadow: none;
@@ -57,7 +57,7 @@ body.house-app, body.house-studio {
 .house-app .top-actions { gap: 7px; }
 
 .house-app .welcome {
-  background: #252039;
+  background: #064fb5;
   border: 0;
   border-radius: var(--house-radius);
   box-shadow: none;
@@ -68,9 +68,9 @@ body.house-app, body.house-studio {
 .house-app .welcome > :not(.welcome-copy) { display: none; }
 .house-app .welcome .welcome-copy { width: 100%; max-width: none; }
 .house-app .welcome h1 { color: #fff; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.08; margin: 0 0 12px; letter-spacing: -.045em; }
-.house-app .welcome p { color: #e2def0; margin: 0 0 18px; }
-.house-app .welcome .primary { background: #fff; color: #312456; }
-.house-app .welcome .date-chip { background: #38314e; color: #f5f0ff; border-color: #4d4365; }
+.house-app .welcome p { color: #e6f1ff; margin: 0 0 18px; }
+.house-app .welcome .primary { background: #fff; color: #064baf; }
+.house-app .welcome .date-chip { background: #1260c9; color: #f5faff; border-color: #4b8ee5; }
 .house-app :is(.page-heading h1, .section-heading h2) { color: var(--house-text); letter-spacing: -.035em; }
 .house-app .overview-summary { gap: 16px; }
 .house-app .stats-grid { gap: 12px; }
@@ -103,8 +103,8 @@ body.house-app, body.house-studio {
 .house-app .task-card {
   background: #fff !important;
   border: 1px solid var(--house-line) !important;
-  border-radius: 13px !important;
-  box-shadow: 0 1px 3px #2520390d !important;
+  border-radius: 19px !important;
+  box-shadow: 0 1px 3px #064fb50d !important;
 }
 .house-app .task-card h3 { color: var(--house-text) !important; }
 .house-app .list-row { background: #fff; border-bottom: 1px solid var(--house-line); }
@@ -118,22 +118,22 @@ body.house-app, body.house-studio {
   align-items: stretch;
 }
 .house-app .auth-intro {
-  background: #252039;
+  background: #064fb5;
   color: #fff;
   box-shadow: none;
   border: 0;
   border-radius: 24px;
 }
 .house-app .auth-intro :is(h1, .brand, footer) { color: #fff; }
-.house-app .auth-intro p { color: #e2def0; }
+.house-app .auth-intro p { color: #e6f1ff; }
 .house-app .auth-art, .house-app .auth-footnote { display: none; }
 .house-app .auth-intro-copy h1 { font-size: clamp(2.4rem, 6vw, 4.5rem); letter-spacing: -.055em; }
 .house-app .auth-panel { padding: 0; }
 .house-app .auth-card { border: 1px solid var(--house-line); border-radius: 24px; box-shadow: none; width: 100%; max-width: 450px; padding: clamp(20px, 4vw, 38px); }
 .house-app .auth-card h2 { color: var(--house-text); font-size: clamp(1.65rem, 3vw, 2.1rem); letter-spacing: -.035em; }
-.house-app .google-auth-btn { min-height: 48px !important; color: var(--house-text) !important; border-radius: 12px !important; box-shadow: none !important; }
-.house-app .modal { border: 1px solid var(--house-line); border-radius: 20px; }
-.house-app .modal::backdrop { background: #20173065; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.house-app .google-auth-btn { min-height: 48px !important; color: var(--house-text) !important; border-radius: 16px !important; box-shadow: none !important; }
+.house-app .modal { border: 1px solid var(--house-line); border-radius: 24px; }
+.house-app .modal::backdrop { background: #14203465; -webkit-backdrop-filter: none; backdrop-filter: none; }
 .house-app .house-task-dialog .seg-tab.active { color: var(--house-accent) !important; box-shadow: inset 0 -2px var(--house-accent) !important; }
 .house-app .house-task-dialog .field :is(input, select, textarea) { background: var(--house-page) !important; border-color: var(--house-line) !important; }
 
@@ -142,7 +142,7 @@ body.house-app, body.house-studio {
 .house-studio .board-list { grid-template-columns: repeat(auto-fill, minmax(min(225px, 100%), 1fr)); }
 .house-studio .board-tile { border-radius: var(--house-radius); }
 .house-studio .editor { background: var(--house-page); }
-.house-studio .floating { box-shadow: 0 2px 8px #20173014; }
+.house-studio .floating { box-shadow: 0 2px 8px #14203414; }
 .house-studio .icon-tool[aria-pressed="true"] { background: var(--house-tint); color: var(--house-accent); }
 
 @media (min-width: 901px) {
@@ -159,8 +159,8 @@ body.house-app, body.house-studio {
     right: 8px;
     border: 1px solid var(--house-line);
     padding: 6px 3px;
-    border-radius: 17px;
-    box-shadow: 0 3px 13px #25203916;
+    border-radius: 24px;
+    box-shadow: 0 3px 13px #064fb516;
   }
   .house-app .mobile-nav button { min-width: 0; min-height: 44px; }
   .house-app .mobile-nav .mobile-create { background: var(--house-accent); box-shadow: none; }
@@ -182,4 +182,59 @@ body.house-app, body.house-studio {
   .house-app .welcome { padding: 21px 16px; }
   .house-app .stats-grid { gap: 8px; }
   .house-app .stat { min-height: 94px; }
+}
+
+.house-app :is(.brand-symbol, .profile-trigger),
+.house-studio .studio-brand > span {
+  background: var(--house-accent);
+  color: #fff;
+  box-shadow: none;
+}
+.house-app .brand-symbol span, .house-studio .studio-brand > span span { color: #bfe0ff; }
+.house-app :is(.date-chip, .workspace-icon, .auth-lock, .catalog-icon, .unit-mini-icon) {
+  background: var(--house-tint);
+  color: var(--house-accent);
+}
+.house-app .welcome .date-chip { background: #1260c9; color: #fff; }
+.house-app .stat:nth-child(1) > span svg { color: #0064d9; background: #e2efff; }
+.house-app .stat:nth-child(2) > span svg { color: #8c4a00; background: #ffebc8; }
+.house-app .stat:nth-child(3) > span svg { color: #087a43; background: #dcf8e8; }
+.house-app .stat:nth-child(4) > span svg { color: #ad2139; background: #ffe4e8; }
+
+.house-app .kanban { align-items: start; gap: 12px !important; }
+.house-app .column {
+  --stage-ink: #0059bf;
+  --stage-tint: #dcecff;
+  min-height: 0 !important;
+  padding: 9px !important;
+}
+.house-app .column[data-stage="doing"] { --stage-ink: #855000; --stage-tint: #ffebc8; }
+.house-app .column[data-stage="review"] { --stage-ink: #925020; --stage-tint: #ffe5d1; }
+.house-app .column[data-stage="done"] { --stage-ink: #087441; --stage-tint: #d8f5e6; }
+.house-app .column-head { margin-bottom: 6px !important; padding: 3px 4px; }
+.house-app .column-head .dot { background: var(--stage-ink); }
+.house-app .column-head .count { background: var(--stage-tint) !important; color: var(--stage-ink) !important; box-shadow: none !important; }
+.house-app .column-empty { padding: 12px 4px; gap: 5px; color: var(--house-muted); }
+.house-app .column-add {
+  min-height: 38px;
+  padding: 6px 9px !important;
+  color: var(--stage-ink) !important;
+  background: var(--stage-tint) !important;
+  border: 0 !important;
+}
+.house-app .column .task-card { padding: 0 !important; margin-bottom: 7px !important; }
+.house-app .column .task-card .card-main { padding: 9px 10px 6px !important; }
+.house-app .column .task-card h3 { margin: 4px 0 !important; }
+.house-app .column .task-card .card-description { margin: 4px 0 !important; -webkit-line-clamp: 2; }
+.house-app .column .task-card .card-bottom { padding: 5px 8px !important; }
+.house-app .column .task-card .task-meta { margin-top: 5px !important; }
+.house-studio .board-preview { background: #e8f1ff; }
+.house-studio .icon-tool[aria-pressed="true"] { background: var(--house-tint); color: var(--house-accent); }
+
+@media (min-width: 901px) {
+  .house-app .column-cards { max-height: clamp(260px, 49dvh, 590px); overflow-y: auto; }
+}
+@media (max-width: 768px) {
+  .house-app .kanban { padding-bottom: 12px !important; }
+  .house-app .column { flex-basis: 80vw !important; min-width: min(244px, 80vw) !important; }
 }
