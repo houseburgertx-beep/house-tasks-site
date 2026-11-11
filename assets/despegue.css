@@ -2176,3 +2176,117 @@ textarea {
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
 }
+
+/* Task details */
+.house-task-dialog {
+  --task-line: #e8e4ee;
+  --task-accent: #543a9c;
+  padding: clamp(15px, 4vw, 28px) !important;
+}
+
+.house-task-dialog .modern-modal-header {
+  margin-bottom: 10px !important;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.house-task-dialog .modal-title-clean {
+  font-size: 1.2rem !important;
+  margin: 0 !important;
+}
+
+.house-task-dialog .modal-segmented-tabs {
+  background: transparent !important;
+  border-bottom: 1px solid var(--task-line);
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin-bottom: 14px !important;
+}
+
+.house-task-dialog [hidden] { display: none !important; }
+
+.house-task-dialog .seg-tab {
+  border-radius: 0 !important;
+  min-height: 44px;
+  font-size: .9rem !important;
+}
+
+.house-task-dialog .seg-tab.active {
+  color: var(--task-accent) !important;
+  box-shadow: inset 0 -2px var(--task-accent) !important;
+}
+
+.house-task-dialog .field {
+  min-width: 0;
+  gap: 4px !important;
+  margin-bottom: 9px !important;
+  color: #332b43;
+}
+
+.house-task-dialog .field :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 8px 10px !important;
+  background: white !important;
+  border: 1px solid var(--task-line) !important;
+  border-radius: 8px !important;
+  font-size: 16px;
+  font-weight: 500 !important;
+}
+
+.house-task-dialog .field :is(input, select, textarea):focus {
+  border-color: var(--task-accent) !important;
+}
+
+.house-task-dialog input[type="date"] { appearance: none; }
+
+.house-task-dialog .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+.house-task-dialog .checklist-section { margin: 7px 0; }
+
+.house-task-dialog .approval-field {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 5px 0 !important;
+  min-height: 44px;
+  justify-content: space-between;
+}
+
+.house-task-dialog .modal-footer-actions {
+  gap: 8px;
+  margin-top: 10px !important;
+  padding: 9px 0 max(5px, env(safe-area-inset-bottom)) !important;
+}
+
+.house-task-dialog .footer-del-btn,
+.task-calendar-button {
+  background: transparent !important;
+  border: 0 !important;
+  color: var(--task-accent) !important;
+  font: inherit;
+  font-size: .85rem !important;
+  min-height: 44px;
+  padding: 5px !important;
+  align-self: flex-start;
+  cursor: pointer;
+}
+
+.house-task-dialog .footer-del-btn { color: #9a3030 !important; }
+.house-task-dialog .task-google-status { font-size: .9rem; }
+.house-task-dialog .task-google-status a { margin-left: .5rem; }
+.house-task-dialog .attachments-gallery { display: flex !important; flex-direction: column; }
+.house-task-dialog .attachments-gallery a { overflow-wrap: anywhere; }
+
+@media (prefers-reduced-motion: reduce) {
+  .house-task-dialog,
+  .house-task-dialog :is(.tab-panel-detalhes, .tab-panel-fotos, .tab-panel-comentarios) {
+    animation: none !important;
+  }
+}

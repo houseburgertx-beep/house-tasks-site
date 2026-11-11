@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#795bc1">
   <meta name="referrer" content="no-referrer">
   
@@ -47,17 +47,6 @@
       }
     }
 
-    // Inicialização Firebase (Login Gmail / Google)
-    try {
-      if (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.firebaseConfig && window.firebase) {
-        if (!window.firebase.apps || !window.firebase.apps.length) {
-          window.firebase.initializeApp(window.__HOUSE_CONFIG__.firebaseConfig);
-        }
-      }
-    } catch (e) {
-      console.warn('[HOUSE TASKS] Firebase init:', e);
-    }
-
     // Registro do Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -72,13 +61,15 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
+  <script src="/house-tasks-site/assets/google-integrations.js?v=20261111i" defer></script>
+
   <!-- Componente Despegue Oficial (Foguete de Papel, Pista com Mola, Fumaça e Confetes) -->
-  <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261111h">
-  <script src="/house-tasks-site/assets/despegue.js?v=20261111h" defer></script>
+  <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261111i">
+  <script src="/house-tasks-site/assets/despegue.js?v=20261111i" defer></script>
 
   <!-- App Principal -->
-  <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261111h"></script>
-  <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261111h">
+  <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261111i"></script>
+  <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261111i">
 </head>
 <body>
   <div id="root"></div>

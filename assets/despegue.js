@@ -188,7 +188,7 @@
                         </div>
                         <span class="de-estado" data-estado>Pronto</span>
                       </div>
-                      <button class="de-accion es-lancar" type="button" data-hecho><span data-txt>Lançar tarefa na House 🚀</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                      <button class="de-accion es-lancar" type="button" data-hecho><span data-txt>Lançar tarefa na House</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
                     </div></div>
                   </li>
                 </ol>

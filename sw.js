@@ -1,10 +1,11 @@
-const CACHE_NAME = 'house-tasks-v20261111h';
+const CACHE_NAME = 'house-tasks-v20261111i';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
   '/house-tasks-site/manifest.webmanifest',
   '/house-tasks-site/favicon.svg',
   '/house-tasks-site/app-config.json',
+  '/house-tasks-site/assets/google-integrations.js',
   '/house-tasks-site/assets/despegue.css',
   '/house-tasks-site/assets/despegue.js',
   '/house-tasks-site/assets/index-RNQ5UdyA.js',
