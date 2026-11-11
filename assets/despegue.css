@@ -2309,3 +2309,36 @@ textarea {
 }
 .google-login-help p { margin: 8px 0; }
 .google-login-help button { margin: 0; min-height: 44px; }
+
+.house-rocket-flight {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  bottom: 10vh;
+  left: 50%;
+  width: clamp(58px, 12vw, 100px);
+  animation: house-rocket-launch 1.4s cubic-bezier(.45, 0, .22, 1) both;
+  filter: drop-shadow(0 9px 16px #795bc155);
+}
+.house-rocket-flight svg { display: block; width: 100%; height: auto; }
+.house-rocket-flight .de-llama { opacity: 1; transform: none; }
+@keyframes house-rocket-launch {
+  0% { transform: translate(-50%, 32px) scale(.65); opacity: 0; }
+  22% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-50% + 16vw), -110vh) rotate(13deg); opacity: .1; }
+}
+.house-task-saving { transition: opacity .18s ease; opacity: .7; }
+.profile-trigger { border: 0; cursor: pointer; min-width: 44px; min-height: 44px; }
+.profile-trigger:focus-visible { outline: 2px solid #6741aa; outline-offset: 3px; }
+.house-profile h2 { margin: 0 44px 6px 0; }
+.house-profile-email { color: #53496b; overflow-wrap: anywhere; }
+.house-profile-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.house-profile-actions button { min-height: 44px; }
+.house-device-login { display: grid; gap: 8px; overflow-wrap: anywhere; }
+.house-device-login > a { text-decoration: none; text-align: center; justify-content: center; }
+.house-device-login > input { width: 100%; min-height: 44px; font-size: 16px; padding: 8px; }
+.house-device-login button { min-height: 44px; }
+@media (prefers-reduced-motion: reduce) {
+  .house-task-saving { transition: none; }
+  .house-rocket-flight { display: none; }
+}

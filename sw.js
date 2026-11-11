@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-v20261111k';
+const CACHE_NAME = 'house-tasks-v20261111l';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
@@ -27,7 +27,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
-          if (key !== CACHE_NAME) {
+          if (key.startsWith('house-tasks-') && key !== CACHE_NAME) {
             console.log('[SW] Apagando cache antigo:', key);
             return caches.delete(key);
           }
@@ -41,7 +41,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
   // Bypass cache para chamadas de API ou recursos de outros domínios
-  if (url.origin !== self.location.origin || url.pathname.includes('/api/')) {
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin || !url.pathname.startsWith('/house-tasks-site/') || url.pathname.includes('/api/')) {
     return;
   }
 
@@ -54,7 +54,7 @@ self.addEventListener('fetch', (event) => {
     url.pathname.endsWith('.json')
   ) {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-cache' })
         .then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             const responseToCache = networkResponse.clone();
@@ -64,7 +64,9 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         })
-        .catch(() => caches.match(event.request))
+        .catch(async () => (await caches.match(event.request)) ||
+          (event.request.mode === 'navigate' ? await caches.match('/house-tasks-site/index.html') : await caches.match(url.pathname)) ||
+          Response.error())
     );
     return;
   }

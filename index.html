@@ -47,12 +47,39 @@
       }
     }
 
-    // Registro do Service Worker
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/house-tasks-site/sw.js').catch((err) => {
-          console.warn('[HOUSE TASKS] ServiceWorker não registrado:', err);
-        });
+      const worker = navigator.serviceWorker;
+      let hasController = !!worker.controller;
+      let updatePending = false;
+      let registration;
+      const refreshWhenIdle = () => {
+        if (!updatePending || document.visibilityState !== 'visible') return;
+        if (document.querySelector('dialog[open], [aria-busy="true"], .google-auth-btn:disabled, [data-update-blocked], .auth-loading')) return;
+        if (document.activeElement?.matches('input, textarea, select, [contenteditable="true"]')) return;
+        updatePending = false;
+        location.reload();
+      };
+      worker.addEventListener('controllerchange', () => {
+        if (hasController) {
+          updatePending = true;
+          refreshWhenIdle();
+        }
+        hasController = !!worker.controller;
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') registration?.update().catch(() => {});
+        refreshWhenIdle();
+      });
+      window.addEventListener('load', async () => {
+        try {
+          registration = await worker.register('/house-tasks-site/sw.js', { updateViaCache: 'none' });
+          setInterval(() => {
+            if (document.visibilityState === 'visible') registration.update().catch(() => {});
+          }, 60000);
+          setInterval(refreshWhenIdle, 2000);
+        } catch (error) {
+          console.warn('[HOUSE TASKS] Service Worker indisponível:', error);
+        }
       });
     }
   </script>
@@ -61,15 +88,15 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-  <script src="/house-tasks-site/assets/google-integrations.js?v=20261111k" defer></script>
+  <script src="/house-tasks-site/assets/google-integrations.js?v=20261111l" defer></script>
 
   <!-- Componente Despegue Oficial (Foguete de Papel, Pista com Mola, Fumaça e Confetes) -->
-  <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261111k">
-  <script src="/house-tasks-site/assets/despegue.js?v=20261111k" defer></script>
+  <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261111l">
+  <script src="/house-tasks-site/assets/despegue.js?v=20261111l" defer></script>
 
   <!-- App Principal -->
-  <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261111k"></script>
-  <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261111k">
+  <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261111l"></script>
+  <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261111l">
 </head>
 <body>
   <div id="root"></div>
