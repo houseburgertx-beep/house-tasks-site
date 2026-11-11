@@ -1,15 +1,66 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <meta name="theme-color" content="#795bc1">
- <meta name="referrer" content="no-referrer">
- <link rel="icon" type="image/svg+xml" href="/house-tasks-site/favicon.svg">
- <title>HOUSE TASKS · Grupo House190</title>
- <meta name="description" content="Tarefas, unidades e equipe do Grupo House190 em um só lugar.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#795bc1">
+  <meta name="referrer" content="no-referrer">
+  
+  <!-- SEO & Meta -->
+  <title>HOUSE TASKS · Grupo House190</title>
+  <meta name="description" content="Tarefas, unidades e equipe do Grupo House190 em um só lugar.">
+
+  <!-- PWA & Mobile Web App -->
+  <link rel="manifest" href="/house-tasks-site/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/house-tasks-site/favicon.svg">
+  <link rel="apple-touch-icon" href="/house-tasks-site/assets/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HOUSE TASKS">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Runtime Config & Dynamic API Fallback -->
+  <script>
+    window.__HOUSE_CONFIG__ = null;
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/house-tasks-site/app-config.json', false);
+      xhr.send(null);
+      if (xhr.status === 200) {
+        window.__HOUSE_CONFIG__ = JSON.parse(xhr.responseText);
+      }
+    } catch (e) {
+      console.warn('[HOUSE TASKS] Fallback para a configuração padrão');
+    }
+
+    if (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.apiBaseUrl) {
+      const configuredApi = window.__HOUSE_CONFIG__.apiBaseUrl.replace(/\/$/, '');
+      const defaultApi = 'https://house-tasks-api.brunohouse.workers.dev';
+      if (configuredApi !== defaultApi) {
+        const _fetch = window.fetch;
+        window.fetch = function (url, opts) {
+          if (typeof url === 'string' && url.startsWith(defaultApi)) {
+            url = url.replace(defaultApi, configuredApi);
+          }
+          return _fetch.call(this, url, opts);
+        };
+      }
+    }
+
+    // Registro do Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/house-tasks-site/sw.js').catch((err) => {
+          console.warn('[HOUSE TASKS] ServiceWorker não registrado:', err);
+        });
+      });
+    }
+  </script>
+
   <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js"></script>
   <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css">
 </head>
-<body><div id="root"></div></body>
+<body>
+  <div id="root"></div>
+</body>
 </html>
