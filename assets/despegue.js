@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = false; // Exibição obrigatória e gloriosa do foguete
 
   // Gerador pseudo-aleatório com semente (confeti consistente)
   function mulberry32(s) {
@@ -459,6 +459,7 @@
     }
 
     function onDespegue() {
+      tocarSomDecolagem();
       tarjeta.classList.add('is-final');
       $('[data-final]').setAttribute('aria-hidden', 'false');
       $('[data-repite]').tabIndex = 0;
@@ -477,6 +478,8 @@
       tarjeta.classList.add('is-despega');
       if (reduce) { onDespegue(); estado = 'final'; return; }
 
+      tocarSomDecolagem();
+      if (navigator.vibrate) { try { navigator.vibrate([40, 50, 40]); } catch (_) {} }
       // Revela o foguete
       cohete.style.opacity = '1';
       poseCohete(0, 0, 0, 1);
@@ -640,91 +643,193 @@
 
   // Abre a modal do Despegue
   
-  // Foguete de celebração quando uma tarefa é concluída
+  // Síntese de áudio para som de decolagem sem dependências externas
+  function tocarSomDecolagem() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      if (ctx.state === "suspended") {
+        ctx.resume();
+      }
+
+      const now = ctx.currentTime;
+      // Rugido potente do propulsor (whoosh)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(780, now + 0.85);
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.2, now + 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 1.25);
+
+      // Chime musical triunfante de conclusão (C5, E5, G5, C6)
+      const notas = [523.25, 659.25, 783.99, 1046.5];
+      notas.forEach((freq, idx) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "triangle";
+        o.frequency.value = freq;
+        const t = now + 0.18 + idx * 0.09;
+        g.gain.setValueAtTime(0.001, t);
+        g.gain.linearRampToValueAtTime(0.14, t + 0.04);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.75);
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start(t);
+        o.stop(t + 0.8);
+      });
+    } catch (_) {}
+  }
+
+  // Foguete de celebração cinematográfico quando uma entrega é concluída
   window.lancarFogueteCelebracao = function () {
-    let celem = document.getElementById('deCelebracaoFoguete');
-    if (!celem) {
-      celem = document.createElement('div');
-      celem.id = 'deCelebracaoFoguete';
-      celem.innerHTML = `
-        <div class="de-cohete-celeb" aria-hidden="true">
-          <svg viewBox="0 0 120 270" width="90" height="202">
-            <g class="de-llama is-active">
-              <path d="M60 208C42 230 51 250 60 268 69 250 78 230 60 208Z" fill="#ff9800"/>
-              <path d="M60 210C51 226 55 240 60 252 65 240 69 226 60 210Z" fill="#fff"/>
-            </g>
-            <path d="M30 150 5 208 30 192Z" fill="#eae2f8"/>
-            <path d="M90 150 115 208 90 192Z" fill="#ddd0f5"/>
-            <path d="M34 84H60V198L30 192Z" fill="#ffffff"/>
-            <path d="M60 84H86L90 192 60 198Z" fill="#f0eafc"/>
-            <path d="M32 168H88L88.6 178H31.4Z" fill="#795fd2"/>
-            <path d="M30 192 60 198 90 192 84 206H36Z" fill="#d9ccf5"/>
-            <path d="M60 4C46 32 36 56 34 84H60Z" fill="#fcd34d"/>
-            <path d="M60 4C74 32 84 56 86 84H60Z" fill="#fb923c"/>
-            <circle cx="60" cy="124" r="14" fill="#795fd2"/>
-            <circle cx="60" cy="124" r="10" fill="#ffffff"/>
-          </svg>
-        </div>
-        <canvas class="de-lienzo-celeb"></canvas>
-      `;
-      document.body.appendChild(celem);
+    tocarSomDecolagem();
+    if (navigator.vibrate) {
+      try { navigator.vibrate([40, 50, 40]); } catch (_) {}
     }
 
-    const rocket = celem.querySelector('.de-cohete-celeb');
-    const canvas = celem.querySelector('.de-lienzo-celeb');
-    const ctx = canvas.getContext('2d');
+    let celebContainer = document.getElementById("deCelebracaoFoguete");
+    if (celebContainer) {
+      celebContainer.remove();
+    }
+
+    celebContainer = document.createElement("div");
+    celebContainer.id = "deCelebracaoFoguete";
+    celebContainer.innerHTML = `
+      <div class="de-celeb-toast">
+        <span class="de-celeb-icon">🚀</span>
+        <div class="de-celeb-text">
+          <b>Entrega Concluída!</b>
+          <small>Ritmo da House: missão cumprida com sucesso</small>
+        </div>
+      </div>
+      <div class="de-cohete-celeb" aria-hidden="true">
+        <svg viewBox="0 0 120 280" width="120" height="280">
+          <defs>
+            <linearGradient id="celeb-fuego-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="25%" stop-color="#fff176"/>
+              <stop offset="60%" stop-color="#ff9800"/>
+              <stop offset="100%" stop-color="#f44336" stop-opacity="0.85"/>
+            </linearGradient>
+            <linearGradient id="celeb-corpo-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#795fd2"/>
+              <stop offset="50%" stop-color="#9173eb"/>
+              <stop offset="100%" stop-color="#614ab8"/>
+            </linearGradient>
+            <filter id="celeb-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="8" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+          </defs>
+          <g class="de-celeb-flame">
+            <path d="M60 210 Q35 245 60 278 Q85 245 60 210 Z" fill="url(#celeb-fuego-grad)" filter="url(#celeb-glow)"/>
+            <path d="M60 212 Q45 238 60 262 Q75 238 60 212 Z" fill="#ffffff"/>
+          </g>
+          <path d="M30 150 L2 212 L30 195 Z" fill="#583ebd" stroke="#3d2a8a" stroke-width="1.5"/>
+          <path d="M90 150 L118 212 L90 195 Z" fill="#4d35a8" stroke="#3d2a8a" stroke-width="1.5"/>
+          <path d="M32 82 H88 V198 L60 204 L32 198 Z" fill="url(#celeb-corpo-grad)" stroke="#4d37a2" stroke-width="1.5"/>
+          <path d="M32 165 H88 V177 H32 Z" fill="#ebb76c"/>
+          <path d="M60 2 C44 30 34 56 32 82 H88 C86 56 76 30 60 2 Z" fill="#fcd34d" stroke="#f59e0b" stroke-width="1.5"/>
+          <path d="M32 198 L60 204 L88 198 L82 212 H38 Z" fill="#2d225a"/>
+          <circle cx="60" cy="120" r="18" fill="#ffffff" stroke="#ebb76c" stroke-width="3"/>
+          <circle cx="60" cy="120" r="13" fill="#614ab8"/>
+          <circle cx="56" cy="116" r="4" fill="#ffffff" opacity="0.8"/>
+        </svg>
+      </div>
+      <canvas class="de-lienzo-celeb"></canvas>
+    `;
+
+    document.body.appendChild(celebContainer);
+
+    const rocket = celebContainer.querySelector(".de-cohete-celeb");
+    const toast = celebContainer.querySelector(".de-celeb-toast");
+    const canvas = celebContainer.querySelector(".de-lienzo-celeb");
+    const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    rocket.classList.remove('is-launching');
-    void rocket.offsetWidth;
-    rocket.classList.add('is-launching');
+    requestAnimationFrame(() => {
+      toast.classList.add("is-visible");
+      rocket.classList.add("is-launching");
+    });
 
-    let cParts = [];
-    for (let k = 0; k < 140; k++) {
+    let parts = [];
+    for (let i = 0; i < 180; i++) {
       const angle = -Math.PI / 2 + (Math.random() - 0.5) * 2.8;
-      const speed = 250 + Math.random() * 600;
-      cParts.push({
-        x: window.innerWidth / 2,
-        y: window.innerHeight * 0.55,
+      const speed = 320 + Math.random() * 750;
+      parts.push({
+        x: window.innerWidth / 2 + (Math.random() - 0.5) * 80,
+        y: window.innerHeight * 0.75,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        size: 6 + Math.random() * 6,
+        size: 7 + Math.random() * 7,
         color: COLORES[Math.floor(Math.random() * COLORES.length)],
+        rot: Math.random() * 6.28,
+        vr: (Math.random() - 0.5) * 12,
         life: 0,
-        maxLife: 2.4 + Math.random() * 1.2
+        maxLife: 2.5 + Math.random() * 1.5
       });
     }
 
-    let cLast = performance.now();
-    function cLoop(now) {
-      const dt = Math.min(0.05, (now - cLast) / 1000);
-      cLast = now;
+    let lastTime = performance.now();
+    function animLoop(now) {
+      const dt = Math.min(0.05, (now - lastTime) / 1000);
+      lastTime = now;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = cParts.length - 1; i >= 0; i--) {
-        const p = cParts[i];
+
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i];
         p.life += dt;
-        if (p.life >= p.maxLife) { cParts.splice(i, 1); continue; }
-        p.vy += 700 * dt;
+        if (p.life >= p.maxLife || p.y > canvas.height + 50) {
+          parts.splice(i, 1);
+          continue;
+        }
+        p.vy += 800 * dt;
         p.x += p.vx * dt;
         p.y += p.vy * dt;
+        p.rot += p.vr * dt;
+
+        const progress = p.life / p.maxLife;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = Math.max(0, 1 - progress * progress);
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = Math.max(0, 1 - p.life / p.maxLife);
-        ctx.fillRect(p.x, p.y, p.size, p.size);
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
       }
-      if (cParts.length) requestAnimationFrame(cLoop);
-      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (parts.length > 0) {
+        requestAnimationFrame(animLoop);
+      } else {
+        setTimeout(() => {
+          if (celebContainer && celebContainer.parentNode) celebContainer.remove();
+        }, 600);
+      }
     }
-    requestAnimationFrame(cLoop);
+    requestAnimationFrame(animLoop);
+
+    setTimeout(() => {
+      if (celebContainer && celebContainer.parentNode) {
+        celebContainer.remove();
+      }
+    }, 3600);
   };
 
   window.abrirDespegue = function () {
     injetaModalDespegue();
-    const modal = document.getElementById('despegueModal');
+    const modal = document.getElementById("despegueModal");
     if (!modal) return;
 
     if (!window.despegueInstancia) {
-      const raiz = modal.querySelector('[data-despegue]');
+      const raiz = modal.querySelector("[data-despegue]");
       window.despegueInstancia = Despegue(raiz);
     } else {
       window.despegueInstancia.reinicia();
@@ -732,36 +837,35 @@
 
     carregarDadosOperacao();
     modal.showModal();
-    const nomeInput = modal.querySelector('[data-nombre]');
+    const nomeInput = modal.querySelector("[data-nombre]");
     if (nomeInput) {
-      nomeInput.value = '';
+      nomeInput.value = "";
       setTimeout(() => nomeInput.focus(), 80);
     }
   };
 
   // Intercepta qualquer botão ou gatilho de criação de tarefa no app
-  document.addEventListener('click', function (e) {
-    const btn = e.target.closest('button, a');
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest("button, a");
     if (!btn) return;
 
-    const txt = (btn.textContent || '').trim().toLowerCase();
-    const aria = (btn.getAttribute('aria-label') || '').toLowerCase();
-    const cls = btn.className || '';
+    const txt = (btn.textContent || "").trim().toLowerCase();
+    const aria = (btn.getAttribute("aria-label") || "").toLowerCase();
+    const cls = btn.className || "";
 
-    const isTaskCreation = txt.includes('nova tarefa') ||
-                           txt.includes('criar tarefa') ||
-                           txt.includes('criar primeira tarefa') ||
-                           txt.includes('adicionar tarefa') ||
-                           aria.includes('criar tarefa') ||
-                           aria.includes('nova tarefa') ||
-                           (typeof cls === 'string' && (cls.includes('mobile-create') || cls.includes('column-add')));
+    const isTaskCreation = txt.includes("nova tarefa") ||
+                           txt.includes("criar tarefa") ||
+                           txt.includes("criar primeira tarefa") ||
+                           txt.includes("adicionar tarefa") ||
+                           aria.includes("criar tarefa") ||
+                           aria.includes("nova tarefa") ||
+                           (typeof cls === "string" && (cls.includes("mobile-create") || cls.includes("column-add")));
 
-    if (isTaskCreation && !btn.closest('#despegueModal')) {
+    if (isTaskCreation && !btn.closest("#despegueModal")) {
       e.preventDefault();
       e.stopPropagation();
 
-      // Fecha eventuais modais nativas
-      const openDialog = document.querySelector('dialog.modal:not(#despegueModal)');
+      const openDialog = document.querySelector("dialog.modal:not(#despegueModal)");
       if (openDialog && openDialog.open) openDialog.close();
 
       window.abrirDespegue();
@@ -770,11 +874,11 @@
 
   // Monitora aberturas de modal nativas do React para criação de tarefas
   const observer = new MutationObserver(() => {
-    const reactModal = document.querySelector('dialog.modal:not(#despegueModal)');
+    const reactModal = document.querySelector("dialog.modal:not(#despegueModal)");
     if (reactModal && reactModal.open) {
-      const heading = reactModal.querySelector('.modal-heading');
+      const heading = reactModal.querySelector(".modal-heading");
       if (heading) {
-        const isCreating = heading.textContent.includes('DO COMBINADO À AÇÃO') || heading.textContent.includes('Qual é o próximo passo?');
+        const isCreating = heading.textContent.includes("DO COMBINADO À AÇÃO") || heading.textContent.includes("Qual é o próximo passo?");
         if (isCreating) {
           reactModal.close();
           window.abrirDespegue();
@@ -782,40 +886,34 @@
       }
     }
     decorarKanbanCards();
-      sincronizarCarrosselKanban();
+    sincronizarCarrosselKanban();
   });
 
   // ══════════════════════════════════════════════════════════════════════
-  // MODERN KANBAN & TOUCH DRAG-AND-DROP CONTROLLER
+  // MODERN KANBAN & INSTANT ACTION ENGINE
+  // Ações Diretas: Iniciar / Pronto / Reabrir com animação suave entre colunas
   // ══════════════════════════════════════════════════════════════════════
-  const STAGES = ['todo', 'doing', 'done'];
-  const STAGE_LABELS = {
-    todo: { next: 'doing', label: 'Em execução →' },
-    doing: { next: 'done', label: 'Concluir entrega ✓' },
-    done: { next: 'todo', label: 'Reabrir ↺' }
-  };
 
-  
   // Sincronização suave entre as abas superiores e o carrossel Kanban
   function sincronizarCarrosselKanban() {
-    const kanban = document.querySelector('.kanban');
-    const tabs = document.querySelectorAll('.mobile-status button');
-    const columns = document.querySelectorAll('.column');
+    const kanban = document.querySelector(".kanban");
+    const tabs = document.querySelectorAll(".mobile-status button");
+    const columns = document.querySelectorAll(".column");
     if (!kanban || !tabs.length || !columns.length) return;
 
     tabs.forEach((tab, idx) => {
-      tab.addEventListener('click', () => {
+      tab.addEventListener("click", () => {
         const targetCol = columns[idx];
         if (targetCol) {
-          targetCol.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
+          targetCol.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+          tabs.forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
         }
       });
     });
 
     let scrollTimer = null;
-    kanban.addEventListener('scroll', () => {
+    kanban.addEventListener("scroll", () => {
       if (scrollTimer) clearTimeout(scrollTimer);
       scrollTimer = setTimeout(() => {
         const kanbanCenter = kanban.getBoundingClientRect().left + kanban.offsetWidth / 2;
@@ -829,184 +927,129 @@
             closestIdx = idx;
           }
         });
-        tabs.forEach((t, i) => t.classList.toggle('active', i === closestIdx));
+        tabs.forEach((t, i) => t.classList.toggle("active", i === closestIdx));
       }, 50);
     }, { passive: true });
   }
 
   function decorarKanbanCards() {
-    const cards = document.querySelectorAll('.task-card:not([data-enhanced])');
+    const cards = document.querySelectorAll(".task-card");
     cards.forEach(card => {
-      card.setAttribute('data-enhanced', 'true');
+      const select = card.querySelector(".status-select");
+      const taskId = card.getAttribute("data-task-id");
+      const currentStatus = card.getAttribute("data-task-status") || (select ? select.value : "todo");
 
-      // Botão de avanço rápido de etapa se ainda não tiver
-      const select = card.querySelector('.status-select');
-      if (select && !card.querySelector('.task-stage-advance')) {
-        const currentStatus = select.value || 'todo';
-        const info = STAGE_LABELS[currentStatus];
-        if (info) {
-          const advBtn = document.createElement('button');
-          advBtn.type = 'button';
-          advBtn.className = 'task-stage-advance';
-          advBtn.innerHTML = info.label;
-          advBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            select.value = info.next;
-            select.dispatchEvent(new Event('change', { bubbles: true }));
-          });
-          card.querySelector('.card-bottom')?.appendChild(advBtn);
+      const existingBtn = card.querySelector(".task-action-btn");
+      if (existingBtn && existingBtn.dataset.currentStatus === currentStatus) {
+        return;
+      }
+      if (existingBtn) existingBtn.remove();
+
+      let btnLabel = "";
+      let btnClass = "";
+      let nextStatus = "";
+      let btnIcon = "";
+
+      if (currentStatus === "todo") {
+        btnLabel = "Iniciar";
+        btnClass = "iniciar";
+        nextStatus = "doing";
+        btnIcon = `<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+      } else if (currentStatus === "doing") {
+        btnLabel = "Pronto";
+        btnClass = "pronto";
+        nextStatus = "done";
+        btnIcon = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+      } else if (currentStatus === "done") {
+        btnLabel = "Reabrir";
+        btnClass = "reabrir";
+        nextStatus = "todo";
+        btnIcon = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`;
+      } else {
+        return;
+      }
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `task-action-btn ${btnClass}`;
+      btn.dataset.currentStatus = currentStatus;
+      btn.dataset.nextStatus = nextStatus;
+      btn.innerHTML = `${btnIcon}<span>${btnLabel}</span>`;
+
+      btn.addEventListener("click", async (ev) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        if (btn.disabled || card.classList.contains("task-card-exit")) return;
+        btn.disabled = true;
+
+        // 1. Inicia animação suave de saída da coluna atual
+        card.classList.add("task-card-exit");
+
+        // 2. Se a tarefa foi dada como pronta, lança o foguete de celebração!
+        if (nextStatus === "done" && window.lancarFogueteCelebracao) {
+          window.lancarFogueteCelebracao();
         }
+
+        // 3. Aguarda o término da transição de sumiço (220ms)
+        await new Promise(res => setTimeout(res, 220));
+
+        // 4. Atualiza o status da tarefa no estado do aplicativo
+        let atualizado = false;
+        if (typeof window.__HOUSE_MOVE_TASK__ === "function") {
+          let taskObj = null;
+          if (window.__HOUSE_TASKS__ && taskId) {
+            taskObj = window.__HOUSE_TASKS__.find(t => t.id === taskId);
+          }
+          if (!taskObj && typeof window.__HOUSE_GET_DATA__ === "function") {
+            try {
+              const d = await window.__HOUSE_GET_DATA__();
+              if (d && d.tasks && taskId) taskObj = d.tasks.find(t => t.id === taskId);
+            } catch (_) {}
+          }
+          if (taskObj) {
+            try {
+              await window.__HOUSE_MOVE_TASK__(taskObj, nextStatus);
+              atualizado = true;
+            } catch (err) {
+              console.warn("[HOUSE TASKS] Fallback ao mover tarefa:", err);
+            }
+          }
+        }
+
+        // Fallback: Dispara evento no select do React
+        if (!atualizado && select) {
+          const tracker = select._valueTracker;
+          if (tracker) tracker.setValue(nextStatus);
+          const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value")?.set;
+          if (setter) setter.call(select, nextStatus);
+          else select.value = nextStatus;
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        // 5. No celular (carrossel), desliza suavemente até o Kanban de destino
+        if (window.innerWidth <= 768) {
+          const targetIdx = nextStatus === "todo" ? 0 : (nextStatus === "doing" ? 1 : 2);
+          const cols = document.querySelectorAll(".column");
+          const tabs = document.querySelectorAll(".mobile-status button");
+          if (cols[targetIdx]) {
+            setTimeout(() => {
+              cols[targetIdx].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+              tabs.forEach((t, i) => t.classList.toggle("active", i === targetIdx));
+            }, 80);
+          }
+        }
+      });
+
+      const bottom = card.querySelector(".card-bottom");
+      if (bottom) {
+        bottom.appendChild(btn);
       }
     });
   }
 
-  // Touch Drag and Drop para celulares (iOS / Android)
-  let touchDragState = null;
-
-  document.addEventListener('touchstart', function (e) {
-    const card = e.target.closest('.task-card');
-    if (!card || e.target.closest('button, select, input, textarea, a')) return;
-
-    const touch = e.touches[0];
-    touchDragState = {
-      card,
-      startX: touch.clientX,
-      startY: touch.clientY,
-      offsetX: touch.clientX - card.getBoundingClientRect().left,
-      offsetY: touch.clientY - card.getBoundingClientRect().top,
-      isDragging: false,
-      ghost: null,
-      timer: setTimeout(() => {
-        if (touchDragState) startTouchDrag();
-      }, 180)
-    };
-  }, { passive: false });
-
-  document.addEventListener('touchmove', function (e) {
-    if (!touchDragState) return;
-    const touch = e.touches[0];
-    const dx = Math.abs(touch.clientX - touchDragState.startX);
-    const dy = Math.abs(touch.clientY - touchDragState.startY);
-
-    if (!touchDragState.isDragging && (dx > 8 || dy > 8)) {
-      if (touchDragState.timer) clearTimeout(touchDragState.timer);
-      startTouchDrag();
-    }
-
-    if (touchDragState.isDragging && touchDragState.ghost) {
-      e.preventDefault();
-      const ghost = touchDragState.ghost;
-      ghost.style.left = (touch.clientX - touchDragState.offsetX) + 'px';
-      ghost.style.top = (touch.clientY - touchDragState.offsetY) + 'px';
-
-      // Detecta coluna ou aba sob o dedo
-      document.querySelectorAll('.column.is-dragover').forEach(c => c.classList.remove('is-dragover'));
-      document.querySelectorAll('.mobile-status button.is-tab-dragover').forEach(b => b.classList.remove('is-tab-dragover'));
-
-      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (elem) {
-        const col = elem.closest('.column');
-        if (col) col.classList.add('is-dragover');
-        const tabBtn = elem.closest('.mobile-status button');
-        if (tabBtn) tabBtn.classList.add('is-tab-dragover');
-      }
-    }
-  }, { passive: false });
-
-  document.addEventListener('touchend', function (e) {
-    if (!touchDragState) return;
-    if (touchDragState.timer) clearTimeout(touchDragState.timer);
-
-    if (touchDragState.isDragging) {
-      const touch = e.changedTouches[0];
-      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-      let targetStatus = null;
-
-      if (elem) {
-        const col = elem.closest('.column');
-        if (col) {
-          const colHead = col.querySelector('.column-head h3');
-          const title = colHead ? colHead.textContent.toLowerCase() : '';
-          if (title.includes('fazer')) targetStatus = 'todo';
-          else if (title.includes('andamento')) targetStatus = 'doing';
-          else if (title.includes('aprovar')) targetStatus = 'review';
-          else if (title.includes('conclu')) targetStatus = 'done';
-        }
-
-        const tabBtn = elem.closest('.mobile-status button');
-        if (tabBtn && !targetStatus) {
-          const txt = tabBtn.textContent.toLowerCase();
-          if (txt.includes('fazer')) targetStatus = 'todo';
-          else if (txt.includes('andamento')) targetStatus = 'doing';
-          else if (txt.includes('aprovar')) targetStatus = 'review';
-          else if (txt.includes('conclu')) targetStatus = 'done';
-        }
-      }
-
-      if (targetStatus && touchDragState.card) {
-        const select = touchDragState.card.querySelector('.status-select');
-        if (select && select.value !== targetStatus) {
-          select.value = targetStatus;
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      }
-
-      // Limpa efeitos
-      if (touchDragState.ghost) touchDragState.ghost.remove();
-      touchDragState.card.classList.remove('is-card-dragging');
-      document.querySelectorAll('.column.is-dragover').forEach(c => c.classList.remove('is-dragover'));
-      document.querySelectorAll('.mobile-status button.is-tab-dragover').forEach(b => b.classList.remove('is-tab-dragover'));
-    }
-
-    touchDragState = null;
-  });
-
-  function startTouchDrag() {
-    if (!touchDragState || touchDragState.isDragging) return;
-    touchDragState.isDragging = true;
-    const card = touchDragState.card;
-    card.classList.add('is-card-dragging');
-
-    const ghost = card.cloneNode(true);
-    ghost.className = 'touch-drag-ghost';
-    const rect = card.getBoundingClientRect();
-    ghost.style.width = rect.width + 'px';
-    ghost.style.left = rect.left + 'px';
-    ghost.style.top = rect.top + 'px';
-    document.body.appendChild(ghost);
-    touchDragState.ghost = ghost;
-
-    if (navigator.vibrate) {
-      try { navigator.vibrate(25); } catch {}
-    }
-  }
-
-  // Drag over visual feedback para Desktop
-  document.addEventListener('dragover', function (e) {
-    const col = e.target.closest('.column');
-    if (col) {
-      e.preventDefault();
-      document.querySelectorAll('.column.is-dragover').forEach(c => {
-        if (c !== col) c.classList.remove('is-dragover');
-      });
-      col.classList.add('is-dragover');
-    }
-  });
-
-  document.addEventListener('dragleave', function (e) {
-    const col = e.target.closest('.column');
-    if (col && !col.contains(e.relatedTarget)) {
-      col.classList.remove('is-dragover');
-    }
-  });
-
-  document.addEventListener('drop', function (e) {
-    document.querySelectorAll('.column.is-dragover').forEach(c => c.classList.remove('is-dragover'));
-  });
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
       injetaModalDespegue();
       decorarKanbanCards();
       sincronizarCarrosselKanban();
@@ -1015,7 +1058,7 @@
   } else {
     injetaModalDespegue();
     decorarKanbanCards();
-      sincronizarCarrosselKanban();
+    sincronizarCarrosselKanban();
     observer.observe(document.body, { childList: true, subtree: true });
   }
 })();

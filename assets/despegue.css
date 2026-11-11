@@ -1016,28 +1016,119 @@ dialog#despegueModal::backdrop {
   color: #614ab8 !important;
 }
 
-/* Botão de avanço rápido de etapa */
-.task-stage-advance {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(121, 95, 210, 0.09);
-  color: #614ab8;
-  border: 1px solid rgba(121, 95, 210, 0.18);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 8px;
+/* ── Botões de Ação Direta no Card (Iniciar / Pronto / Reabrir) ───── */
+.task-action-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: 6px 14px !important;
+  font-family: 'DM Sans', -apple-system, sans-serif !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  flex: none !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
-.task-stage-advance:hover {
-  background: #795fd2;
-  color: #ffffff;
-  border-color: #795fd2;
-  transform: translateY(-1px);
+.task-action-btn:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.03) !important;
+}
+
+.task-action-btn:active:not(:disabled) {
+  transform: scale(0.96) !important;
+}
+
+.task-action-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: wait !important;
+}
+
+/* Botão "▶ Iniciar" (A fazer -> Em execução) */
+.task-action-btn.iniciar {
+  background: linear-gradient(135deg, #795fd2, #5a3ebd) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(121, 95, 210, 0.32) !important;
+}
+
+.task-action-btn.iniciar:hover:not(:disabled) {
+  box-shadow: 0 6px 18px rgba(121, 95, 210, 0.45) !important;
+}
+
+/* Botão "✓ Pronto" (Em execução -> Finalizado) */
+.task-action-btn.pronto {
+  background: linear-gradient(135deg, #3c8777, #246556) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(60, 135, 119, 0.38) !important;
+}
+
+.task-action-btn.pronto:hover:not(:disabled) {
+  background: linear-gradient(135deg, #449785, #297262) !important;
+  box-shadow: 0 6px 20px rgba(60, 135, 119, 0.5) !important;
+}
+
+/* Botão "↺ Reabrir" (Finalizado -> A fazer) */
+.task-action-btn.reabrir {
+  background: #f0ebfc !important;
+  color: #614ab8 !important;
+  border: 1px solid rgba(121, 95, 210, 0.22) !important;
+  box-shadow: 0 2px 6px rgba(48, 47, 80, 0.04) !important;
+}
+
+.task-action-btn.reabrir:hover:not(:disabled) {
+  background: #e4dafa !important;
+  color: #4832a0 !important;
+  border-color: #795fd2 !important;
+}
+
+/* ── Animações de Saída e Entrada dos Cards entre Colunas ───── */
+.task-card.task-card-exit {
+  animation: taskCardExit 0.24s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+}
+
+@keyframes taskCardExit {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+    max-height: 280px;
+    margin-bottom: 14px;
+  }
+  50% {
+    opacity: 0.25;
+    transform: scale(0.92) translateX(24px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.85) translateX(44px);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+  }
+}
+
+.task-card {
+  animation: taskCardEnter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both !important;
+}
+
+@keyframes taskCardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* ── Colunas do Kanban Moderno ───────────────────────────────────────── */
@@ -1361,39 +1452,122 @@ textarea {
 
 /* ── Foguete de Celebração Global (window.lancarFogueteCelebracao) ───── */
 #deCelebracaoFoguete {
-  position: fixed;
-  inset: 0;
-  z-index: 100000000;
-  pointer-events: none;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
 }
 
+.de-celeb-toast {
+  position: fixed !important;
+  top: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) translateY(-100px) scale(0.9) !important;
+  background: rgba(30, 24, 60, 0.94) !important;
+  color: #ffffff !important;
+  padding: 12px 22px !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  box-shadow: 0 16px 36px -6px rgba(18, 14, 38, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  opacity: 0 !important;
+  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  z-index: 2147483647 !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+.de-celeb-toast.is-visible {
+  opacity: 1 !important;
+  transform: translateX(-50%) translateY(0) scale(1) !important;
+}
+
+.de-celeb-icon {
+  font-size: 1.5rem !important;
+  line-height: 1 !important;
+  animation: celebBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite alternate !important;
+}
+
+@keyframes celebBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-4px) scale(1.1); }
+}
+
+.de-celeb-text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1px !important;
+}
+
+.de-celeb-text b {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.94rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+
+.de-celeb-text small {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 0.78rem !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* O Foguete de Celebração */
 .de-cohete-celeb {
-  position: fixed;
-  left: 50%;
-  bottom: -220px;
-  width: 90px;
-  height: 202px;
-  margin-left: -45px;
-  pointer-events: none;
-  filter: drop-shadow(0 18px 20px rgba(48, 47, 80, 0.45));
+  position: fixed !important;
+  left: 50% !important;
+  bottom: -290px !important;
+  width: 120px !important;
+  height: 280px !important;
+  margin-left: -60px !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5)) !important;
+  will-change: transform, opacity !important;
 }
 
 .de-cohete-celeb.is-launching {
-  animation: de-celeb-sobe 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: deCelebFogueteVoo 2.4s cubic-bezier(0.2, 0.8, 0.25, 1) forwards !important;
 }
 
-@keyframes de-celeb-sobe {
-  0% { transform: translateY(0) scale(0.85); }
-  30% { transform: translateY(-300px) scale(1.1) rotate(2deg); }
-  100% { transform: translateY(-1600px) scale(1.3) rotate(-1deg); }
+@keyframes deCelebFogueteVoo {
+  0% {
+    transform: translateY(0) scale(0.9) rotate(0deg);
+  }
+  15% {
+    transform: translateY(-80px) scale(1.05) rotate(1deg);
+  }
+  35% {
+    transform: translateY(-380px) scale(1.15) rotate(-1.5deg);
+  }
+  70% {
+    transform: translateY(-1100px) scale(1.25) rotate(1deg);
+  }
+  100% {
+    transform: translateY(-2200px) scale(1.35) rotate(0deg);
+  }
+}
+
+.de-celeb-flame {
+  animation: celebFlamePulse 0.12s ease-in-out infinite alternate !important;
+  transform-origin: 60px 210px !important;
+}
+
+@keyframes celebFlamePulse {
+  from { transform: scale(0.95, 0.9); }
+  to { transform: scale(1.08, 1.18); }
 }
 
 .de-lienzo-celeb {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
 }
 
 /* ── 3 Colunas Kanban Lado a Lado ───────────────────────────────────── */
@@ -1585,10 +1759,12 @@ textarea {
     padding: 2px 7px !important;
   }
 
-  /* Rodapé do Cartão sem Conflito de Botões */
+  /* Rodapé do Cartão Mobile sem Conflito de Botões */
   .task-card .card-bottom {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
     gap: 8px !important;
     margin-top: 10px !important;
     padding-top: 10px !important;
@@ -1601,33 +1777,11 @@ textarea {
     display: flex !important;
     align-items: center !important;
     gap: 6px !important;
+    flex: 1 !important;
+    min-width: 0 !important;
   }
 
   .task-card .status-select {
-    display: none !important; /* Oculta o select duplicado para não colidir com o botão de avanço */
-  }
-
-  .task-stage-advance {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 6px !important;
-    width: 100% !important;
-    background: rgba(121, 95, 210, 0.08) !important;
-    color: #614ab8 !important;
-    border: 1px solid rgba(121, 95, 210, 0.18) !important;
-    border-radius: 10px !important;
-    padding: 7px 12px !important;
-    font-size: 0.76rem !important;
-    font-weight: 650 !important;
-    cursor: pointer !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  .task-stage-advance:hover,
-  .task-stage-advance:active {
-    background: #795fd2 !important;
-    color: #ffffff !important;
+    display: none !important;
   }
 }
