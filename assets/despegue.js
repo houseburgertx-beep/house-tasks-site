@@ -1,31 +1,13 @@
 /**
- * HOUSE TASKS · DESPEGUE
- * Criação de tarefas com barra de ativação, física de mola e foguete que decola.
+ * HOUSE TASKS · DESPEGUE & MODERN KANBAN ENGINE
+ * Foguete de origami com física de decolagem, confetes e fumaça física.
+ * Drag-and-drop touch no mobile e mouse no desktop para o Kanban.
  * Totalmente integrado à identidade do Grupo House190.
  */
 (function () {
   'use strict';
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Resorte com solução de equação diferencial a 240 fps
-  function muelle(k, c) {
-    const pts = [0];
-    let x = 0, v = 0, t = 0;
-    while (t < 3) {
-      v += (k * (1 - x) - c * v) / 240;
-      x += v / 240;
-      t += 1 / 240;
-      pts.push(x);
-      if (t > .15 && Math.abs(1 - x) < .001 && Math.abs(v) < .01) break;
-    }
-    const out = [];
-    for (let i = 0; i <= 40; i++) {
-      out.push(pts[Math.round(i / 40 * (pts.length - 1))].toFixed(4));
-    }
-    out[40] = '1';
-    return { ease: 'linear(' + out.join(', ') + ')', ms: Math.round(t * 1000) };
-  }
 
   // Gerador pseudo-aleatório com semente (confeti consistente)
   function mulberry32(s) {
@@ -37,7 +19,7 @@
     };
   }
 
-  // Paleta oficial HouseBurger / Grupo House190 para os confetes
+  // Paleta oficial HouseBurger / Grupo House190
   const COLORES = ['#795fd2', '#9d83e8', '#ebb76c', '#3c8777', '#e24a4a', '#614ab8', '#f0ebfc', '#ffffff'];
 
   const SUB_PT = [
@@ -185,7 +167,7 @@
                           </div>
                         </label>
                       </div>
-                      <button class="de-accion" type="button" data-hecho><span data-txt>Avançar para checklist</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                      <button class="de-accion" type="button" data-hecho><span data-txt>Avançar para resumo</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
                     </div></div>
                   </li>
 
@@ -238,7 +220,7 @@
 
   // Motor Despegue com física, partículas e decolagem
   function Despegue(raiz, opcoes) {
-    const o = Object.assign({ semilla: 7, reinicio: 2600, alCompletar: null, alDespegar: null }, opcoes);
+    const o = Object.assign({ semilla: 7, reinicio: 2800, alCompletar: null, alDespegar: null }, opcoes);
     const azar = mulberry32(o.semilla);
     const $ = s => raiz.querySelector(s), $$ = s => Array.from(raiz.querySelectorAll(s));
     const tarjeta = $('[data-tarjeta]'), barra = $('[data-barra]'), barraCaja = $('[data-barra-caja]'), nEl = $('[data-n]'), sub = $('[data-sub]');
@@ -246,20 +228,7 @@
     const pasos = $$('[data-paso]'), TOTAL = pasos.length;
 
     let hechos = 0, estado = 'pasos', relojes = [], parts = [], raf = 0, ultimo = null;
-
-    const SALTO = muelle(140, 13);
-    raiz.style.setProperty('--de-muelle', SALTO.ease);
-    raiz.style.setProperty('--de-muelle-ms', SALTO.ms + 'ms');
     const luego = (f, ms) => { const id = setTimeout(f, ms); relojes.push(id); return id; };
-    
-    const anima = (e, kf, ms, ease, extra) => {
-      if (reduce || !e || !e.animate) return null;
-      try {
-        return e.animate(kf, Object.assign({ duration: ms, easing: ease || 'ease' }, extra));
-      } catch (err) {
-        return null;
-      }
-    };
 
     $('.de-cuenta-de').textContent = '/ ' + TOTAL;
     barraCaja.setAttribute('aria-valuemax', TOTAL);
@@ -269,22 +238,15 @@
       barraCaja.setAttribute('aria-valuenow', hechos);
       if (String(hechos) !== nEl.textContent) {
         nEl.textContent = hechos;
-        if (anim) anima(nEl, [{ transform: 'translateY(55%)', opacity: 0 }, { transform: 'none', opacity: 1 }], 520, SALTO.ease);
       }
       const txt = hechos >= TOTAL ? SUB_PT[SUB_PT.length - 1] : (TOTAL === 4 ? SUB_PT[hechos] : (hechos === 0 ? 'Comece pelo primeiro passo' : 'Faltam ' + (TOTAL - hechos) + ' passos'));
-      const viejo = sub.firstElementChild;
-      if (viejo && viejo.textContent === txt) return;
-      if (viejo) {
-        const nuevo = document.createElement('span');
-        nuevo.textContent = txt;
-        sub.appendChild(nuevo);
-        const a = anima(viejo, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-8px)' }], 220, 'ease-in', { fill: 'forwards' });
-        if (a) {
-          a.onfinish = () => viejo.remove();
-          anima(nuevo, [{ opacity: 0, transform: 'translateY(9px)' }, { opacity: 1, transform: 'none' }], 420, 'cubic-bezier(.22, 1, .36, 1)', { delay: 80, fill: 'backwards' });
-        } else {
-          viejo.remove();
-        }
+      const velho = sub.firstElementChild;
+      if (velho && velho.textContent === txt) return;
+      if (velho) {
+        const novo = document.createElement('span');
+        novo.textContent = txt;
+        sub.appendChild(novo);
+        setTimeout(() => velho.remove(), 200);
       }
     }
 
@@ -327,7 +289,7 @@
 
       if (hechos >= TOTAL) {
         activa(-1);
-        luego(despega, 400);
+        luego(despega, 300);
       } else {
         activa(hechos);
         const foco = pasos[hechos].querySelector('input, select, button');
@@ -335,10 +297,11 @@
       }
     }
 
-    pasos.forEach((p, i) => p.querySelector('[data-hecho]').addEventListener('click', () => {
+    pasos.forEach((p, i) => p.querySelector('[data-hecho]').addEventListener('click', (ev) => {
       if (i === hechos) {
         if (i === 3) {
-          // Salva os dados na API/React e dispara a decolagem do foguete imediatamente
+          // Desabilita para evitar clique duplo e lança imediatamente
+          ev.target.disabled = true;
           salvarTarefaNaApi();
           completa();
         } else {
@@ -362,21 +325,21 @@
 
     function confeti(x, y, n) {
       for (let k = 0; k < n; k++) {
-        const a = -Math.PI / 2 + (azar() - .5) * 2.5, v = 260 + azar() * 640, forma = azar();
+        const a = -Math.PI / 2 + (azar() - .5) * 2.6, v = 280 + azar() * 680, forma = azar();
         parts.push({
           t: 'c', x: x + (azar() - .5) * 120, y: y + (azar() - .5) * 30,
           vx: Math.cos(a) * v, vy: Math.sin(a) * v, rot: azar() * 6.28, vr: (azar() - .5) * 14,
-          w: 6 + azar() * 7, h: forma < .55 ? 3 + azar() * 3 : (forma < .8 ? 6 + azar() * 6 : 3 + azar() * 3),
-          redondo: forma > .8, col: COLORES[Math.floor(azar() * COLORES.length)], vida: 0, max: 2.6 + azar() * 1.6, fase: azar() * 6.28
+          w: 7 + azar() * 8, h: forma < .55 ? 4 + azar() * 4 : (forma < .8 ? 7 + azar() * 7 : 4 + azar() * 4),
+          redondo: forma > .8, col: COLORES[Math.floor(azar() * COLORES.length)], vida: 0, max: 2.8 + azar() * 1.6, fase: azar() * 6.28
         });
       }
     }
 
     function humo(x, y, escala) {
       parts.push({
-        t: 'h', x: x + (azar() - .5) * 18, y,
-        vx: (azar() - .5) * 60, vy: 40 + azar() * 70,
-        r: (10 + azar() * 10) * escala, vida: 0, max: .9 + azar() * .6
+        t: 'h', x: x + (azar() - .5) * 20, y,
+        vx: (azar() - .5) * 70, vy: 45 + azar() * 80,
+        r: (12 + azar() * 12) * escala, vida: 0, max: 1.0 + azar() * .7
       });
     }
 
@@ -385,7 +348,7 @@
       for (let i = parts.length - 1; i >= 0; i--) {
         const p = parts[i];
         p.vida += dt;
-        if (p.vida >= p.max || p.y > H + 40) { parts.splice(i, 1); continue; }
+        if (p.vida >= p.max || p.y > H + 50) { parts.splice(i, 1); continue; }
         const u = p.vida / p.max;
         if (p.t === 'h') {
           p.x += p.vx * dt;
@@ -395,7 +358,7 @@
           g.globalAlpha = (1 - u) * (1 - u) * .85;
           g.fillStyle = '#ffffff';
           g.shadowColor = 'rgba(121, 95, 210, .35)';
-          g.shadowBlur = 10;
+          g.shadowBlur = 12;
           g.beginPath();
           g.arc(p.x, p.y, r, 0, 6.2832);
           g.fill();
@@ -404,7 +367,7 @@
           p.vy += 900 * dt;
           p.vx *= Math.pow(.3, dt);
           p.vy *= Math.pow(.55, dt);
-          p.x += (p.vx + Math.sin(p.vida * 4 + p.fase) * 38) * dt;
+          p.x += (p.vx + Math.sin(p.vida * 4 + p.fase) * 40) * dt;
           p.y += p.vy * dt;
           p.rot += p.vr * dt;
           g.globalAlpha = u > .78 ? (1 - u) / .22 : 1;
@@ -444,8 +407,8 @@
       return [r.left + r.width / 2, r.top + r.height * .97];
     };
 
-    function poseCohete(y, rot, esc) {
-      cohete.style.transform = 'translate3d(0,' + y.toFixed(1) + 'px,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + esc.toFixed(3) + ')';
+    function poseCohete(x, y, rot, esc) {
+      cohete.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + esc.toFixed(3) + ')';
     }
 
     function volando(dt) {
@@ -453,33 +416,41 @@
       const v = vuelo;
       v.t += dt;
       if (v.fase === 'tiembla') {
-        const k = v.t / v.dura, a = Math.min(1, k * 1.6);
-        poseCohete(Math.sin(v.t * 70) * 1.6 * a + 4 * Math.min(1, k * 3), Math.sin(v.t * 53) * 1.8 * a, 1 - .02 * a);
-        if (((v.t * 60) | 0) % 3 === 0 && ((v.t * 60) | 0) !== v.ult) {
+        const k = Math.min(1, v.t / v.dura);
+        const shakeX = Math.sin(v.t * 80) * (2 + k * 2);
+        const shakeRot = Math.sin(v.t * 60) * (1.2 + k * 1.5);
+        poseCohete(shakeX, 0, shakeRot, 1);
+
+        if (((v.t * 60) | 0) % 2 === 0 && ((v.t * 60) | 0) !== v.ult) {
           v.ult = (v.t * 60) | 0;
           const [bx, by] = base();
-          humo(bx, by, .7);
+          humo(bx, by, .85);
         }
+
         if (v.t >= v.dura) {
           v.fase = 'sube';
           v.t = 0;
-          v.v = -60;
+          v.v = -120;
           v.y = 0;
           const [bx, by] = base();
-          confeti(bx, by - 140, 160);
+          confeti(bx, by - 140, 180);
           onDespegue();
         }
       } else if (v.fase === 'sube') {
-        v.v -= 2500 * dt;
+        // Aceleração potente até sair completamente do topo da tela
+        v.v -= 3400 * dt;
         v.y += v.v * dt;
-        poseCohete(v.y, Math.sin(v.t * 9) * .8 * Math.min(1, v.t * 2), 1 + Math.min(.15, v.t * .1));
+        const tilt = Math.sin(v.t * 8) * 1.2;
+        poseCohete(0, v.y, tilt, 1 + Math.min(.2, v.t * .15));
+
         v.acum += dt;
-        while (v.acum > .016) {
-          v.acum -= .016;
+        while (v.acum > .012) {
+          v.acum -= .012;
           const [bx, by] = base();
-          humo(bx, by + 4, .9 + v.t * .6);
+          humo(bx, by + 6, 1.1 + v.t * .9);
         }
-        if (v.y < -(window.innerHeight + 500)) {
+
+        if (v.y < -(window.innerHeight + 600)) {
           vuelo = null;
           cohete.style.opacity = '0';
           cohete.classList.remove('is-fuego');
@@ -505,20 +476,29 @@
       estado = 'despega';
       tarjeta.classList.add('is-despega');
       if (reduce) { onDespegue(); estado = 'final'; return; }
-      
-      cohete.style.opacity = '1';
-      poseCohete(0, 0, 1);
-      anima(cohete, [
-        { opacity: 0, transform: 'translate3d(0, 40px, 0) scale(0.6)' },
-        { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' }
-      ], SALTO.ms + 150, SALTO.ease);
 
+      // Revela o foguete
+      cohete.style.opacity = '1';
+      poseCohete(0, 0, 0, 1);
+
+      // Inicia fogo e vibração
       luego(() => {
         cohete.classList.add('is-fuego');
-        vuelo = { fase: 'tiembla', t: 0, dura: .7, y: 0, v: 0, acum: 0, ult: -1 };
-        poseCohete(0, 0, 1);
+        vuelo = { fase: 'tiembla', t: 0, dura: .6, y: 0, v: 0, acum: 0, ult: -1 };
         enciende();
-      }, 420);
+      }, 250);
+
+      // Failsafe de lançamento garantido
+      luego(() => {
+        if (vuelo && vuelo.fase === 'tiembla') {
+          vuelo.fase = 'sube';
+          vuelo.t = 0;
+          vuelo.v = -100;
+          const [bx, by] = base();
+          confeti(bx, by - 140, 180);
+          onDespegue();
+        }
+      }, 950);
     }
 
     function reinicia() {
@@ -567,9 +547,7 @@
       if (typeof window.__HOUSE_GET_DATA__ === 'function') {
         try {
           data = await window.__HOUSE_GET_DATA__();
-        } catch (err) {
-          console.warn('[HOUSE TASKS] Fallback ao carregar dados operacionais:', err);
-        }
+        } catch (err) {}
       }
 
       if (!data) {
@@ -596,7 +574,7 @@
         }
       }
     } catch (e) {
-      console.warn('[HOUSE TASKS] Erro ao carregar dados para o Despegue:', e);
+      console.warn('[HOUSE TASKS] Erro ao carregar dados operacionais:', e);
     }
   }
 
@@ -633,11 +611,10 @@
       if (typeof window.__HOUSE_SAVE_TASK__ === 'function') {
         try {
           await window.__HOUSE_SAVE_TASK__(payload);
-          console.log('[HOUSE TASKS] Tarefa gravada no React com sucesso.');
           window.dispatchEvent(new CustomEvent('house:refresh'));
           return;
         } catch (errSave) {
-          console.warn('[HOUSE TASKS] Falha ao salvar via __HOUSE_SAVE_TASK__, tentando fallback direto...', errSave);
+          console.warn('[HOUSE TASKS] Fallback direto de salvamento:', errSave);
         }
       }
 
@@ -654,14 +631,10 @@
       });
 
       if (res.ok) {
-        console.log('[HOUSE TASKS] Tarefa gravada via API com sucesso.');
         window.dispatchEvent(new CustomEvent('house:refresh'));
-      } else {
-        const errJson = await res.json().catch(() => ({}));
-        console.error('[HOUSE TASKS] Erro ao salvar tarefa:', res.status, errJson);
       }
     } catch (e) {
-      console.error('[HOUSE TASKS] Exceção ao salvar tarefa:', e);
+      console.error('[HOUSE TASKS] Erro ao salvar tarefa:', e);
     }
   }
 
@@ -693,16 +666,22 @@
     if (!btn) return;
 
     const txt = (btn.textContent || '').trim().toLowerCase();
+    const aria = (btn.getAttribute('aria-label') || '').toLowerCase();
+    const cls = btn.className || '';
+
     const isTaskCreation = txt.includes('nova tarefa') ||
                            txt.includes('criar tarefa') ||
                            txt.includes('criar primeira tarefa') ||
-                           (btn.classList.contains('primary') && (txt.includes('tarefa') || btn.closest('.welcome-actions')));
+                           txt.includes('adicionar tarefa') ||
+                           aria.includes('criar tarefa') ||
+                           aria.includes('nova tarefa') ||
+                           (typeof cls === 'string' && (cls.includes('mobile-create') || cls.includes('column-add')));
 
     if (isTaskCreation && !btn.closest('#despegueModal')) {
       e.preventDefault();
       e.stopPropagation();
 
-      // Fecha eventuais gavetas padrões abertas pelo React
+      // Fecha eventuais modais nativas
       const openDialog = document.querySelector('dialog.modal:not(#despegueModal)');
       if (openDialog && openDialog.open) openDialog.close();
 
@@ -723,15 +702,200 @@
         }
       }
     }
+    decorarKanbanCards();
+  });
+
+  // ══════════════════════════════════════════════════════════════════════
+  // MODERN KANBAN & TOUCH DRAG-AND-DROP CONTROLLER
+  // ══════════════════════════════════════════════════════════════════════
+  const STAGES = ['todo', 'doing', 'review', 'done'];
+  const STAGE_LABELS = {
+    todo: { next: 'doing', label: 'Iniciar entrega →' },
+    doing: { next: 'review', label: 'Enviar p/ aprovação →' },
+    review: { next: 'done', label: 'Aprovar entrega ✓' },
+    done: { next: 'todo', label: 'Reabrir ↺' }
+  };
+
+  function decorarKanbanCards() {
+    const cards = document.querySelectorAll('.task-card:not([data-enhanced])');
+    cards.forEach(card => {
+      card.setAttribute('data-enhanced', 'true');
+
+      // Botão de avanço rápido de etapa se ainda não tiver
+      const select = card.querySelector('.status-select');
+      if (select && !card.querySelector('.task-stage-advance')) {
+        const currentStatus = select.value || 'todo';
+        const info = STAGE_LABELS[currentStatus];
+        if (info) {
+          const advBtn = document.createElement('button');
+          advBtn.type = 'button';
+          advBtn.className = 'task-stage-advance';
+          advBtn.innerHTML = info.label;
+          advBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            select.value = info.next;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+          card.querySelector('.card-bottom')?.appendChild(advBtn);
+        }
+      }
+    });
+  }
+
+  // Touch Drag and Drop para celulares (iOS / Android)
+  let touchDragState = null;
+
+  document.addEventListener('touchstart', function (e) {
+    const card = e.target.closest('.task-card');
+    if (!card || e.target.closest('button, select, input, textarea, a')) return;
+
+    const touch = e.touches[0];
+    touchDragState = {
+      card,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      offsetX: touch.clientX - card.getBoundingClientRect().left,
+      offsetY: touch.clientY - card.getBoundingClientRect().top,
+      isDragging: false,
+      ghost: null,
+      timer: setTimeout(() => {
+        if (touchDragState) startTouchDrag();
+      }, 180)
+    };
+  }, { passive: false });
+
+  document.addEventListener('touchmove', function (e) {
+    if (!touchDragState) return;
+    const touch = e.touches[0];
+    const dx = Math.abs(touch.clientX - touchDragState.startX);
+    const dy = Math.abs(touch.clientY - touchDragState.startY);
+
+    if (!touchDragState.isDragging && (dx > 8 || dy > 8)) {
+      if (touchDragState.timer) clearTimeout(touchDragState.timer);
+      startTouchDrag();
+    }
+
+    if (touchDragState.isDragging && touchDragState.ghost) {
+      e.preventDefault();
+      const ghost = touchDragState.ghost;
+      ghost.style.left = (touch.clientX - touchDragState.offsetX) + 'px';
+      ghost.style.top = (touch.clientY - touchDragState.offsetY) + 'px';
+
+      // Detecta coluna ou aba sob o dedo
+      document.querySelectorAll('.column.is-dragover').forEach(c => c.classList.remove('is-dragover'));
+      document.querySelectorAll('.mobile-status button.is-tab-dragover').forEach(b => b.classList.remove('is-tab-dragover'));
+
+      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (elem) {
+        const col = elem.closest('.column');
+        if (col) col.classList.add('is-dragover');
+        const tabBtn = elem.closest('.mobile-status button');
+        if (tabBtn) tabBtn.classList.add('is-tab-dragover');
+      }
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', function (e) {
+    if (!touchDragState) return;
+    if (touchDragState.timer) clearTimeout(touchDragState.timer);
+
+    if (touchDragState.isDragging) {
+      const touch = e.changedTouches[0];
+      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+      let targetStatus = null;
+
+      if (elem) {
+        const col = elem.closest('.column');
+        if (col) {
+          const colHead = col.querySelector('.column-head h3');
+          const title = colHead ? colHead.textContent.toLowerCase() : '';
+          if (title.includes('fazer')) targetStatus = 'todo';
+          else if (title.includes('andamento')) targetStatus = 'doing';
+          else if (title.includes('aprovar')) targetStatus = 'review';
+          else if (title.includes('conclu')) targetStatus = 'done';
+        }
+
+        const tabBtn = elem.closest('.mobile-status button');
+        if (tabBtn && !targetStatus) {
+          const txt = tabBtn.textContent.toLowerCase();
+          if (txt.includes('fazer')) targetStatus = 'todo';
+          else if (txt.includes('andamento')) targetStatus = 'doing';
+          else if (txt.includes('aprovar')) targetStatus = 'review';
+          else if (txt.includes('conclu')) targetStatus = 'done';
+        }
+      }
+
+      if (targetStatus && touchDragState.card) {
+        const select = touchDragState.card.querySelector('.status-select');
+        if (select && select.value !== targetStatus) {
+          select.value = targetStatus;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+
+      // Limpa efeitos
+      if (touchDragState.ghost) touchDragState.ghost.remove();
+      touchDragState.card.classList.remove('is-card-dragging');
+      document.querySelectorAll('.column.is-dragover').forEach(c => c.classList.remove('is-dragover'));
+      document.querySelectorAll('.mobile-status button.is-tab-dragover').forEach(b => b.classList.remove('is-tab-dragover'));
+    }
+
+    touchDragState = null;
+  });
+
+  function startTouchDrag() {
+    if (!touchDragState || touchDragState.isDragging) return;
+    touchDragState.isDragging = true;
+    const card = touchDragState.card;
+    card.classList.add('is-card-dragging');
+
+    const ghost = card.cloneNode(true);
+    ghost.className = 'touch-drag-ghost';
+    const rect = card.getBoundingClientRect();
+    ghost.style.width = rect.width + 'px';
+    ghost.style.left = rect.left + 'px';
+    ghost.style.top = rect.top + 'px';
+    document.body.appendChild(ghost);
+    touchDragState.ghost = ghost;
+
+    if (navigator.vibrate) {
+      try { navigator.vibrate(25); } catch {}
+    }
+  }
+
+  // Drag over visual feedback para Desktop
+  document.addEventListener('dragover', function (e) {
+    const col = e.target.closest('.column');
+    if (col) {
+      e.preventDefault();
+      document.querySelectorAll('.column.is-dragover').forEach(c => {
+        if (c !== col) c.classList.remove('is-dragover');
+      });
+      col.classList.add('is-dragover');
+    }
+  });
+
+  document.addEventListener('dragleave', function (e) {
+    const col = e.target.closest('.column');
+    if (col && !col.contains(e.relatedTarget)) {
+      col.classList.remove('is-dragover');
+    }
+  });
+
+  document.addEventListener('drop', function (e) {
+    document.querySelectorAll('.column.is-dragover').forEach(c => c.classList.remove('is-dragover'));
   });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       injetaModalDespegue();
+      decorarKanbanCards();
       observer.observe(document.body, { childList: true, subtree: true });
     });
   } else {
     injetaModalDespegue();
+    decorarKanbanCards();
     observer.observe(document.body, { childList: true, subtree: true });
   }
 })();
