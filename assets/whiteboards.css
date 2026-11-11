@@ -95,3 +95,65 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   #comments{font-size:.73rem;width:auto}
   #comments::after{content:none}
 }
+
+/* Solid surfaces and clear grouping across the studio. */
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
+  color: #1c1b24;
+  background: #f2f2f7;
+  --accent: #5c43bc;
+  --line: #e5e4ed;
+  --muted: #625e70;
+}
+.studio-header { background: #fff; gap: 16px; }
+.studio-brand > span { background: var(--accent); border-radius: 12px; }
+#board-title { font-size: 1rem; }
+.primary, .quiet { border-radius: 12px; }
+.primary:hover { background: #4e36a6; }
+.quiet { background: #f0eff5; color: #3f355d; }
+.library { max-width: 1140px; }
+.library-heading { margin-bottom: 28px; }
+.library h1 { font-weight: 760; }
+.board-list { gap: 20px; }
+.board-tile {
+  border-radius: 20px;
+  border-color: var(--line);
+  box-shadow: 0 2px 8px #2018410a;
+}
+.board-tile strong { margin: 15px 16px 9px; font-size: 1.03rem; }
+.board-tile small { margin: 0 16px 15px; }
+.board-preview { background: #eeebf7; }
+.editor { background: #f5f5fa; }
+#dots circle { fill: #d7d4e3; }
+.floating {
+  background: #fff;
+  border-radius: 17px;
+  box-shadow: 0 3px 12px #22174612, 0 1px 2px #22174608;
+}
+.icon-tool { border-radius: 11px; }
+.icon-tool[aria-pressed="true"] { background: #ece7fb; color: #5136aa; }
+.selection { padding: 14px; }
+#studio-dialog { border-radius: 23px; background: #fff; }
+#studio-dialog::backdrop { background: #1d173d52; }
+@media (max-width: 700px) {
+  .studio-header { gap: 5px; }
+  .studio-header button { min-height: 40px; }
+  .library-heading { gap: 10px; }
+  .library-actions { align-self: center; }
+  .tools {
+    top: auto;
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    left: 8px;
+    display: flex;
+    max-height: none;
+    overflow: auto hidden;
+    scrollbar-width: thin;
+  }
+  .tools .icon-tool { flex: 0 0 44px; min-height: 44px; }
+  .history, .zoom { bottom: calc(74px + env(safe-area-inset-bottom)); }
+  .history { left: 8px; }
+  .zoom { right: 8px; }
+  .selection { right: 8px; top: 8px; width: min(240px, calc(100% - 16px)); }
+  .notice { left: 8px; bottom: calc(132px + env(safe-area-inset-bottom)); }
+}
