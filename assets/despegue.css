@@ -2446,3 +2446,9 @@ textarea {
   .house-rocket-halo { animation: house-rocket-halo 1.1s ease-out both !important; }
   .house-rocket-smoke, .house-rocket-speed { display: none; }
 }
+
+.whiteboards-link { text-decoration: none; }
+.whiteboards-mobile { display: none !important; text-decoration: none; }
+@media (max-width: 768px) {
+  .whiteboards-mobile { display: inline-grid !important; place-items: center; }
+}

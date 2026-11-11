@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f7fa">
+  <title>Quadros visuais · HOUSE TASKS</title>
+  <link rel="icon" href="./favicon.svg">
+  <link rel="stylesheet" href="./assets/whiteboards.css?v=20261111q">
+  <script type="module" src="./assets/whiteboards.js?v=20261111q"></script>
+</head>
+<body>
+  <header class="studio-header">
+    <a href="./" class="studio-brand"><span>h<span>.</span></span> HOUSE TASKS</a>
+    <button id="library-link" class="quiet" type="button" hidden>Todos os quadros</button>
+    <input id="board-title" aria-label="Nome do quadro" maxlength="100" hidden>
+    <div class="header-end">
+      <span id="save-status" role="status"></span>
+      <button id="comments" class="quiet" type="button" hidden>Comentários</button>
+      <button id="export" class="quiet" type="button" hidden>Exportar</button>
+      <button id="share" class="primary" type="button" hidden>Compartilhar</button>
+    </div>
+  </header>
+  <main id="library" class="library">
+    <div class="library-heading"><div><h1>Quadros visuais</h1><p>Organize ideias, processos e projetos em um espaço visual.</p></div>
+    <div class="library-actions"><button id="import" class="quiet" type="button">Importar JSON</button><button id="new-board" class="primary" type="button">+ Novo quadro</button></div></div>
+    <p id="library-status" role="status"></p>
+    <div id="board-list" class="board-list"></div>
+  </main>
+  <main id="editor" class="editor" hidden>
+    <svg id="canvas" aria-label="Tela do quadro visual" tabindex="0" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="dots" patternUnits="userSpaceOnUse" width="24" height="24"><circle cx="1" cy="1" r="1" fill="#c4c4d2"/></pattern>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6d6782"/></marker>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#dots)"/>
+      <g id="scene"></g>
+    </svg>
+    <nav id="tools" class="tools floating" aria-label="Ferramentas"></nav>
+    <div id="history" class="history floating" aria-label="Histórico de edição"></div>
+    <aside id="selection" class="selection floating" aria-label="Objeto selecionado" hidden></aside>
+    <div id="zoom" class="zoom floating" aria-label="Zoom"></div>
+    <div id="notice" class="notice floating" role="alert" hidden></div>
+    <div id="empty" class="empty" hidden><p>Escolha uma ferramenta e toque no quadro.</p><button id="empty-map" class="primary" type="button">Criar mapa mental</button></div>
+  </main>
+  <dialog id="studio-dialog"><form method="dialog" class="dialog-shell"><button class="dialog-close quiet" aria-label="Fechar">×</button></form><div id="dialog-body"></div></dialog>
+</body>
+</html>
