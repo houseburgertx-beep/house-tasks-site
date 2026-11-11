@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-v20261111d';
+const CACHE_NAME = 'house-tasks-v20261111e';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',

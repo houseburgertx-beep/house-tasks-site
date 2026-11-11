@@ -782,6 +782,7 @@
       }
     }
     decorarKanbanCards();
+      sincronizarCarrosselKanban();
   });
 
   // ══════════════════════════════════════════════════════════════════════
@@ -793,6 +794,45 @@
     doing: { next: 'done', label: 'Concluir entrega ✓' },
     done: { next: 'todo', label: 'Reabrir ↺' }
   };
+
+  
+  // Sincronização suave entre as abas superiores e o carrossel Kanban
+  function sincronizarCarrosselKanban() {
+    const kanban = document.querySelector('.kanban');
+    const tabs = document.querySelectorAll('.mobile-status button');
+    const columns = document.querySelectorAll('.column');
+    if (!kanban || !tabs.length || !columns.length) return;
+
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', () => {
+        const targetCol = columns[idx];
+        if (targetCol) {
+          targetCol.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+        }
+      });
+    });
+
+    let scrollTimer = null;
+    kanban.addEventListener('scroll', () => {
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        const kanbanCenter = kanban.getBoundingClientRect().left + kanban.offsetWidth / 2;
+        let closestIdx = 0;
+        let minDiff = Infinity;
+        columns.forEach((col, idx) => {
+          const colCenter = col.getBoundingClientRect().left + col.offsetWidth / 2;
+          const diff = Math.abs(kanbanCenter - colCenter);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestIdx = idx;
+          }
+        });
+        tabs.forEach((t, i) => t.classList.toggle('active', i === closestIdx));
+      }, 50);
+    }, { passive: true });
+  }
 
   function decorarKanbanCards() {
     const cards = document.querySelectorAll('.task-card:not([data-enhanced])');
@@ -969,11 +1009,13 @@
     document.addEventListener('DOMContentLoaded', () => {
       injetaModalDespegue();
       decorarKanbanCards();
+      sincronizarCarrosselKanban();
       observer.observe(document.body, { childList: true, subtree: true });
     });
   } else {
     injetaModalDespegue();
     decorarKanbanCards();
+      sincronizarCarrosselKanban();
     observer.observe(document.body, { childList: true, subtree: true });
   }
 })();
