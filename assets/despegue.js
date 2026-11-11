@@ -76,11 +76,15 @@
       }
     }
 
-    const timer = setTimeout(() => {
+    const rocket = overlay.querySelector(".house-rocket-flight");
+    const remove = () => {
+      if (activeRocket?.overlay !== overlay) return;
+      clearTimeout(activeRocket.timer);
       overlay.remove();
       activeRocket = null;
-    }, 2800);
-    activeRocket = { overlay, timer };
+    };
+    activeRocket = { overlay, timer: setTimeout(remove, 2400) };
+    rocket.addEventListener("animationend", remove, { once: true });
   };
 
   window.houseAnimateTask = function ({ id, from }) {

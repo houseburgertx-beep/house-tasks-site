@@ -2332,25 +2332,42 @@ textarea {
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(circle, #f9f0ff 0%, #d3baf3b3 35%, #d3baf300 70%);
-  animation: house-rocket-halo 2.6s ease-out both;
+  animation: house-rocket-halo 1.85s ease-out both;
 }
 
 .house-rocket-flight {
   width: clamp(96px, 27vw, 146px);
   max-height: 44vh;
   filter: drop-shadow(0 12px 13px #39216e6b);
-  animation: house-rocket-launch 2.6s both;
+  animation: house-rocket-launch 1.85s both;
 }
 
 @keyframes house-rocket-launch {
-  0% { transform: translate(-50%, -42%) scale(.84); opacity: 1; }
-  16%, 48% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  54% { transform: translate(-50%, -44%) scale(1); opacity: 1; animation-timing-function: cubic-bezier(.45, 0, .85, .48); }
-  100% { transform: translate(calc(-50% + 10vw), calc(-50% - 75vh)) rotate(10deg); opacity: 0; }
+  0% {
+    transform: translate(-50%, -34%) scale(.88);
+    opacity: 1;
+    animation-timing-function: ease-out;
+  }
+  22% {
+    transform: translate(-50%, -53%) scale(1);
+    opacity: 1;
+    animation-timing-function: cubic-bezier(.45, .12, .78, .55);
+  }
+  70% { opacity: 1; }
+  100% {
+    transform: translate(calc(-50% + 10vw), calc(-50% - 75vh)) rotate(10deg);
+    opacity: 0;
+  }
+}
+
+@keyframes house-rocket-short-launch {
+  0% { transform: translate(-50%, -34%); opacity: 1; }
+  64% { opacity: 1; }
+  100% { transform: translate(-50%, calc(-50% - min(26vh, 150px))); opacity: 0; }
 }
 
 @keyframes house-rocket-halo {
-  0%, 50% { opacity: 1; }
+  0%, 25% { opacity: 1; }
   100% { opacity: 0; }
 }
 
@@ -2363,5 +2380,9 @@ textarea {
 .house-profile-actions button { min-height: 44px; }
 @media (prefers-reduced-motion: reduce) {
   .house-task-saving { transition: none; }
-  .house-rocket-flight, .house-rocket-halo { animation: none; }
+  /* Preserve a short launch under the app-wide reduced-motion reset. */
+  .house-rocket-flight {
+    animation: house-rocket-short-launch 1.1s cubic-bezier(.3, .15, .45, 1) both !important;
+  }
+  .house-rocket-halo { animation: house-rocket-halo 1.1s ease-out both !important; }
 }
