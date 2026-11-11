@@ -1,0 +1,185 @@
+:root {
+  --house-paper: #fff;
+  --house-page: #f3f3f8;
+  --house-raised: #ebebf3;
+  --house-text: #191827;
+  --house-muted: #5a596d;
+  --house-line: #dedeea;
+  --house-accent: #503ab0;
+  --house-tint: #eeebfb;
+  --house-radius: 18px;
+  --house-font: -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
+}
+
+body.house-app, body.house-studio {
+  background: var(--house-page);
+  color: var(--house-text);
+  font-family: var(--house-font);
+}
+
+.house-app :is(.app-shell, .auth-shell) { background: var(--house-page); }
+.house-app :is(h1, h2, h3, button, input, select, textarea), .house-studio :is(h1, h2, h3) {
+  font-family: var(--house-font);
+}
+.house-app :is(.sidebar, .mobile-nav, .topbar, .modal, .notification-menu, .auth-card),
+.house-studio :is(.studio-header, .floating, #studio-dialog) {
+  background: var(--house-paper);
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.house-app :is(.primary, .approve-button), .house-studio .primary {
+  background: var(--house-accent);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.house-app :is(.primary, .approve-button):hover, .house-studio .primary:hover { background: #3d2990; }
+.house-app :is(.secondary, .icon-button), .house-studio .quiet {
+  color: #3d315f;
+  background: var(--house-raised);
+  border-radius: 11px;
+  box-shadow: none;
+}
+.house-app :is(button, a, input, textarea, select):focus-visible {
+  outline: 2px solid var(--house-accent);
+  outline-offset: 3px;
+}
+
+.house-app .sidebar { inset: 0 auto 0 0; border: 0; border-right: 1px solid var(--house-line); border-radius: 0; box-shadow: none; width: 232px; padding: 28px 13px 0; }
+.house-app .sidebar .nav-item { min-height: 43px; border-radius: 11px; }
+.house-app .sidebar .nav-item.active { background: var(--house-tint); color: var(--house-accent); }
+.house-app .sidebar-note { display: none; }
+.house-app .workspace, .house-app .user-panel { background: var(--house-page); border-radius: 14px; }
+.house-app .topbar { position: sticky; top: 0; z-index: 12; height: 63px; border-bottom: 1px solid var(--house-line); padding: 0 24px; }
+.house-app .main-shell main { width: min(100%, 1500px); margin-inline: auto; }
+.house-app .breadcrumb strong { color: var(--house-text); }
+.house-app .private-label { background: var(--house-page); color: var(--house-muted); }
+.house-app .top-actions { gap: 7px; }
+
+.house-app .welcome {
+  background: #252039;
+  border: 0;
+  border-radius: var(--house-radius);
+  box-shadow: none;
+  color: #fff;
+  min-height: 0;
+  padding: clamp(22px, 4vw, 42px);
+}
+.house-app .welcome > :not(.welcome-copy) { display: none; }
+.house-app .welcome .welcome-copy { width: 100%; max-width: none; }
+.house-app .welcome h1 { color: #fff; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.08; margin: 0 0 12px; letter-spacing: -.045em; }
+.house-app .welcome p { color: #e2def0; margin: 0 0 18px; }
+.house-app .welcome .primary { background: #fff; color: #312456; }
+.house-app .welcome .date-chip { background: #38314e; color: #f5f0ff; border-color: #4d4365; }
+.house-app :is(.page-heading h1, .section-heading h2) { color: var(--house-text); letter-spacing: -.035em; }
+.house-app .overview-summary { gap: 16px; }
+.house-app .stats-grid { gap: 12px; }
+.house-app :is(.stat, .catalog-card, .unit-overview, .unit-progress, .suggestions, .task-list) {
+  background: var(--house-paper);
+  color: var(--house-text);
+  border: 1px solid var(--house-line);
+  border-radius: var(--house-radius);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.house-app .stat { min-height: 104px; text-align: left; }
+.house-app .stat strong { color: var(--house-text); }
+.house-app .stat-bottom { display: none; }
+.house-app .filters {
+  background: #fff;
+  border: 1px solid var(--house-line);
+  padding: 10px;
+  border-radius: 14px;
+}
+.house-app :is(.search-field, .filter-group select, .view-toggle) { background: var(--house-raised); border-radius: 10px; }
+.house-app .column {
+  background: var(--house-raised) !important;
+  border: 1px solid var(--house-line) !important;
+  border-radius: var(--house-radius) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.house-app .task-card {
+  background: #fff !important;
+  border: 1px solid var(--house-line) !important;
+  border-radius: 13px !important;
+  box-shadow: 0 1px 3px #2520390d !important;
+}
+.house-app .task-card h3 { color: var(--house-text) !important; }
+.house-app .list-row { background: #fff; border-bottom: 1px solid var(--house-line); }
+.house-app .mobile-status button.active { background: var(--house-accent) !important; box-shadow: none !important; transform: none !important; }
+
+.house-app .auth-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(0, .85fr);
+  max-width: 1240px;
+  gap: 20px;
+  padding: clamp(14px, 4vw, 46px);
+  align-items: stretch;
+}
+.house-app .auth-intro {
+  background: #252039;
+  color: #fff;
+  box-shadow: none;
+  border: 0;
+  border-radius: 24px;
+}
+.house-app .auth-intro :is(h1, .brand, footer) { color: #fff; }
+.house-app .auth-intro p { color: #e2def0; }
+.house-app .auth-art, .house-app .auth-footnote { display: none; }
+.house-app .auth-intro-copy h1 { font-size: clamp(2.4rem, 6vw, 4.5rem); letter-spacing: -.055em; }
+.house-app .auth-panel { padding: 0; }
+.house-app .auth-card { border: 1px solid var(--house-line); border-radius: 24px; box-shadow: none; width: 100%; max-width: 450px; padding: clamp(20px, 4vw, 38px); }
+.house-app .auth-card h2 { color: var(--house-text); font-size: clamp(1.65rem, 3vw, 2.1rem); letter-spacing: -.035em; }
+.house-app .google-auth-btn { min-height: 48px !important; color: var(--house-text) !important; border-radius: 12px !important; box-shadow: none !important; }
+.house-app .modal { border: 1px solid var(--house-line); border-radius: 20px; }
+.house-app .modal::backdrop { background: #20173065; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.house-app .house-task-dialog .seg-tab.active { color: var(--house-accent) !important; box-shadow: inset 0 -2px var(--house-accent) !important; }
+.house-app .house-task-dialog .field :is(input, select, textarea) { background: var(--house-page) !important; border-color: var(--house-line) !important; }
+
+.house-studio .studio-header { border-color: var(--house-line); }
+.house-studio .library h1 { color: var(--house-text); }
+.house-studio .board-list { grid-template-columns: repeat(auto-fill, minmax(min(225px, 100%), 1fr)); }
+.house-studio .board-tile { border-radius: var(--house-radius); }
+.house-studio .editor { background: var(--house-page); }
+.house-studio .floating { box-shadow: 0 2px 8px #20173014; }
+.house-studio .icon-tool[aria-pressed="true"] { background: var(--house-tint); color: var(--house-accent); }
+
+@media (min-width: 901px) {
+  .house-app .main-shell { width: calc(100% - 232px); margin: 0 0 0 232px; }
+  .house-app .overview-summary { grid-template-columns: minmax(0, 1.6fr) minmax(250px, 1fr); }
+}
+@media (max-width: 900px) {
+  .house-app .sidebar { display: none; }
+  .house-app .main-shell { width: 100%; margin: 0; padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+  .house-app .mobile-nav {
+    display: flex;
+    bottom: calc(7px + env(safe-area-inset-bottom));
+    left: 8px;
+    right: 8px;
+    border: 1px solid var(--house-line);
+    padding: 6px 3px;
+    border-radius: 17px;
+    box-shadow: 0 3px 13px #25203916;
+  }
+  .house-app .mobile-nav button { min-width: 0; min-height: 44px; }
+  .house-app .mobile-nav .mobile-create { background: var(--house-accent); box-shadow: none; }
+  .house-app .whiteboards-mobile { display: inline-grid !important; place-items: center; }
+}
+@media (max-width: 700px) {
+  .house-app .auth-shell { grid-template-columns: 1fr; align-content: start; gap: 12px; }
+  .house-app .auth-intro { padding: 20px; min-height: 0; }
+  .house-app .auth-intro-copy { padding: 16px 0 0; }
+  .house-app .auth-intro-copy h1 { font-size: clamp(1.85rem, 7vw, 2.55rem); margin: 0 0 8px; }
+  .house-app .auth-intro footer { display: none; }
+  .house-app .auth-card { max-width: none; }
+  .house-app .topbar { padding: 0 10px; }
+  .house-app .private-label { display: none; }
+  .house-app .top-actions { gap: 4px; }
+  .house-app .top-actions :is(a, button) { width: 36px; min-width: 36px; height: 38px; min-height: 38px; }
+  .house-app .breadcrumb { min-width: 0; }
+  .house-app .breadcrumb strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .house-app .welcome { padding: 21px 16px; }
+  .house-app .stats-grid { gap: 8px; }
+  .house-app .stat { min-height: 94px; }
+}
