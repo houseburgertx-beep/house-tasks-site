@@ -1405,24 +1405,187 @@ textarea {
   box-sizing: border-box !important;
 }
 
-@media (max-width: 900px) {
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   GRUPO HOUSE190 · 3 COLUNAS KANBAN CABENDO JUNTAS NA MESMA TELA
+   A Fazer · Em Execução · Finalizado lado a lado sem overflow horizontal
+   ══════════════════════════════════════════════════════════════════════ */
+
+.kanban {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.column {
+  border-radius: 18px !important;
+  background: rgba(244, 241, 252, 0.8) !important;
+  border: 1px solid rgba(121, 95, 210, 0.12) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 12px 10px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease !important;
+}
+
+/* Otimização responsiva para caber os 3 perfeitamente na mesma tela do celular */
+@media (max-width: 768px) {
+  .mobile-status {
+    display: none !important;
+  }
+
   .kanban {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 12px !important;
-    padding: 8px 4px 20px !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    padding: 0 0 16px !important;
     margin: 0 !important;
   }
+
   .column {
+    border-radius: 14px !important;
+    padding: 8px 5px !important;
+    min-width: 0 !important;
+    width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
-    flex: 0 0 84vw !important;
-    min-width: 280px !important;
-    max-width: 340px !important;
-    scroll-snap-align: center !important;
+  }
+
+  .column-head {
+    gap: 3px !important;
+    margin-bottom: 7px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .column-head .dot {
+    width: 7px !important;
+    height: 7px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .column-head h3 {
+    font-size: 0.74rem !important;
+    font-weight: 750 !important;
+    letter-spacing: -0.02em !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin: 0 !important;
+  }
+
+  .column-head .count {
+    font-size: 0.65rem !important;
+    padding: 1px 5px !important;
+    border-radius: 999px !important;
+  }
+
+  .column-head .icon-button {
+    display: none !important;
+  }
+
+  .column-add {
+    display: none !important;
+  }
+
+  .column-empty {
+    padding: 20px 2px !important;
+    font-size: 0.65rem !important;
+    text-align: center !important;
+  }
+
+  .column-empty svg {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  /* Cartões otimizados para caber perfeitamente no grid de 3 colunas */
+  .task-card {
+    border-radius: 12px !important;
+    padding: 8px 6px 7px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .task-card:hover {
+    transform: none !important;
+  }
+
+  .task-card h3 {
+    font-size: 0.75rem !important;
+    line-height: 1.25 !important;
+    margin: 4px 0 !important;
+    font-weight: 650 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .task-card .card-description {
+    font-size: 0.67rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 4px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .task-card .priority {
+    font-size: 0.58rem !important;
+    padding: 1px 5px !important;
+  }
+
+  .task-card .unit-label {
+    font-size: 0.6rem !important;
+    padding: 1px 5px !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-bottom: 4px !important;
+  }
+
+  .task-card .task-meta {
+    font-size: 0.62rem !important;
+    gap: 4px !important;
+  }
+
+  .task-card .card-bottom {
+    margin-top: 6px !important;
+    padding-top: 5px !important;
+  }
+
+  .task-card .person-line {
+    font-size: 0.64rem !important;
+  }
+
+  .task-card .status-select {
+    font-size: 0.65rem !important;
+    padding: 2px 4px !important;
+    border-radius: 6px !important;
+  }
+
+  .task-stage-advance {
+    font-size: 0.64rem !important;
+    padding: 2px 4px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    margin-top: 5px !important;
   }
 }
