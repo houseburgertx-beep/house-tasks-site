@@ -1,7 +1,7 @@
-# HOUSE TASKS · Página de acesso
+# HOUSE TASKS
 
-Esta página do GitHub Pages encaminha para o aplicativo HOUSE TASKS com autenticação.
+[**Abrir o aplicativo no GitHub Pages**](https://houseburgertx-beep.github.io/house-tasks-site/)
 
-[Abrir HOUSE TASKS](https://house-tasks-operacao.decolandooinstagram.chatgpt.site/)
+Interface React publicada diretamente no GitHub Pages. Login próprio e API na conta Cloudflare da HouseBurger.
 
-O repositório contém apenas a página de acesso. O aplicativo e os dados da operação são gerenciados separadamente.
+Este repositório contém o build da interface. O código-fonte está no repositório privado houseburgertx-beep/house-tasks, branch house-exclusivo.
