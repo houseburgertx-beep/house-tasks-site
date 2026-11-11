@@ -1,6 +1,6 @@
 /**
  * HOUSE TASKS · DESPEGUE
- * Criação de tarefas com barra de ativação, física de mola e cohete que despega.
+ * Criação de tarefas com barra de ativação, física de mola e foguete que decola.
  * Totalmente integrado à identidade do Grupo House190.
  */
 (function () {
@@ -45,7 +45,7 @@
     '3 etapas restantes para o lançamento',
     '2 etapas para a decolagem',
     'Só mais um passo e estamos prontos',
-    'Tudo pronto para o despegue!'
+    'Tudo pronto para a decolagem!'
   ];
 
   // Injeta a estrutura HTML do modal
@@ -63,43 +63,43 @@
         </div>
         <canvas class="de-lienzo" data-lienzo aria-hidden="true"></canvas>
 
-        <div class="de-caja">
-          <!-- O Cohete de Papel Geométrico (Origami) -->
-          <div class="de-cohete" data-cohete aria-hidden="true">
-            <svg viewBox="0 0 120 270" width="110" height="248" focusable="false">
-              <defs>
-                <linearGradient id="de-g-llama" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#fff3c4"/>
-                  <stop offset=".45" stop-color="#fdba74"/>
-                  <stop offset="1" stop-color="#fb923c" stop-opacity=".85"/>
-                </linearGradient>
-                <radialGradient id="de-g-ojo" cx=".35" cy=".3" r=".8">
-                  <stop offset="0" stop-color="#ffffff"/>
-                  <stop offset=".5" stop-color="#f0ebfc"/>
-                  <stop offset="1" stop-color="#9d83e8"/>
-                </radialGradient>
-              </defs>
-              <g class="de-llama" data-llama>
-                <path class="de-llama-a" d="M60 208C42 230 51 250 60 268 69 250 78 230 60 208Z"/>
-                <path class="de-llama-b" d="M60 210C51 226 55 240 60 252 65 240 69 226 60 210Z"/>
-              </g>
-              <path class="de-ala-i" d="M30 150 5 208 30 192Z"/>
-              <path class="de-ala-i2" d="M30 150 30 192 17 200Z"/>
-              <path class="de-ala-d" d="M90 150 115 208 90 192Z"/>
-              <path class="de-ala-d2" d="M90 150 90 192 103 200Z"/>
-              <path class="de-cuerpo-i" d="M34 84H60V198L30 192Z"/>
-              <path class="de-cuerpo-d" d="M60 84H86L90 192 60 198Z"/>
-              <path class="de-banda" d="M32 168H88L88.6 178H31.4Z"/>
-              <path class="de-base" d="M30 192 60 198 90 192 84 206H36Z"/>
-              <path class="de-nariz-i" d="M60 4C46 32 36 56 34 84H60Z"/>
-              <path class="de-nariz-d" d="M60 4C74 32 84 56 86 84H60Z"/>
-              <path class="de-pliegue" d="M60 8V196"/>
-              <circle cx="60" cy="124" r="18" class="de-ojo-aro"/>
-              <circle cx="60" cy="124" r="13.5" fill="url(#de-g-ojo)"/>
-              <path class="de-ojo-luz" d="M52 120a9 9 0 0 1 8-6"/>
-            </svg>
-          </div>
+        <!-- O Foguete Origami em camada fixa sobreposta -->
+        <div class="de-cohete" data-cohete aria-hidden="true">
+          <svg viewBox="0 0 120 270" width="110" height="248" focusable="false">
+            <defs>
+              <linearGradient id="de-g-llama" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fff3c4"/>
+                <stop offset=".45" stop-color="#fdba74"/>
+                <stop offset="1" stop-color="#fb923c" stop-opacity=".85"/>
+              </linearGradient>
+              <radialGradient id="de-g-ojo" cx=".35" cy=".3" r=".8">
+                <stop offset="0" stop-color="#ffffff"/>
+                <stop offset=".5" stop-color="#f0ebfc"/>
+                <stop offset="1" stop-color="#9d83e8"/>
+              </radialGradient>
+            </defs>
+            <g class="de-llama" data-llama>
+              <path class="de-llama-a" d="M60 208C42 230 51 250 60 268 69 250 78 230 60 208Z"/>
+              <path class="de-llama-b" d="M60 210C51 226 55 240 60 252 65 240 69 226 60 210Z"/>
+            </g>
+            <path class="de-ala-i" d="M30 150 5 208 30 192Z"/>
+            <path class="de-ala-i2" d="M30 150 30 192 17 200Z"/>
+            <path class="de-ala-d" d="M90 150 115 208 90 192Z"/>
+            <path class="de-ala-d2" d="M90 150 90 192 103 200Z"/>
+            <path class="de-cuerpo-i" d="M34 84H60V198L30 192Z"/>
+            <path class="de-cuerpo-d" d="M60 84H86L90 192 60 198Z"/>
+            <path class="de-banda" d="M32 168H88L88.6 178H31.4Z"/>
+            <path class="de-base" d="M30 192 60 198 90 192 84 206H36Z"/>
+            <path class="de-nariz-i" d="M60 4C46 32 36 56 34 84H60Z"/>
+            <path class="de-nariz-d" d="M60 4C74 32 84 56 86 84H60Z"/>
+            <path class="de-pliegue" d="M60 8V196"/>
+            <circle cx="60" cy="124" r="18" class="de-ojo-aro"/>
+            <circle cx="60" cy="124" r="13.5" fill="url(#de-g-ojo)"/>
+            <path class="de-ojo-luz" d="M52 120a9 9 0 0 1 8-6"/>
+          </svg>
+        </div>
 
+        <div class="de-caja">
           <section class="de-tarjeta" data-tarjeta aria-labelledby="de-titulo">
             <button type="button" class="de-cerrar-modal" id="despegueCerrar" aria-label="Fechar modal">
               <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
@@ -189,7 +189,7 @@
                     </div></div>
                   </li>
 
-                  <!-- Passo 4: Checklist e Decolagem -->
+                  <!-- Passo 4: Resumo e Decolagem -->
                   <li class="de-paso" data-paso>
                     <div class="de-paso-cab">
                       <span class="de-nodo" aria-hidden="true"><span class="de-num">4</span><svg viewBox="0 0 24 24"><path d="m5.6 12.6 4.2 4.2 8.6-9.4"/></svg></span>
@@ -222,9 +222,6 @@
             </div>
           </section>
         </div>
-
-        <p class="de-pista"><span>Preencha cada etapa para avançar</span><i></i><span><kbd>Enter</kbd> confirma</span></p>
-        <p class="de-oculto" role="status" aria-live="polite" data-vivo></p>
       </div>
     `;
 
@@ -245,16 +242,25 @@
     const azar = mulberry32(o.semilla);
     const $ = s => raiz.querySelector(s), $$ = s => Array.from(raiz.querySelectorAll(s));
     const tarjeta = $('[data-tarjeta]'), barra = $('[data-barra]'), barraCaja = $('[data-barra-caja]'), nEl = $('[data-n]'), sub = $('[data-sub]');
-    const cohete = $('[data-cohete]'), lienzo = $('[data-lienzo]'), g = lienzo.getContext('2d'), vivo = $('[data-vivo]');
+    const cohete = $('[data-cohete]'), lienzo = $('[data-lienzo]'), g = lienzo.getContext('2d');
     const pasos = $$('[data-paso]'), TOTAL = pasos.length;
-    const avisa = s => { vivo.textContent = ''; vivo.textContent = s; };
+
     let hechos = 0, estado = 'pasos', relojes = [], parts = [], raf = 0, ultimo = null;
 
     const SALTO = muelle(140, 13);
     raiz.style.setProperty('--de-muelle', SALTO.ease);
     raiz.style.setProperty('--de-muelle-ms', SALTO.ms + 'ms');
     const luego = (f, ms) => { const id = setTimeout(f, ms); relojes.push(id); return id; };
-    const anima = (e, kf, ms, ease, extra) => { if (reduce || !e.animate) return null; return e.animate(kf, Object.assign({ duration: ms, easing: ease || 'ease' }, extra)); };
+    
+    const anima = (e, kf, ms, ease, extra) => {
+      if (reduce || !e || !e.animate) return null;
+      try {
+        return e.animate(kf, Object.assign({ duration: ms, easing: ease || 'ease' }, extra));
+      } catch (err) {
+        return null;
+      }
+    };
+
     $('.de-cuenta-de').textContent = '/ ' + TOTAL;
     barraCaja.setAttribute('aria-valuemax', TOTAL);
 
@@ -296,7 +302,7 @@
         const selUnidade = $('[data-unidade]');
         const nomeUnidade = selUnidade.options[selUnidade.selectedIndex]?.text || '';
         if (previewTitulo && nomeVal) previewTitulo.textContent = nomeVal;
-        if (previewSub) previewSub.textContent = nomeUnidade !== 'Sem unidade' ? nomeUnidade : 'Grupo House190';
+        if (previewSub) previewSub.textContent = (nomeUnidade && nomeUnidade !== 'Sem unidade') ? nomeUnidade : 'Grupo House190';
       }
     }
 
@@ -317,12 +323,11 @@
       hechos++;
       p.classList.add('is-hecho');
       pintaProgreso(true);
-      avisa('Passo ' + (n + 1) + ' completado');
       if (o.alCompletar) o.alCompletar({ paso: n + 1, hechos });
 
       if (hechos >= TOTAL) {
         activa(-1);
-        luego(despega, 600);
+        luego(despega, 400);
       } else {
         activa(hechos);
         const foco = pasos[hechos].querySelector('input, select, button');
@@ -333,7 +338,9 @@
     pasos.forEach((p, i) => p.querySelector('[data-hecho]').addEventListener('click', () => {
       if (i === hechos) {
         if (i === 3) {
-          salvarTarefaNaApi().then(() => completa()).catch(() => completa());
+          // Salva os dados na API/React e dispara a decolagem do foguete imediatamente
+          salvarTarefaNaApi();
+          completa();
         } else {
           completa();
         }
@@ -430,12 +437,13 @@
     }
     const enciende = () => { if (!raf) { ultimo = null; raf = requestAnimationFrame(bucle); } };
 
-    // Decolagem do foguete: aparece, tiembla, enciende la llama e sobe acelerando
+    // Decolagem do foguete: treme, acende fogo, solta fumaça e voa pelo topo da tela
     let vuelo = null;
     const base = () => {
       const r = cohete.getBoundingClientRect();
       return [r.left + r.width / 2, r.top + r.height * .97];
     };
+
     function poseCohete(y, rot, esc) {
       cohete.style.transform = 'translate3d(0,' + y.toFixed(1) + 'px,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + esc.toFixed(3) + ')';
     }
@@ -455,25 +463,25 @@
         if (v.t >= v.dura) {
           v.fase = 'sube';
           v.t = 0;
-          v.v = -40;
-          v.y = 4;
+          v.v = -60;
+          v.y = 0;
           const [bx, by] = base();
-          confeti(bx, by - 140, 150);
+          confeti(bx, by - 140, 160);
           onDespegue();
         }
       } else if (v.fase === 'sube') {
-        v.v -= 2300 * dt;
+        v.v -= 2500 * dt;
         v.y += v.v * dt;
-        poseCohete(v.y, Math.sin(v.t * 9) * .8 * Math.min(1, v.t * 2), 1 + Math.min(.12, v.t * .1));
+        poseCohete(v.y, Math.sin(v.t * 9) * .8 * Math.min(1, v.t * 2), 1 + Math.min(.15, v.t * .1));
         v.acum += dt;
         while (v.acum > .016) {
           v.acum -= .016;
           const [bx, by] = base();
           humo(bx, by + 4, .9 + v.t * .6);
         }
-        if (v.y < -(window.innerHeight + 420)) {
+        if (v.y < -(window.innerHeight + 500)) {
           vuelo = null;
-          cohete.style.opacity = 0;
+          cohete.style.opacity = '0';
           cohete.classList.remove('is-fuego');
         }
       }
@@ -483,7 +491,6 @@
       tarjeta.classList.add('is-final');
       $('[data-final]').setAttribute('aria-hidden', 'false');
       $('[data-repite]').tabIndex = 0;
-      avisa('Tudo pronto: sua tarefa está em lançamento');
       if (o.alDespegar) o.alDespegar();
       if (o.reinicio) {
         luego(() => {
@@ -498,16 +505,20 @@
       estado = 'despega';
       tarjeta.classList.add('is-despega');
       if (reduce) { onDespegue(); estado = 'final'; return; }
-      cohete.style.opacity = 1;
-      poseCohete(30, 0, .6);
-      anima(cohete, [{ opacity: 0 }, { opacity: 1 }], 260, 'ease-out');
-      anima(cohete, [{ scale: '.6', translate: '0 40px' }, { scale: '1', translate: '0 0' }], SALTO.ms + 150, SALTO.ease);
+      
+      cohete.style.opacity = '1';
+      poseCohete(0, 0, 1);
+      anima(cohete, [
+        { opacity: 0, transform: 'translate3d(0, 40px, 0) scale(0.6)' },
+        { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' }
+      ], SALTO.ms + 150, SALTO.ease);
+
       luego(() => {
         cohete.classList.add('is-fuego');
         vuelo = { fase: 'tiembla', t: 0, dura: .7, y: 0, v: 0, acum: 0, ult: -1 };
         poseCohete(0, 0, 1);
         enciende();
-      }, 460);
+      }, 420);
     }
 
     function reinicia() {
@@ -517,7 +528,7 @@
       hechos = 0;
       vuelo = null;
       tarjeta.classList.remove('is-final', 'is-despega');
-      cohete.style.opacity = 0;
+      cohete.style.opacity = '0';
       cohete.classList.remove('is-fuego');
       cohete.style.transform = '';
       $('[data-final]').setAttribute('aria-hidden', 'true');
@@ -526,7 +537,6 @@
       activa(0);
       validaNombre();
       pintaProgreso(true);
-      avisa('De novo a partir do primeiro passo');
     }
     $('[data-repite]').addEventListener('click', reinicia);
 
@@ -536,7 +546,7 @@
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.key === 'Enter' && estado === 'pasos') {
         const t = e.target;
-        if (t.matches && t.matches('button, a')) return;
+        if (t.matches && t.matches('button, a, textarea')) return;
         e.preventDefault();
         completa();
       }
@@ -553,13 +563,27 @@
   // Integração com a API do HOUSE TASKS
   async function carregarDadosOperacao() {
     try {
-      const session = sessionStorage.getItem('house-tasks-session');
-      const base = (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.apiBaseUrl) || 'https://house-tasks-api.brunohouse.workers.dev';
-      const res = await fetch(base.replace(/\/$/, '') + '/api/data', {
-        headers: session ? { 'Authorization': 'Bearer ' + session } : {}
-      });
-      if (res.ok) {
-        const data = await res.json();
+      let data = null;
+      if (typeof window.__HOUSE_GET_DATA__ === 'function') {
+        try {
+          data = await window.__HOUSE_GET_DATA__();
+        } catch (err) {
+          console.warn('[HOUSE TASKS] Fallback ao carregar dados operacionais:', err);
+        }
+      }
+
+      if (!data) {
+        const session = sessionStorage.getItem('house-tasks-session');
+        const base = (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.apiBaseUrl) || 'https://house-tasks-api.brunohouse.workers.dev';
+        const res = await fetch(base.replace(/\/$/, '') + '/api/data', {
+          headers: session ? { 'Authorization': 'Bearer ' + session } : {}
+        });
+        if (res.ok) {
+          data = await res.json();
+        }
+      }
+
+      if (data) {
         const selUnidade = document.querySelector('[data-unidade]');
         const selResp = document.querySelector('[data-responsavel]');
         if (selUnidade && data.units) {
@@ -572,25 +596,28 @@
         }
       }
     } catch (e) {
-      console.warn('[HOUSE TASKS] Não foi possível carregar dados para o Despegue:', e);
+      console.warn('[HOUSE TASKS] Erro ao carregar dados para o Despegue:', e);
     }
   }
 
   async function salvarTarefaNaApi() {
     try {
-      const session = sessionStorage.getItem('house-tasks-session');
-      const base = (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.apiBaseUrl) || 'https://house-tasks-api.brunohouse.workers.dev';
-      const title = document.querySelector('[data-nombre]').value.trim();
-      const description = (document.querySelector('[data-descricao]')?.value || '').trim();
-      const unit_id = document.querySelector('[data-unidade]').value || null;
-      const person_id = document.querySelector('[data-responsavel]').value || null;
-      const due = document.querySelector('[data-prazo]').value || null;
+      const titleEl = document.querySelector('[data-nombre]');
+      const title = (titleEl ? titleEl.value : '').trim() || 'Nova entrega da House';
+      const descEl = document.querySelector('[data-descricao]');
+      const description = (descEl ? descEl.value : '').trim();
+      const unitEl = document.querySelector('[data-unidade]');
+      const unit_id = (unitEl && unitEl.value) ? unitEl.value : null;
+      const respEl = document.querySelector('[data-responsavel]');
+      const person_id = (respEl && respEl.value) ? respEl.value : null;
+      const prazoEl = document.querySelector('[data-prazo]');
+      const due = (prazoEl && prazoEl.value) ? prazoEl.value : null;
 
       const prioBtn = document.querySelector('[data-prio][aria-pressed="true"]');
       const priority = prioBtn ? prioBtn.getAttribute('data-prio') : 'normal';
 
       const payload = {
-        title: title || 'Nova entrega da House',
+        title,
         description,
         unit_id,
         person_id,
@@ -601,6 +628,22 @@
         approval: false
       };
 
+      console.log('[HOUSE TASKS] Lançando tarefa:', payload);
+
+      if (typeof window.__HOUSE_SAVE_TASK__ === 'function') {
+        try {
+          await window.__HOUSE_SAVE_TASK__(payload);
+          console.log('[HOUSE TASKS] Tarefa gravada no React com sucesso.');
+          window.dispatchEvent(new CustomEvent('house:refresh'));
+          return;
+        } catch (errSave) {
+          console.warn('[HOUSE TASKS] Falha ao salvar via __HOUSE_SAVE_TASK__, tentando fallback direto...', errSave);
+        }
+      }
+
+      // Fallback para chamada direta à API
+      const session = sessionStorage.getItem('house-tasks-session');
+      const base = (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.apiBaseUrl) || 'https://house-tasks-api.brunohouse.workers.dev';
       const res = await fetch(base.replace(/\/$/, '') + '/api/tasks', {
         method: 'POST',
         headers: {
@@ -611,10 +654,14 @@
       });
 
       if (res.ok) {
+        console.log('[HOUSE TASKS] Tarefa gravada via API com sucesso.');
         window.dispatchEvent(new CustomEvent('house:refresh'));
+      } else {
+        const errJson = await res.json().catch(() => ({}));
+        console.error('[HOUSE TASKS] Erro ao salvar tarefa:', res.status, errJson);
       }
     } catch (e) {
-      console.error('[HOUSE TASKS] Erro ao salvar tarefa:', e);
+      console.error('[HOUSE TASKS] Exceção ao salvar tarefa:', e);
     }
   }
 

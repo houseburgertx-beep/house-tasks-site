@@ -41,7 +41,7 @@ dialog#despegueModal {
   height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 999999;
+  z-index: 999990;
   position: fixed;
   inset: 0;
   box-sizing: border-box;
@@ -73,9 +73,9 @@ dialog#despegueModal::backdrop {
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 620px;
+  max-width: 600px;
   margin: auto;
-  padding: 10px 0 20px;
+  padding: 10px 0;
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--de-tinta);
   box-sizing: border-box;
@@ -110,9 +110,9 @@ dialog#despegueModal::backdrop {
 .de-lienzo {
   position: fixed;
   inset: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
+  z-index: 9999998;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
 }
 
@@ -179,6 +179,7 @@ dialog#despegueModal::backdrop {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+  padding-right: 36px;
 }
 
 .de-badge {
@@ -684,23 +685,25 @@ dialog#despegueModal::backdrop {
   box-shadow: 0 12px 24px -6px rgba(108, 85, 206, 0.6);
 }
 
-/* ── O Cohete de Papel Geométrico (Foguete do Vídeo) ───────────────── */
+/* ── O Cohete de Papel Geométrico (FOGUETE EM POSIÇÃO FIXA NO TOPO) ── */
 .de-cohete {
-  position: absolute;
-  z-index: 8;
-  left: 50%;
-  top: 70%;
-  width: 110px;
-  height: 248px;
-  margin: -170px 0 0 -55px;
+  position: fixed !important;
+  z-index: 9999999 !important;
+  left: 50% !important;
+  top: 52% !important;
+  width: 120px !important;
+  height: 270px !important;
+  margin: -135px 0 0 -60px !important;
   opacity: 0;
   pointer-events: none;
-  will-change: transform;
-  filter: drop-shadow(0 16px 14px rgba(var(--de-sombra-tinta), .24));
+  will-change: transform, opacity;
+  filter: drop-shadow(0 22px 24px rgba(48, 47, 80, .45)) !important;
 }
 
 .de-cohete svg {
   overflow: visible;
+  width: 100%;
+  height: 100%;
 }
 
 /* Peças e sombreamentos da dobradura de papel (HouseBurger colors) */
@@ -848,37 +851,22 @@ dialog#despegueModal::backdrop {
   transition: opacity .4s ease;
 }
 
-/* Dica de teclado / instrução no rodapé */
-.de-pista {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 14px;
-  font-size: 0.84rem;
-  color: var(--de-suave);
-}
-
-.de-pista kbd {
-  background: #ffffff;
-  border: 1px solid var(--de-linea);
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: var(--de-azul-fuerte);
+/* Ocultação total dos textos inferiores circulados pelo usuário */
+.de-pista,
+.de-oculto {
+  display: none !important;
 }
 
 /* ── Mobile Responsiveness (iPhone / Safari) ───────────────────────── */
 @media (max-width: 560px) {
   dialog#despegueModal[open] {
-    padding: 10px 8px;
-    align-items: flex-end;
+    padding: 12px 10px;
+    align-items: center;
   }
   .de-tarjeta {
     --de-radio: 18px;
-    padding: 20px 16px 18px;
-    max-height: calc(90dvh - 20px);
+    padding: 22px 18px 20px;
+    max-height: calc(92dvh - 20px);
     overflow-y: auto;
   }
   .de-cab h1 {
@@ -891,12 +879,9 @@ dialog#despegueModal::backdrop {
     margin-left: 36px;
   }
   .de-cerrar-modal {
-    top: 8px;
-    right: 8px;
+    top: 10px;
+    right: 10px;
     width: 34px;
     height: 34px;
-  }
-  .de-pista {
-    font-size: 0.78rem;
   }
 }
