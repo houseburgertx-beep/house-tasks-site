@@ -1137,3 +1137,292 @@ dialog#despegueModal::backdrop {
     box-shadow: 0 6px 16px rgba(121, 95, 210, 0.35) !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   GRUPO HOUSE190 · REDESIGN PREMIUM DA MODAL DE DETALHES DA TAREFA
+   Substituição total do layout antigo por um visual moderno e luxuoso
+   ══════════════════════════════════════════════════════════════════════ */
+
+dialog.modal,
+dialog.modal.drawer {
+  background: #ffffff !important;
+  border-radius: 28px !important;
+  border: 1px solid rgba(121, 95, 210, 0.16) !important;
+  box-shadow: 0 32px 80px -12px rgba(28, 24, 54, 0.38), 0 0 0 1px rgba(121, 95, 210, 0.08) !important;
+  padding: 30px 26px !important;
+  max-width: 580px !important;
+  width: calc(100vw - 24px) !important;
+  max-height: calc(94dvh - 20px) !important;
+  overflow-y: auto !important;
+  margin: auto !important;
+  box-sizing: border-box !important;
+  font-family: 'DM Sans', -apple-system, sans-serif !important;
+}
+
+dialog.modal::backdrop {
+  background: rgba(26, 21, 48, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Cabeçalho da Modal de Detalhes */
+.modal-heading {
+  margin: 0 0 22px !important;
+  padding-right: 38px !important;
+  position: relative !important;
+}
+
+.modal-heading .eyebrow {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: linear-gradient(135deg, rgba(121, 95, 210, 0.12), rgba(157, 131, 232, 0.2)) !important;
+  color: #614ab8 !important;
+  border: 1px solid rgba(121, 95, 210, 0.25) !important;
+  padding: 4px 12px !important;
+  border-radius: 999px !important;
+  font-size: 0.72rem !important;
+  font-weight: 750 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 8px !important;
+}
+
+.modal-heading h2 {
+  font-family: 'Poppins', -apple-system, sans-serif !important;
+  font-size: 1.55rem !important;
+  font-weight: 700 !important;
+  color: #1c1836 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.25 !important;
+  margin: 6px 0 !important;
+}
+
+.modal-heading p {
+  color: #696282 !important;
+  font-size: 0.88rem !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* Botão Fechar no Canto Superior */
+.icon-button.close {
+  position: absolute !important;
+  top: 18px !important;
+  right: 18px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: #f4f1fa !important;
+  border: 1px solid rgba(121, 95, 210, 0.16) !important;
+  color: #554874 !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  z-index: 10 !important;
+}
+
+.icon-button.close:hover {
+  background: #795fd2 !important;
+  color: #ffffff !important;
+  transform: rotate(90deg) scale(1.05) !important;
+}
+
+/* Campos de Formulário Modernos na Modal */
+.field,
+label.field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 16px !important;
+  font-size: 0.82rem !important;
+  font-weight: 650 !important;
+  color: #3e3258 !important;
+}
+
+.field input,
+.field select,
+.field textarea,
+input[type="text"],
+input[type="date"],
+select,
+textarea {
+  background: #faf8fd !important;
+  border: 1.5px solid rgba(121, 95, 210, 0.16) !important;
+  border-radius: 14px !important;
+  padding: 12px 14px !important;
+  font-size: 0.92rem !important;
+  color: #1c1836 !important;
+  font-family: 'DM Sans', -apple-system, sans-serif !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #795fd2 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(121, 95, 210, 0.14) !important;
+  outline: none !important;
+}
+
+/* Checklist Moderno */
+.checklist-heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin: 18px 0 10px !important;
+  font-weight: 700 !important;
+  color: #1c1836 !important;
+}
+
+.check-add {
+  display: flex !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+}
+
+.check-add input {
+  flex: 1 !important;
+}
+
+.check-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: #fbfaff !important;
+  border: 1px solid rgba(121, 95, 210, 0.12) !important;
+  border-radius: 12px !important;
+  padding: 10px 12px !important;
+  margin-bottom: 6px !important;
+}
+
+.approval-field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: #f7f4fd !important;
+  border: 1px solid rgba(121, 95, 210, 0.16) !important;
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  margin: 16px 0 !important;
+  cursor: pointer !important;
+}
+
+/* Barra de Ações Sticky */
+.form-actions.sticky-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  margin-top: 24px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid rgba(121, 95, 210, 0.1) !important;
+}
+
+.form-actions button.secondary {
+  background: #f0ebfc !important;
+  color: #614ab8 !important;
+  border: none !important;
+  border-radius: 14px !important;
+  padding: 12px 22px !important;
+  font-weight: 650 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-actions button.secondary:hover {
+  background: #e6ddfa !important;
+}
+
+.form-actions button.primary,
+.approval-actions .approve-button {
+  background: linear-gradient(135deg, #795fd2, #553bb8) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 14px !important;
+  padding: 12px 26px !important;
+  font-weight: 650 !important;
+  box-shadow: 0 8px 24px -4px rgba(121, 95, 210, 0.45) !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-actions button.primary:hover,
+.approval-actions .approve-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 28px -4px rgba(121, 95, 210, 0.55) !important;
+}
+
+/* ── Foguete de Celebração Global (window.lancarFogueteCelebracao) ───── */
+#deCelebracaoFoguete {
+  position: fixed;
+  inset: 0;
+  z-index: 100000000;
+  pointer-events: none;
+}
+
+.de-cohete-celeb {
+  position: fixed;
+  left: 50%;
+  bottom: -220px;
+  width: 90px;
+  height: 202px;
+  margin-left: -45px;
+  pointer-events: none;
+  filter: drop-shadow(0 18px 20px rgba(48, 47, 80, 0.45));
+}
+
+.de-cohete-celeb.is-launching {
+  animation: de-celeb-sobe 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes de-celeb-sobe {
+  0% { transform: translateY(0) scale(0.85); }
+  30% { transform: translateY(-300px) scale(1.1) rotate(2deg); }
+  100% { transform: translateY(-1600px) scale(1.3) rotate(-1deg); }
+}
+
+.de-lienzo-celeb {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* ── 3 Colunas Kanban Lado a Lado ───────────────────────────────────── */
+.kanban {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 900px) {
+  .kanban {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 12px !important;
+    padding: 8px 4px 20px !important;
+    margin: 0 !important;
+  }
+  .column {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 0 0 84vw !important;
+    min-width: 280px !important;
+    max-width: 340px !important;
+    scroll-snap-align: center !important;
+  }
+}

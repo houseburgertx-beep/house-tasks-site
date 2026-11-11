@@ -639,6 +639,85 @@
   }
 
   // Abre a modal do Despegue
+  
+  // Foguete de celebração quando uma tarefa é concluída
+  window.lancarFogueteCelebracao = function () {
+    let celem = document.getElementById('deCelebracaoFoguete');
+    if (!celem) {
+      celem = document.createElement('div');
+      celem.id = 'deCelebracaoFoguete';
+      celem.innerHTML = `
+        <div class="de-cohete-celeb" aria-hidden="true">
+          <svg viewBox="0 0 120 270" width="90" height="202">
+            <g class="de-llama is-active">
+              <path d="M60 208C42 230 51 250 60 268 69 250 78 230 60 208Z" fill="#ff9800"/>
+              <path d="M60 210C51 226 55 240 60 252 65 240 69 226 60 210Z" fill="#fff"/>
+            </g>
+            <path d="M30 150 5 208 30 192Z" fill="#eae2f8"/>
+            <path d="M90 150 115 208 90 192Z" fill="#ddd0f5"/>
+            <path d="M34 84H60V198L30 192Z" fill="#ffffff"/>
+            <path d="M60 84H86L90 192 60 198Z" fill="#f0eafc"/>
+            <path d="M32 168H88L88.6 178H31.4Z" fill="#795fd2"/>
+            <path d="M30 192 60 198 90 192 84 206H36Z" fill="#d9ccf5"/>
+            <path d="M60 4C46 32 36 56 34 84H60Z" fill="#fcd34d"/>
+            <path d="M60 4C74 32 84 56 86 84H60Z" fill="#fb923c"/>
+            <circle cx="60" cy="124" r="14" fill="#795fd2"/>
+            <circle cx="60" cy="124" r="10" fill="#ffffff"/>
+          </svg>
+        </div>
+        <canvas class="de-lienzo-celeb"></canvas>
+      `;
+      document.body.appendChild(celem);
+    }
+
+    const rocket = celem.querySelector('.de-cohete-celeb');
+    const canvas = celem.querySelector('.de-lienzo-celeb');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    rocket.classList.remove('is-launching');
+    void rocket.offsetWidth;
+    rocket.classList.add('is-launching');
+
+    let cParts = [];
+    for (let k = 0; k < 140; k++) {
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * 2.8;
+      const speed = 250 + Math.random() * 600;
+      cParts.push({
+        x: window.innerWidth / 2,
+        y: window.innerHeight * 0.55,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: 6 + Math.random() * 6,
+        color: COLORES[Math.floor(Math.random() * COLORES.length)],
+        life: 0,
+        maxLife: 2.4 + Math.random() * 1.2
+      });
+    }
+
+    let cLast = performance.now();
+    function cLoop(now) {
+      const dt = Math.min(0.05, (now - cLast) / 1000);
+      cLast = now;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = cParts.length - 1; i >= 0; i--) {
+        const p = cParts[i];
+        p.life += dt;
+        if (p.life >= p.maxLife) { cParts.splice(i, 1); continue; }
+        p.vy += 700 * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, 1 - p.life / p.maxLife);
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      }
+      if (cParts.length) requestAnimationFrame(cLoop);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(cLoop);
+  };
+
   window.abrirDespegue = function () {
     injetaModalDespegue();
     const modal = document.getElementById('despegueModal');
@@ -708,11 +787,10 @@
   // ══════════════════════════════════════════════════════════════════════
   // MODERN KANBAN & TOUCH DRAG-AND-DROP CONTROLLER
   // ══════════════════════════════════════════════════════════════════════
-  const STAGES = ['todo', 'doing', 'review', 'done'];
+  const STAGES = ['todo', 'doing', 'done'];
   const STAGE_LABELS = {
-    todo: { next: 'doing', label: 'Iniciar entrega →' },
-    doing: { next: 'review', label: 'Enviar p/ aprovação →' },
-    review: { next: 'done', label: 'Aprovar entrega ✓' },
+    todo: { next: 'doing', label: 'Em execução →' },
+    doing: { next: 'done', label: 'Concluir entrega ✓' },
     done: { next: 'todo', label: 'Reabrir ↺' }
   };
 
