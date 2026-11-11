@@ -47,6 +47,17 @@
       }
     }
 
+    // Inicialização Firebase (Login Gmail / Google)
+    try {
+      if (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.firebaseConfig && window.firebase) {
+        if (!window.firebase.apps || !window.firebase.apps.length) {
+          window.firebase.initializeApp(window.__HOUSE_CONFIG__.firebaseConfig);
+        }
+      }
+    } catch (e) {
+      console.warn('[HOUSE TASKS] Firebase init:', e);
+    }
+
     // Registro do Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -57,13 +68,17 @@
     }
   </script>
 
+  <!-- Firebase Compat SDK para Autenticação Google / Gmail -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
   <!-- Componente Despegue Oficial (Foguete de Papel, Pista com Mola, Fumaça e Confetes) -->
-  <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261111g">
-  <script src="/house-tasks-site/assets/despegue.js?v=20261111g" defer></script>
+  <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261111h">
+  <script src="/house-tasks-site/assets/despegue.js?v=20261111h" defer></script>
 
   <!-- App Principal -->
-  <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261111g"></script>
-  <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261111e">
+  <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261111h"></script>
+  <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261111h">
 </head>
 <body>
   <div id="root"></div>
