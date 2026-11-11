@@ -687,140 +687,42 @@
     } catch (_) {}
   }
 
-  // Foguete de celebração cinematográfico quando uma entrega é concluída
-  window.lancarFogueteCelebracao = function () {
-    tocarSomDecolagem();
+  // Confirmação discreta e moderna de conclusão (Estilo Linear / Things 3)
+  window.confirmarTarefaConcluida = function () {
     if (navigator.vibrate) {
-      try { navigator.vibrate([40, 50, 40]); } catch (_) {}
+      try { navigator.vibrate(25); } catch (_) {}
     }
 
-    let celebContainer = document.getElementById("deCelebracaoFoguete");
-    if (celebContainer) {
-      celebContainer.remove();
-    }
+    let toast = document.getElementById("houseMicroToast");
+    if (toast) toast.remove();
 
-    celebContainer = document.createElement("div");
-    celebContainer.id = "deCelebracaoFoguete";
-    celebContainer.innerHTML = `
-      <div class="de-celeb-toast">
-        <span class="de-celeb-icon">🚀</span>
-        <div class="de-celeb-text">
-          <b>Entrega Concluída!</b>
-          <small>Ritmo da House: missão cumprida com sucesso</small>
-        </div>
-      </div>
-      <div class="de-cohete-celeb" aria-hidden="true">
-        <svg viewBox="0 0 120 280" width="120" height="280">
-          <defs>
-            <linearGradient id="celeb-fuego-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#ffffff"/>
-              <stop offset="25%" stop-color="#fff176"/>
-              <stop offset="60%" stop-color="#ff9800"/>
-              <stop offset="100%" stop-color="#f44336" stop-opacity="0.85"/>
-            </linearGradient>
-            <linearGradient id="celeb-corpo-grad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#795fd2"/>
-              <stop offset="50%" stop-color="#9173eb"/>
-              <stop offset="100%" stop-color="#614ab8"/>
-            </linearGradient>
-            <filter id="celeb-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="8" result="blur"/>
-              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-            </filter>
-          </defs>
-          <g class="de-celeb-flame">
-            <path d="M60 210 Q35 245 60 278 Q85 245 60 210 Z" fill="url(#celeb-fuego-grad)" filter="url(#celeb-glow)"/>
-            <path d="M60 212 Q45 238 60 262 Q75 238 60 212 Z" fill="#ffffff"/>
-          </g>
-          <path d="M30 150 L2 212 L30 195 Z" fill="#583ebd" stroke="#3d2a8a" stroke-width="1.5"/>
-          <path d="M90 150 L118 212 L90 195 Z" fill="#4d35a8" stroke="#3d2a8a" stroke-width="1.5"/>
-          <path d="M32 82 H88 V198 L60 204 L32 198 Z" fill="url(#celeb-corpo-grad)" stroke="#4d37a2" stroke-width="1.5"/>
-          <path d="M32 165 H88 V177 H32 Z" fill="#ebb76c"/>
-          <path d="M60 2 C44 30 34 56 32 82 H88 C86 56 76 30 60 2 Z" fill="#fcd34d" stroke="#f59e0b" stroke-width="1.5"/>
-          <path d="M32 198 L60 204 L88 198 L82 212 H38 Z" fill="#2d225a"/>
-          <circle cx="60" cy="120" r="18" fill="#ffffff" stroke="#ebb76c" stroke-width="3"/>
-          <circle cx="60" cy="120" r="13" fill="#614ab8"/>
-          <circle cx="56" cy="116" r="4" fill="#ffffff" opacity="0.8"/>
+    toast = document.createElement("div");
+    toast.id = "houseMicroToast";
+    toast.className = "house-micro-toast";
+    toast.innerHTML = `
+      <span class="micro-toast-icon">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
         </svg>
-      </div>
-      <canvas class="de-lienzo-celeb"></canvas>
+      </span>
+      <span class="micro-toast-text">Tarefa concluída</span>
     `;
-
-    document.body.appendChild(celebContainer);
-
-    const rocket = celebContainer.querySelector(".de-cohete-celeb");
-    const toast = celebContainer.querySelector(".de-celeb-toast");
-    const canvas = celebContainer.querySelector(".de-lienzo-celeb");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    document.body.appendChild(toast);
 
     requestAnimationFrame(() => {
-      toast.classList.add("is-visible");
-      rocket.classList.add("is-launching");
+      toast.classList.add("is-active");
     });
 
-    let parts = [];
-    for (let i = 0; i < 180; i++) {
-      const angle = -Math.PI / 2 + (Math.random() - 0.5) * 2.8;
-      const speed = 320 + Math.random() * 750;
-      parts.push({
-        x: window.innerWidth / 2 + (Math.random() - 0.5) * 80,
-        y: window.innerHeight * 0.75,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        size: 7 + Math.random() * 7,
-        color: COLORES[Math.floor(Math.random() * COLORES.length)],
-        rot: Math.random() * 6.28,
-        vr: (Math.random() - 0.5) * 12,
-        life: 0,
-        maxLife: 2.5 + Math.random() * 1.5
-      });
-    }
-
-    let lastTime = performance.now();
-    function animLoop(now) {
-      const dt = Math.min(0.05, (now - lastTime) / 1000);
-      lastTime = now;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = parts.length - 1; i >= 0; i--) {
-        const p = parts[i];
-        p.life += dt;
-        if (p.life >= p.maxLife || p.y > canvas.height + 50) {
-          parts.splice(i, 1);
-          continue;
-        }
-        p.vy += 800 * dt;
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
-        p.rot += p.vr * dt;
-
-        const progress = p.life / p.maxLife;
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        ctx.globalAlpha = Math.max(0, 1 - progress * progress);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-        ctx.restore();
-      }
-
-      if (parts.length > 0) {
-        requestAnimationFrame(animLoop);
-      } else {
-        setTimeout(() => {
-          if (celebContainer && celebContainer.parentNode) celebContainer.remove();
-        }, 600);
-      }
-    }
-    requestAnimationFrame(animLoop);
-
     setTimeout(() => {
-      if (celebContainer && celebContainer.parentNode) {
-        celebContainer.remove();
+      if (toast && toast.parentNode) {
+        toast.classList.remove("is-active");
+        setTimeout(() => toast.remove(), 250);
       }
-    }, 3600);
+    }, 1900);
+  };
+
+  window.lancarFogueteCelebracao = function () {
+    if (window.confirmarTarefaConcluida) window.confirmarTarefaConcluida();
   };
 
   window.abrirDespegue = function () {
@@ -983,13 +885,16 @@
         if (btn.disabled || card.classList.contains("task-card-exit")) return;
         btn.disabled = true;
 
-        // 1. Inicia animação suave de saída da coluna atual
-        card.classList.add("task-card-exit");
-
-        // 2. Se a tarefa foi dada como pronta, lança o foguete de celebração!
-        if (nextStatus === "done" && window.lancarFogueteCelebracao) {
-          window.lancarFogueteCelebracao();
+        // 1. Se a tarefa foi dada como pronta, aplica brilho sutil esmeralda e confirmação discreta
+        if (nextStatus === "done") {
+          card.classList.add("task-card-completing");
+          if (window.confirmarTarefaConcluida) {
+            window.confirmarTarefaConcluida();
+          }
         }
+
+        // 2. Inicia animação suave de saída da coluna atual
+        card.classList.add("task-card-exit");
 
         // 3. Aguarda o término da transição de sumiço (220ms)
         await new Promise(res => setTimeout(res, 220));
