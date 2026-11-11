@@ -1,29 +1,33 @@
 /**
- * Despegue · Moxen adaptado para HOUSE TASKS · Grupo House190
- * Implementação fiel da lista de ativação com barra, física de mola e cohete que despega.
+ * HOUSE TASKS · DESPEGUE
+ * Criação de tarefas com barra de ativação, física de mola e cohete que despega.
+ * Totalmente integrado à identidade do Grupo House190.
  */
 (function () {
   'use strict';
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const lim = (v, a, b) => Math.max(a, Math.min(b, v));
 
-  // Resorte convertido em curva CSS linear()
+  // Resorte com solução de equação diferencial a 240 fps
   function muelle(k, c) {
     const pts = [0];
     let x = 0, v = 0, t = 0;
     while (t < 3) {
-      v += (k * (1 - x) - c * v) / 240; x += v / 240; t += 1 / 240;
+      v += (k * (1 - x) - c * v) / 240;
+      x += v / 240;
+      t += 1 / 240;
       pts.push(x);
       if (t > .15 && Math.abs(1 - x) < .001 && Math.abs(v) < .01) break;
     }
     const out = [];
-    for (let i = 0; i <= 40; i++) out.push(pts[Math.round(i / 40 * (pts.length - 1))].toFixed(4));
+    for (let i = 0; i <= 40; i++) {
+      out.push(pts[Math.round(i / 40 * (pts.length - 1))].toFixed(4));
+    }
     out[40] = '1';
     return { ease: 'linear(' + out.join(', ') + ')', ms: Math.round(t * 1000) };
   }
 
-  // Azar com semente (reprodutibilidade das partículas de confeti)
+  // Gerador pseudo-aleatório com semente (confeti consistente)
   function mulberry32(s) {
     return () => {
       s = s + 0x6D2B79F5 | 0;
@@ -33,16 +37,18 @@
     };
   }
 
-  const COLORES = ['#3b82f6', '#60a5fa', '#93c5fd', '#1d4ed8', '#bfdbfe', '#2563eb', '#795fd2', '#ebb76c'];
-  const SUB = [
-    'Quatro passos e sua tarefa decola',
-    'Três passos para a entrega',
-    'Dois passos para a decolagem',
-    'Só falta um passo',
+  // Paleta oficial HouseBurger / Grupo House190 para os confetes
+  const COLORES = ['#795fd2', '#9d83e8', '#ebb76c', '#3c8777', '#e24a4a', '#614ab8', '#f0ebfc', '#ffffff'];
+
+  const SUB_PT = [
+    '4 etapas para decolar sua entrega na House',
+    '3 etapas restantes para o lançamento',
+    '2 etapas para a decolagem',
+    'Só mais um passo e estamos prontos',
     'Tudo pronto para o despegue!'
   ];
 
-  // Injeta o modal e markup do Despegue no body
+  // Injeta a estrutura HTML do modal
   function injetaModalDespegue() {
     if (document.getElementById('despegueModal')) return;
 
@@ -57,52 +63,83 @@
         </div>
         <canvas class="de-lienzo" data-lienzo aria-hidden="true"></canvas>
 
-        <button type="button" class="de-cerrar-modal" id="despegueCerrar" aria-label="Fechar">
-          <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-        </button>
-
         <div class="de-caja">
-          <!-- o cohete de papel -->
+          <!-- O Cohete de Papel Geométrico (Origami) -->
           <div class="de-cohete" data-cohete aria-hidden="true">
             <svg viewBox="0 0 120 270" width="110" height="248" focusable="false">
               <defs>
-                <linearGradient id="de-g-llama" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#fdba74"/><stop offset="1" stop-color="#fb923c" stop-opacity=".85"/></linearGradient>
-                <radialGradient id="de-g-ojo" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#e0f2fe"/><stop offset="1" stop-color="#93c5fd"/></radialGradient>
+                <linearGradient id="de-g-llama" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#fff3c4"/>
+                  <stop offset=".45" stop-color="#fdba74"/>
+                  <stop offset="1" stop-color="#fb923c" stop-opacity=".85"/>
+                </linearGradient>
+                <radialGradient id="de-g-ojo" cx=".35" cy=".3" r=".8">
+                  <stop offset="0" stop-color="#ffffff"/>
+                  <stop offset=".5" stop-color="#f0ebfc"/>
+                  <stop offset="1" stop-color="#9d83e8"/>
+                </radialGradient>
               </defs>
-              <g class="de-llama" data-llama><path class="de-llama-a" d="M60 208C42 230 51 250 60 268 69 250 78 230 60 208Z"/><path class="de-llama-b" d="M60 210C51 226 55 240 60 252 65 240 69 226 60 210Z"/></g>
-              <path class="de-ala-i" d="M30 150 5 208 30 192Z"/><path class="de-ala-i2" d="M30 150 30 192 17 200Z"/>
-              <path class="de-ala-d" d="M90 150 115 208 90 192Z"/><path class="de-ala-d2" d="M90 150 90 192 103 200Z"/>
-              <path class="de-cuerpo-i" d="M34 84H60V198L30 192Z"/><path class="de-cuerpo-d" d="M60 84H86L90 192 60 198Z"/>
+              <g class="de-llama" data-llama>
+                <path class="de-llama-a" d="M60 208C42 230 51 250 60 268 69 250 78 230 60 208Z"/>
+                <path class="de-llama-b" d="M60 210C51 226 55 240 60 252 65 240 69 226 60 210Z"/>
+              </g>
+              <path class="de-ala-i" d="M30 150 5 208 30 192Z"/>
+              <path class="de-ala-i2" d="M30 150 30 192 17 200Z"/>
+              <path class="de-ala-d" d="M90 150 115 208 90 192Z"/>
+              <path class="de-ala-d2" d="M90 150 90 192 103 200Z"/>
+              <path class="de-cuerpo-i" d="M34 84H60V198L30 192Z"/>
+              <path class="de-cuerpo-d" d="M60 84H86L90 192 60 198Z"/>
               <path class="de-banda" d="M32 168H88L88.6 178H31.4Z"/>
               <path class="de-base" d="M30 192 60 198 90 192 84 206H36Z"/>
-              <path class="de-nariz-i" d="M60 4C46 32 36 56 34 84H60Z"/><path class="de-nariz-d" d="M60 4C74 32 84 56 86 84H60Z"/>
+              <path class="de-nariz-i" d="M60 4C46 32 36 56 34 84H60Z"/>
+              <path class="de-nariz-d" d="M60 4C74 32 84 56 86 84H60Z"/>
               <path class="de-pliegue" d="M60 8V196"/>
-              <circle cx="60" cy="124" r="18" class="de-ojo-aro"/><circle cx="60" cy="124" r="13.5" fill="url(#de-g-ojo)"/><path class="de-ojo-luz" d="M52 120a9 9 0 0 1 8-6"/>
+              <circle cx="60" cy="124" r="18" class="de-ojo-aro"/>
+              <circle cx="60" cy="124" r="13.5" fill="url(#de-g-ojo)"/>
+              <path class="de-ojo-luz" d="M52 120a9 9 0 0 1 8-6"/>
             </svg>
           </div>
 
           <section class="de-tarjeta" data-tarjeta aria-labelledby="de-titulo">
+            <button type="button" class="de-cerrar-modal" id="despegueCerrar" aria-label="Fechar modal">
+              <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </button>
+
             <header class="de-cab">
               <div class="de-cab-t">
-                <h1 id="de-titulo">Puesta en marcha</h1>
-                <p data-sub><span>Quatro passos e sua tarefa decola</span></p>
+                <span class="de-badge"><span class="dot"></span> Do combinado à ação</span>
+                <h1 id="de-titulo">Criar nova tarefa</h1>
+                <p data-sub><span>4 etapas para decolar sua entrega na House</span></p>
               </div>
-              <div class="de-cuenta" aria-hidden="true"><span class="de-cuenta-n" data-n>0</span><span class="de-cuenta-de">/ 4</span></div>
+              <div class="de-cuenta" aria-hidden="true">
+                <span class="de-cuenta-n" data-n>0</span>
+                <span class="de-cuenta-de">/ 4</span>
+              </div>
             </header>
-            <div class="de-barra" role="progressbar" aria-label="Pasos completados" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" data-barra-caja><i class="de-barra-fill" data-barra></i></div>
+
+            <div class="de-barra" role="progressbar" aria-label="Passos completados" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" data-barra-caja>
+              <i class="de-barra-fill" data-barra></i>
+            </div>
 
             <div class="de-lista-caja" data-lista-caja>
               <div class="de-lista-in">
                 <ol class="de-pasos" data-pasos>
-                  <!-- Passo 1: Nome da tarefa -->
+                  <!-- Passo 1: O que precisa ser feito -->
                   <li class="de-paso is-activo" data-paso aria-current="step">
                     <div class="de-paso-cab">
                       <span class="de-nodo" aria-hidden="true"><span class="de-num">1</span><svg viewBox="0 0 24 24"><path d="m5.6 12.6 4.2 4.2 8.6-9.4"/></svg></span>
-                      <span class="de-paso-t"><b>Defina sua tarefa</b><small>O que precisa acontecer no ritmo da House</small></span>
+                      <span class="de-paso-t"><b>Defina sua tarefa</b><small>Nome claro e informações da entrega</small></span>
                     </div>
                     <div class="de-cuerpo"><div class="de-cuerpo-in">
-                      <label class="de-campo"><span>Nome da tarefa</span><input type="text" placeholder="Ex. Conferir estoque para o fim de semana" maxlength="180" autocomplete="off" data-nombre></label>
-                      <button class="de-accion" type="button" data-hecho>Confirmar tarefa <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                      <label class="de-campo">
+                        <span>Nome da tarefa *</span>
+                        <input type="text" placeholder="Ex. Conferir estoque para o fim de semana" maxlength="180" autocomplete="off" data-nombre>
+                      </label>
+                      <label class="de-campo">
+                        <span>Descrição opcional</span>
+                        <textarea rows="2" placeholder="O que precisa ser feito? Acrescente detalhes importantes..." data-descricao class="de-select"></textarea>
+                      </label>
+                      <button class="de-accion" type="button" data-hecho>Avançar para equipe <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
                     </div></div>
                   </li>
 
@@ -110,14 +147,20 @@
                   <li class="de-paso" data-paso>
                     <div class="de-paso-cab">
                       <span class="de-nodo" aria-hidden="true"><span class="de-num">2</span><svg viewBox="0 0 24 24"><path d="m5.6 12.6 4.2 4.2 8.6-9.4"/></svg></span>
-                      <span class="de-paso-t"><b>Unidade e Responsável</b><small>Escolha o local e quem cuidará da entrega</small></span>
+                      <span class="de-paso-t"><b>Unidade e Responsável</b><small>Onde e quem cuidará desta entrega na House</small></span>
                     </div>
                     <div class="de-cuerpo"><div class="de-cuerpo-in">
                       <div class="de-grid-campos">
-                        <label class="de-campo"><span>Unidade</span><select data-unidade class="de-select"><option value="">Sem unidade</option></select></label>
-                        <label class="de-campo"><span>Responsável</span><select data-responsavel class="de-select"><option value="">Sem responsável</option></select></label>
+                        <label class="de-campo">
+                          <span>Unidade da House</span>
+                          <select data-unidade class="de-select"><option value="">Sem unidade</option></select>
+                        </label>
+                        <label class="de-campo">
+                          <span>Responsável</span>
+                          <select data-responsavel class="de-select"><option value="">Sem responsável</option></select>
+                        </label>
                       </div>
-                      <button class="de-accion" type="button" data-hecho><span data-txt>Confirmar equipe</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                      <button class="de-accion" type="button" data-hecho><span data-txt>Avançar para prazos</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
                     </div></div>
                   </li>
 
@@ -125,12 +168,16 @@
                   <li class="de-paso" data-paso>
                     <div class="de-paso-cab">
                       <span class="de-nodo" aria-hidden="true"><span class="de-num">3</span><svg viewBox="0 0 24 24"><path d="m5.6 12.6 4.2 4.2 8.6-9.4"/></svg></span>
-                      <span class="de-paso-t"><b>Prazo e Prioridade</b><small>Defina a data limite e o nível de urgência</small></span>
+                      <span class="de-paso-t"><b>Prazo e Prioridade</b><small>Tempo limite e urgência da operação</small></span>
                     </div>
                     <div class="de-cuerpo"><div class="de-cuerpo-in">
                       <div class="de-grid-campos">
-                        <label class="de-campo"><span>Data limite</span><input type="date" data-prazo class="de-select"></label>
-                        <label class="de-campo"><span>Prioridade</span>
+                        <label class="de-campo">
+                          <span>Data limite</span>
+                          <input type="date" data-prazo class="de-select">
+                        </label>
+                        <label class="de-campo">
+                          <span>Prioridade</span>
                           <div class="de-fuentes" role="group" aria-label="Prioridade">
                             <button class="de-fuente" type="button" aria-pressed="true" data-prio="normal"><span>Normal</span><i aria-hidden="true"></i></button>
                             <button class="de-fuente" type="button" aria-pressed="false" data-prio="high"><span>Alta</span><i aria-hidden="true"></i></button>
@@ -138,23 +185,28 @@
                           </div>
                         </label>
                       </div>
-                      <button class="de-accion" type="button" data-hecho><span data-txt>Confirmar prazo</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                      <button class="de-accion" type="button" data-hecho><span data-txt>Avançar para checklist</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
                     </div></div>
                   </li>
 
-                  <!-- Passo 4: Lançar entrega -->
+                  <!-- Passo 4: Checklist e Decolagem -->
                   <li class="de-paso" data-paso>
                     <div class="de-paso-cab">
                       <span class="de-nodo" aria-hidden="true"><span class="de-num">4</span><svg viewBox="0 0 24 24"><path d="m5.6 12.6 4.2 4.2 8.6-9.4"/></svg></span>
-                      <span class="de-paso-t"><b>Lançar entrega</b><small>Tudo pronto para decolar a tarefa na House</small></span>
+                      <span class="de-paso-t"><b>Lançar entrega</b><small>Tudo pronto para decolar no ritmo da House</small></span>
                     </div>
                     <div class="de-cuerpo"><div class="de-cuerpo-in">
                       <div class="de-proyecto">
-                        <div class="de-proy-ico" aria-hidden="true"></div>
-                        <div class="de-proy-t"><b data-preview-titulo>Nova entrega</b><i data-preview-sub>Pronto para decolar</i></div>
-                        <span class="de-estado is-publicado" data-estado>Pronto</span>
+                        <div class="de-proy-ico" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="de-proy-t">
+                          <b data-preview-titulo>Nova entrega</b>
+                          <small data-preview-sub>Pronto para decolar</small>
+                        </div>
+                        <span class="de-estado" data-estado>Pronto</span>
                       </div>
-                      <button class="de-accion es-lancar" type="button" data-hecho><span data-txt>Decolar tarefa 🚀</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                      <button class="de-accion es-lancar" type="button" data-hecho><span data-txt>Lançar tarefa na House 🚀</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
                     </div></div>
                   </li>
                 </ol>
@@ -164,14 +216,14 @@
             <div class="de-final" data-final aria-hidden="true">
               <div class="de-final-in">
                 <span class="de-final-ok"><svg viewBox="0 0 24 24"><path d="m5.6 12.6 4.2 4.2 8.6-9.4"/></svg></span>
-                <div><b>Sua tarefa foi lançada!</b><small>Vamos fazer acontecer no ritmo da House.</small></div>
+                <div><b>Sua tarefa foi lançada!</b><small>Tudo pronto para fazer acontecer no ritmo da House.</small></div>
                 <button class="de-repite" type="button" data-repite tabindex="-1">Criar outra tarefa</button>
               </div>
             </div>
           </section>
         </div>
 
-        <p class="de-pista"><span>Completa cada passo para acender o seguinte</span><i></i><span><kbd>Intro</kbd> confirma o passo</span></p>
+        <p class="de-pista"><span>Preencha cada etapa para avançar</span><i></i><span><kbd>Enter</kbd> confirma</span></p>
         <p class="de-oculto" role="status" aria-live="polite" data-vivo></p>
       </div>
     `;
@@ -187,9 +239,9 @@
     });
   }
 
-  // Inicializa o motor Despegue com física, foguete, canvas, fumaça e confetes
+  // Motor Despegue com física, partículas e decolagem
   function Despegue(raiz, opcoes) {
-    const o = Object.assign({ semilla: 7, reinicio: 3200, alCompletar: null, alDespegar: null }, opcoes);
+    const o = Object.assign({ semilla: 7, reinicio: 2600, alCompletar: null, alDespegar: null }, opcoes);
     const azar = mulberry32(o.semilla);
     const $ = s => raiz.querySelector(s), $$ = s => Array.from(raiz.querySelectorAll(s));
     const tarjeta = $('[data-tarjeta]'), barra = $('[data-barra]'), barraCaja = $('[data-barra-caja]'), nEl = $('[data-n]'), sub = $('[data-sub]');
@@ -213,15 +265,21 @@
         nEl.textContent = hechos;
         if (anim) anima(nEl, [{ transform: 'translateY(55%)', opacity: 0 }, { transform: 'none', opacity: 1 }], 520, SALTO.ease);
       }
-      const txt = hechos >= TOTAL ? SUB[SUB.length - 1] : (TOTAL === 4 ? SUB[hechos] : (hechos === 0 ? 'Comece pelo primeiro passo' : 'Faltam ' + (TOTAL - hechos)));
+      const txt = hechos >= TOTAL ? SUB_PT[SUB_PT.length - 1] : (TOTAL === 4 ? SUB_PT[hechos] : (hechos === 0 ? 'Comece pelo primeiro passo' : 'Faltam ' + (TOTAL - hechos) + ' passos'));
       const viejo = sub.firstElementChild;
-      if (viejo.textContent === txt) return;
-      const nuevo = document.createElement('span'); nuevo.textContent = txt; sub.appendChild(nuevo);
-      const a = anima(viejo, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-8px)' }], 220, 'ease-in', { fill: 'forwards' });
-      if (a) {
-        a.onfinish = () => viejo.remove();
-        anima(nuevo, [{ opacity: 0, transform: 'translateY(9px)' }, { opacity: 1, transform: 'none' }], 420, 'cubic-bezier(.22, 1, .36, 1)', { delay: 80, fill: 'backwards' });
-      } else viejo.remove();
+      if (viejo && viejo.textContent === txt) return;
+      if (viejo) {
+        const nuevo = document.createElement('span');
+        nuevo.textContent = txt;
+        sub.appendChild(nuevo);
+        const a = anima(viejo, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-8px)' }], 220, 'ease-in', { fill: 'forwards' });
+        if (a) {
+          a.onfinish = () => viejo.remove();
+          anima(nuevo, [{ opacity: 0, transform: 'translateY(9px)' }, { opacity: 1, transform: 'none' }], 420, 'cubic-bezier(.22, 1, .36, 1)', { delay: 80, fill: 'backwards' });
+        } else {
+          viejo.remove();
+        }
+      }
     }
 
     function activa(i) {
@@ -229,12 +287,16 @@
         p.classList.toggle('is-activo', k === i);
         if (k === i) p.setAttribute('aria-current', 'step'); else p.removeAttribute('aria-current');
         const cuerpo = p.querySelector('.de-cuerpo-in');
-        cuerpo.inert = k !== i;
+        if (cuerpo) cuerpo.inert = k !== i;
       });
       if (i === 3) {
         const previewTitulo = $('[data-preview-titulo]');
+        const previewSub = $('[data-preview-sub]');
         const nomeVal = $('[data-nombre]').value.trim();
+        const selUnidade = $('[data-unidade]');
+        const nomeUnidade = selUnidade.options[selUnidade.selectedIndex]?.text || '';
         if (previewTitulo && nomeVal) previewTitulo.textContent = nomeVal;
+        if (previewSub) previewSub.textContent = nomeUnidade !== 'Sem unidade' ? nomeUnidade : 'Grupo House190';
       }
     }
 
@@ -243,7 +305,7 @@
     function validaNombre() { btn(0).disabled = !nombre.value.trim(); }
     nombre.addEventListener('input', validaNombre);
 
-    // Seletores de prioridade
+    // Seleção de prioridade
     const prios = $$('[data-prio]');
     prios.forEach(b => b.addEventListener('click', () => {
       prios.forEach(p => p.setAttribute('aria-pressed', p === b ? 'true' : 'false'));
@@ -271,7 +333,6 @@
     pasos.forEach((p, i) => p.querySelector('[data-hecho]').addEventListener('click', () => {
       if (i === hechos) {
         if (i === 3) {
-          // No último passo, dispara o salvamento na API
           salvarTarefaNaApi().then(() => completa()).catch(() => completa());
         } else {
           completa();
@@ -279,7 +340,7 @@
       }
     }));
 
-    // Partículas no canvas: confeti e fumaça física em tela cheia
+    // Partículas no canvas: confetes e fumaça física
     let W = 0, H = 0, dpr = 1;
     function ajusta() {
       dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -326,7 +387,7 @@
           const r = p.r * (1 + u * 2.4);
           g.globalAlpha = (1 - u) * (1 - u) * .85;
           g.fillStyle = '#ffffff';
-          g.shadowColor = 'rgba(121, 95, 210, .3)';
+          g.shadowColor = 'rgba(121, 95, 210, .35)';
           g.shadowBlur = 10;
           g.beginPath();
           g.arc(p.x, p.y, r, 0, 6.2832);
@@ -511,7 +572,7 @@
         }
       }
     } catch (e) {
-      console.warn('[HOUSE TASKS] Não foi possível obter dados para o Despegue:', e);
+      console.warn('[HOUSE TASKS] Não foi possível carregar dados para o Despegue:', e);
     }
   }
 
@@ -520,15 +581,17 @@
       const session = sessionStorage.getItem('house-tasks-session');
       const base = (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.apiBaseUrl) || 'https://house-tasks-api.brunohouse.workers.dev';
       const title = document.querySelector('[data-nombre]').value.trim();
+      const description = (document.querySelector('[data-descricao]')?.value || '').trim();
       const unit_id = document.querySelector('[data-unidade]').value || null;
       const person_id = document.querySelector('[data-responsavel]').value || null;
       const due = document.querySelector('[data-prazo]').value || null;
-      
+
       const prioBtn = document.querySelector('[data-prio][aria-pressed="true"]');
       const priority = prioBtn ? prioBtn.getAttribute('data-prio') : 'normal';
 
       const payload = {
         title: title || 'Nova entrega da House',
+        description,
         unit_id,
         person_id,
         due,
@@ -548,7 +611,6 @@
       });
 
       if (res.ok) {
-        // Notifica o app React principal para atualizar o quadro de tarefas
         window.dispatchEvent(new CustomEvent('house:refresh'));
       }
     } catch (e) {
@@ -578,13 +640,18 @@
     }
   };
 
-  // Intercepta todos os cliques no botão "Nova tarefa" ou "Criar primeira tarefa"
+  // Intercepta qualquer botão ou gatilho de criação de tarefa no app
   document.addEventListener('click', function (e) {
     const btn = e.target.closest('button, a');
     if (!btn) return;
 
     const txt = (btn.textContent || '').trim().toLowerCase();
-    if (txt.includes('nova tarefa') || txt.includes('criar primeira tarefa')) {
+    const isTaskCreation = txt.includes('nova tarefa') ||
+                           txt.includes('criar tarefa') ||
+                           txt.includes('criar primeira tarefa') ||
+                           (btn.classList.contains('primary') && (txt.includes('tarefa') || btn.closest('.welcome-actions')));
+
+    if (isTaskCreation && !btn.closest('#despegueModal')) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -596,10 +663,28 @@
     }
   }, true);
 
-  // Inicializa quando o DOM estiver pronto
+  // Monitora aberturas de modal nativas do React para criação de tarefas
+  const observer = new MutationObserver(() => {
+    const reactModal = document.querySelector('dialog.modal:not(#despegueModal)');
+    if (reactModal && reactModal.open) {
+      const heading = reactModal.querySelector('.modal-heading');
+      if (heading) {
+        const isCreating = heading.textContent.includes('DO COMBINADO À AÇÃO') || heading.textContent.includes('Qual é o próximo passo?');
+        if (isCreating) {
+          reactModal.close();
+          window.abrirDespegue();
+        }
+      }
+    }
+  });
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injetaModalDespegue);
+    document.addEventListener('DOMContentLoaded', () => {
+      injetaModalDespegue();
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
   } else {
     injetaModalDespegue();
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 })();
