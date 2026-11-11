@@ -2290,3 +2290,13 @@ textarea {
     animation: none !important;
   }
 }
+
+.house-task-dialog .calendar-option { margin-top: 6px; }
+.house-task-dialog .calendar-help { color: #564e67; margin: 0 0 10px; }
+.auth-form .google-auth-btn { min-height: 48px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .house-micro-toast,
+  .task-card,
+  .task-action-btn { transition: none !important; animation: none !important; }
+}

@@ -1,6 +1,5 @@
 {
   "apiBaseUrl": "https://house-tasks-api.brunohouse.workers.dev",
-  "googleEmail": "grupo190house@gmail.com",
   "firebaseConfig": {
     "apiKey": "AIzaSyD47HVe-1-DerpUUAVDeZjlTFx6qLTpjrQ",
     "authDomain": "house-task-327d6.firebaseapp.com",
