@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-v20261112-productivity';
+const CACHE_NAME = 'house-tasks-v20261112-notes';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',

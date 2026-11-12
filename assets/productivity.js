@@ -163,38 +163,74 @@ function pageUrl(id) {
   return url.href;
 }
 
-async function pageLibrary() {
-  const title = element("h1", "Páginas");
-  const bar = element("div", null, { class: "section-header" });
-  const status = element("p", "Carregando páginas…", { role: "status" });
-  const list = element("div", null, { class: "page-grid" });
-  const create = button("Nova página", () => pageEditor({ title: "", body: "", checklist: [], taskIds: [], role: "owner" }), { class: "primary" });
-  bar.append(title, create);
-  root.replaceChildren(bar, status, list);
-  const { pages } = await api("pages");
-  status.textContent = pages.length ? "" : "Nenhuma página criada.";
-  for (const page of pages) {
-    const card = element("a", null, { class: "surface page-card", href: pageUrl(page.id) });
-    card.append(element("strong", page.title), element("small", page.role === "owner" ? "Atualizada em " + new Date(page.updated).toLocaleDateString("pt-BR") : "Compartilhada"));
-    list.append(card);
+let notes = [];
+let activeNote;
+let saveActiveNote;
+let currentPanel;
+let search;
+let list;
+
+function drawNotes() {
+  const term = search.value.trim().toLocaleLowerCase("pt-BR");
+  const filtered = notes.filter(note => (note.title + " " + (note.preview || "")).toLocaleLowerCase("pt-BR").includes(term));
+  list.replaceChildren();
+  for (const note of filtered) {
+    const row = element("a", null, { class: "note-row", href: pageUrl(note.id) });
+    if (note.id === activeNote?.id) row.setAttribute("aria-current", "page");
+    const date = new Date(note.updated).toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
+    row.append(element("strong", note.title), element("small", date + (note.role === "owner" ? "" : " · Compartilhada")));
+    if (note.preview?.trim()) row.append(element("span", note.preview.trim()));
+    list.append(row);
   }
+  if (!filtered.length) list.append(element("p", term ? "Nenhuma nota encontrada." : "Nenhuma nota ainda.", { class: "note-list-empty" }));
+}
+
+function notesLayout() {
+  const workspace = element("div", null, { class: "notes-workspace" });
+  const sidebar = element("section", null, { class: "notes-sidebar", "aria-label": "Lista de notas" });
+  const bar = element("div", null, { class: "section-header" });
+  const create = element("a", "+", { href: pageUrl() + "&new=1", class: "note-create", "aria-label": "Nova nota", title: "Nova nota" });
+  bar.append(element("h1", "Notas"), create);
+  search = element("input", null, { type: "search", placeholder: "Buscar notas", "aria-label": "Buscar notas" });
+  search.oninput = drawNotes;
+  list = element("div", null, { class: "notes-list" });
+  sidebar.append(bar, search, list);
+  currentPanel = element("section", null, { class: "note-editor-pane", "aria-label": "Editor de nota" });
+  workspace.append(sidebar, currentPanel);
+  root.classList.add("notes-mode");
+  root.replaceChildren(workspace);
+  drawNotes();
+  return workspace;
+}
+
+function blankNote() {
+  return { title: "", body: "", checklist: [], taskIds: [], role: "owner" };
 }
 
 function pageEditor(page) {
   const editable = page.role !== "view";
-  const form = element("form", null, { class: "surface page-form" });
-  const title = element("input", null, { required: "", maxlength: "120" });
-  const body = element("textarea", null, { rows: "10", maxlength: "30000" });
+  activeNote = page;
+  drawNotes();
+  const form = element("form", null, { class: "note-form" });
+  const title = element("input", null, { "aria-label": "Título", class: "note-title", placeholder: "Título", maxlength: "120" });
+  const body = element("textarea", null, { "aria-label": "Conteúdo da nota", class: "note-body", placeholder: "Escreva uma nota…", rows: "5", maxlength: "30000" });
   title.value = page.title;
   body.value = page.body;
   title.readOnly = body.readOnly = !editable;
   const taskIds = new Set(page.taskIds);
   const checklist = structuredClone(page.checklist);
-  const status = element("p", "", { role: "status" });
+  const status = element("p", editable ? "" : "Somente leitura", { role: "status", class: "note-save-status" });
+  let revision = 0, savedRevision = 0, saveTimer, inFlight, saveError;
   const checks = element("ul", null, { class: "task-list" });
   const tasks = element("ul", null, { class: "task-list" });
   const knownTasks = new Map(data.tasks.map(task => [task.id, task]));
-  const mark = () => { draftDirty = true; status.textContent = "Alterações pendentes"; };
+  const mark = () => {
+    revision++;
+    draftDirty = true;
+    status.textContent = "Alterações pendentes";
+    clearTimeout(saveTimer);
+    if (!saveError) saveTimer = setTimeout(saveNote, 650);
+  };
   title.oninput = body.oninput = mark;
 
   function drawChecks() {
@@ -224,7 +260,12 @@ function pageEditor(page) {
     }
   }
 
-  form.append(field("Título", title), field("Documento", body), element("h2", "Checklist"), checks);
+  form.append(title, body);
+  const checkSection = element("details", null, { class: "note-extra" });
+  checkSection.open = !!checklist.length;
+  checkSection.hidden = !editable && !checklist.length;
+  checkSection.append(element("summary", "Checklist"), checks);
+  form.append(checkSection);
   const add = element("input", null, { maxlength: "300", placeholder: "Novo item", "aria-label": "Novo item do checklist" });
   function addCheck() {
     const text = add.value.trim();
@@ -239,50 +280,97 @@ function pageEditor(page) {
     const controls = element("div", null, { class: "inline" });
     controls.append(add, button("Adicionar", () => { if (addCheck()) add.focus(); }));
     add.onkeydown = event => { if (event.key === "Enter") { event.preventDefault(); addCheck(); } };
-    add.oninput = mark;
-    form.append(controls);
+    checkSection.append(controls);
   }
 
-  form.append(element("h2", "Tarefas vinculadas"), tasks);
+  const linksSection = element("details", null, { class: "note-extra" });
+  linksSection.hidden = !editable && !taskIds.size;
+  linksSection.append(element("summary", "Tarefas vinculadas"), tasks);
+  form.append(linksSection);
   if (editable) {
     const link = select([["", "Selecione uma tarefa"], ...data.tasks.map(task => [task.id, task.title])], "Selecionar tarefa");
     const controls = element("div", null, { class: "inline" });
     controls.append(link, button("Vincular", () => {
       if (link.value && taskIds.size < 100) { taskIds.add(link.value); link.value = ""; mark(); drawTasks(); }
     }));
-    form.append(controls);
+    linksSection.append(controls);
   }
-  const actions = element("div", null, { class: "inline" });
-  const save = element("button", "Salvar página", { type: "submit", class: "primary" });
-  if (editable) actions.append(save);
-  if (page.id && page.role === "owner") {
-    actions.append(button("Compartilhar", () => share(page.id)), button("Excluir", async () => {
-      if (!confirm("Excluir esta página?")) return;
-      try { await api("pages/" + page.id, "DELETE"); draftDirty = false; location.replace(pageUrl()); }
-      catch (error) { status.textContent = error.message; }
-    }, { class: "danger" }));
-  }
-  form.append(actions, status);
-  const heading = element("div", null, { class: "section-header" });
-  heading.append(element("h1", page.id ? "Página" : "Nova página"), element("a", "Todas as páginas", { href: pageUrl() }));
-  root.replaceChildren(heading, form);
+  const actions = element("div", null, { class: "note-actions" });
+  const retry = button("Tentar salvar", () => { saveError = null; void saveNote(); });
+  retry.hidden = true;
+  const menu = element("details", null, { class: "note-menu" });
+  menu.hidden = !page.id || page.role !== "owner";
+  const summary = element("summary", "•••", { "aria-label": "Opções da nota", title: "Opções da nota" });
+  const menuActions = element("div");
+  menuActions.append(button("Compartilhar", async () => {
+    menu.open = false;
+    if (await saveNote()) await share(page.id);
+  }), button("Excluir nota", async () => {
+    if (!confirm("Excluir esta nota?")) return;
+    if (inFlight) await inFlight;
+    clearTimeout(saveTimer);
+    try { await api("pages/" + page.id, "DELETE"); draftDirty = false; location.replace(pageUrl()); }
+    catch (error) { status.textContent = error.message; retry.hidden = false; }
+  }, { class: "danger" }));
+  menu.append(summary, menuActions);
+  const back = element("a", "‹ Notas", { href: pageUrl(), class: "notes-back" });
+  const noteDate = element("small", page.updated ? new Date(page.updated).toLocaleString("pt-BR", { dateStyle: "medium", timeStyle: "short" }) : "", { class: "note-date" });
+  actions.append(back, status, retry, menu);
+  currentPanel.replaceChildren(actions, noteDate, form);
+  currentPanel.closest(".notes-workspace").classList.add("has-note");
   drawChecks();
   drawTasks();
-  form.onsubmit = async event => {
-    event.preventDefault();
-    if (!editable || save.disabled) return;
-    if (add.value.trim() && !addCheck()) { status.textContent = "O checklist pode ter até 100 itens."; return; }
-    const fields = [...form.elements].filter(control => !control.disabled);
-    for (const control of fields) control.disabled = true;
-    try {
-      const payload = { title: title.value, body: body.value, checklist, taskIds: [...taskIds] };
-      const result = await api(page.id ? "pages/" + page.id : "pages", page.id ? "PATCH" : "POST", { ...payload, version: page.version });
-      draftDirty = false;
-      if (!page.id) { history.replaceState(null, "", pageUrl(result.id)); pageEditor(result); }
-      else { page.version = result.version; status.textContent = "Página salva."; }
-    } catch (error) { status.textContent = error.message; }
-    finally { for (const control of fields) control.disabled = false; }
-  };
+
+  async function saveNote() {
+    clearTimeout(saveTimer);
+    if (!editable) return true;
+    if (inFlight) return inFlight;
+    if (saveError?.status === 409) return false;
+    if (revision === savedRevision) return true;
+    inFlight = (async () => {
+      try {
+        retry.hidden = true;
+        while (revision !== savedRevision) {
+          const saving = revision;
+          const text = title.value.trim(), content = body.value;
+          if (!page.id && !text && !content.trim() && !checklist.length && !taskIds.size) {
+            savedRevision = saving;
+            break;
+          }
+          const payload = { title: text || "Nova nota", body: content, checklist, taskIds: [...taskIds], version: page.version };
+          status.textContent = "Salvando…";
+          const existing = !!page.id;
+          const result = await api(existing ? "pages/" + page.id : "pages", existing ? "PATCH" : "POST", payload);
+          Object.assign(page, { id: result.id || page.id, version: result.version, updated: result.updated, title: payload.title });
+          if (!existing) history.replaceState(null, "", pageUrl(page.id));
+          menu.hidden = page.role !== "owner";
+          noteDate.textContent = new Date(page.updated).toLocaleString("pt-BR", { dateStyle: "medium", timeStyle: "short" });
+          notes = [{ id: page.id, title: payload.title, updated: page.updated, role: page.role, preview: content.slice(0, 180) },
+            ...notes.filter(note => note.id !== page.id)];
+          drawNotes();
+          savedRevision = saving;
+        }
+        draftDirty = false;
+        status.textContent = page.id ? "Salvo" : "";
+        return true;
+      } catch (error) {
+        saveError = error;
+        status.textContent = error.status === 409 ? "A nota mudou em outra sessão. Copie suas alterações antes de reabrir." : error.message;
+        retry.hidden = error.status === 409;
+        return false;
+      }
+    })();
+    try { return await inFlight; }
+    finally { inFlight = null; }
+  }
+  saveActiveNote = saveNote;
+  form.onsubmit = event => { event.preventDefault(); void saveNote(); };
+  form.addEventListener("keydown", event => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
+      event.preventDefault();
+      void saveNote();
+    }
+  });
 }
 
 async function share(id) {
@@ -342,21 +430,31 @@ const apiOrigin = await fetch(new URL("app-config.json", base))
 try {
   if (pagesMode) {
     const id = params.get("id");
-    if (id) {
-      let page;
-      [data, page] = await Promise.all([api("data"), api("pages/" + encodeURIComponent(id))]);
-      pageEditor(page);
-    } else {
-      data = await api("data");
-      await pageLibrary();
-    }
+    const requests = [api("data"), api("pages")];
+    if (id) requests.push(api("pages/" + encodeURIComponent(id)));
+    const [taskData, library, page] = await Promise.all(requests);
+    data = taskData;
+    notes = library.pages;
+    notesLayout();
+    if (page || params.get("new") === "1") pageEditor(page || blankNote());
+    else currentPanel.append(element("p", "Selecione uma nota ou crie uma nova.", { class: "notes-empty" }));
+    document.addEventListener("click", async event => {
+      const link = event.target.closest("a[href]");
+      if (!link || !draftDirty || event.defaultPrevented || event.button !== 0 ||
+          event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      if (await saveActiveNote?.()) location.assign(link.href);
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && draftDirty) void saveActiveNote?.();
+    });
   } else {
     data = await api("data");
     renderCalendar();
   }
 } catch (error) {
   root.replaceChildren(element("p", error.message, { role: "alert" }));
-  if (pagesMode) root.append(element("a", "Todas as páginas", { href: pageUrl() }));
+  if (pagesMode) root.append(element("a", "Todas as notas", { href: pageUrl() }));
 } finally {
   root.setAttribute("aria-busy", "false");
 }
