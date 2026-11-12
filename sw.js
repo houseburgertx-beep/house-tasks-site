@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-v20261112-create-form';
+const CACHE_NAME = 'house-tasks-v20261112-team-access';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
