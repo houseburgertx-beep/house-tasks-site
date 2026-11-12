@@ -1,0 +1,363 @@
+@font-face {
+  font-family: Inter;
+  src: url("./fonts/Inter-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  --portal-bg: #ffffff;
+  --portal-mobile: #eef0f4;
+  --portal-card: #ffffff;
+  --portal-subtle: #eff0f3;
+  --portal-text: #101828;
+  --portal-muted: #667085;
+  --portal-line: #eaecf0;
+  --portal-strong: #080808;
+  --portal-on-strong: #ffffff;
+  --portal-green: #326b55;
+  --portal-red: #a82f40;
+  --portal-radius: 20px;
+  --portal-shadow: 0 2px 4px #10182812, 0 8px 18px #1018280e;
+  --house-font: Inter, ui-sans-serif, system-ui, sans-serif;
+  --house-paper: var(--portal-card);
+  --house-page: var(--portal-bg);
+  --house-raised: var(--portal-subtle);
+  --house-text: var(--portal-text);
+  --house-muted: var(--portal-muted);
+  --house-line: var(--portal-line);
+  --house-accent: var(--portal-strong);
+  --house-accent-hover: var(--portal-strong);
+  --house-tint: var(--portal-subtle);
+  --line: var(--portal-line);
+  --muted: var(--portal-muted);
+  --accent: var(--portal-strong);
+  --blue: var(--portal-strong);
+}
+:root[data-house-theme="dark"] {
+  color-scheme: dark;
+  --portal-bg: #101216;
+  --portal-mobile: #101216;
+  --portal-card: #181b21;
+  --portal-subtle: #22262e;
+  --portal-text: #f5f6f8;
+  --portal-muted: #b0bac9;
+  --portal-line: #2f3540;
+  --portal-strong: #f3f4f6;
+  --portal-on-strong: #121417;
+  --portal-green: #9fd4b7;
+  --portal-red: #f3a5af;
+  --portal-shadow: 0 2px 7px #0004;
+}
+
+html { background: var(--portal-bg); }
+body:is(.house-app, .house-studio, .house-productivity) {
+  margin: 0;
+  background: var(--portal-bg) !important;
+  color: var(--portal-text);
+  font-family: var(--house-font);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,button,input,select,textarea,summary,small,label) {
+  font-family: var(--house-font) !important;
+}
+.house-app .app-shell { background: transparent; }
+.house-app .main-shell {
+  width: 100% !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+.house-app .main-shell main {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  padding: 20px 18px 30px !important;
+}
+.house-app .topbar {
+  height: 74px;
+  padding: 0 18px !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  background: var(--portal-card) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-color: var(--portal-line) !important;
+}
+.portal-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 10px;
+  color: var(--portal-text) !important;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.portal-brand strong, .portal-brand small { display: block; }
+.portal-brand strong { font-size: 16px; font-weight: 600; line-height: 1.2; }
+.portal-brand small { font-size: 11.5px; color: var(--portal-muted); }
+.portal-mark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  background: var(--portal-strong);
+  color: var(--portal-on-strong);
+  border-radius: 50%;
+  font-size: 21px;
+  font-weight: 650;
+}
+.house-app .portal-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid var(--portal-line);
+  border-radius: 20px;
+  background: var(--portal-card);
+  box-shadow: 0 2px 5px #10182810;
+}
+.house-app .portal-nav .nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: auto;
+  min-height: 38px;
+  margin: 0;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  color: var(--portal-muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.house-app .portal-nav .nav-item::before { content: none; }
+.house-app .portal-nav .nav-item:hover { background: var(--portal-subtle); }
+.house-app .portal-nav .nav-item.active {
+  background: var(--portal-strong);
+  color: var(--portal-on-strong);
+  box-shadow: 0 2px 5px #10182826;
+  font-weight: 600;
+}
+.house-app .topbar .top-actions { justify-self: end; gap: 8px; }
+.house-app .topbar .private-label { display: none; }
+.house-app .topbar .top-actions :is(a, button) {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 0;
+  border-radius: 50% !important;
+  color: var(--portal-text) !important;
+  background: var(--portal-subtle) !important;
+  border: 1px solid var(--portal-line) !important;
+  box-shadow: none !important;
+}
+.house-app .portal-theme-toggle { font-size: 17px; }
+.house-app .portal-nav svg, .house-app .mobile-nav svg { flex-shrink: 0; }
+
+.house-app :is(.welcome, .filters, .column, .task-card, .catalog-card, .task-list, .completion-panel, .overview-summary > article, .notification-menu, .auth-card, .modal),
+.house-studio :is(.board-tile, .floating, #studio-dialog, #notification-task),
+.house-productivity :is(.surface, .notes-workspace, dialog) {
+  background: var(--portal-card) !important;
+  color: var(--portal-text) !important;
+  border: 1px solid var(--portal-line) !important;
+  border-radius: var(--portal-radius) !important;
+  box-shadow: var(--portal-shadow) !important;
+}
+.house-app .welcome {
+  padding: 12px 14px !important;
+  gap: 10px;
+  margin-bottom: 10px !important;
+}
+.house-app .welcome h1, .house-app .page-heading h1,
+.house-app .section-heading h2, .house-studio .library h1, .house-productivity main h1 {
+  color: var(--portal-text) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -.02em !important;
+}
+.house-app .welcome .welcome-clock {
+  color: var(--portal-text);
+  background: var(--portal-subtle);
+  padding: 9px 12px;
+  border-radius: 12px;
+}
+.house-app .welcome-clock time { font-size: 23px; font-weight: 600; }
+.house-app .welcome-clock span { font-size: 10.5px; color: var(--portal-muted); }
+.house-app .page-heading { margin: 0 0 12px; }
+.house-app .page-heading .eyebrow { display: none; }
+.house-app :is(.page-heading p, .section-heading p, .task-card .card-description, .task-meta, .app-footer, .catalog-card p, .empty-list) {
+  color: var(--portal-muted) !important;
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+}
+.house-app .stats-grid {
+  grid-template-columns: repeat(4, minmax(0,1fr)) !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  padding: 12px;
+  border: 1px solid var(--portal-line);
+  border-radius: var(--portal-radius);
+  background: var(--portal-card);
+  box-shadow: var(--portal-shadow);
+}
+.house-app .stats-grid .stat {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center !important;
+  justify-content: center;
+  gap: 2px !important;
+  min-height: 58px !important;
+  padding: 6px 3px !important;
+  background: var(--portal-subtle) !important;
+  color: var(--portal-text) !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+.house-app .stats-grid .stat > span { order: 2; color: var(--portal-muted) !important; font-size: 9.5px !important; text-transform: none; letter-spacing: 0; }
+.house-app .stats-grid .stat strong { color: var(--portal-text) !important; font-size: 20px !important; line-height: 1.1; font-weight: 600 !important; }
+.house-app .stats-grid .stat:nth-child(3) strong { color: var(--portal-green) !important; }
+.house-app .stats-grid .stat :is(svg,small,.stat-bottom) { display: none !important; }
+.house-app .section-heading { margin-bottom: 10px !important; }
+.house-app .filters { padding: 10px 12px !important; margin-bottom: 12px !important; gap: 8px !important; }
+.house-app :is(.search-field, .filter-group > label, .filter-late, .view-toggle, .modal .field input, .modal .field select, .modal .field textarea, .checklist-section, .approval-field) {
+  color: var(--portal-text) !important;
+  background: var(--portal-subtle) !important;
+  border-color: var(--portal-line) !important;
+}
+.house-app :is(.view-toggle, .mobile-status) { border-radius: 999px !important; }
+.house-app .mobile-status { background: var(--portal-card) !important; box-shadow: var(--portal-shadow); border-color: var(--portal-line) !important; }
+.house-app :is(.view-toggle button.active,.mobile-status button.active) {
+  background: var(--portal-subtle) !important;
+  color: var(--portal-text) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+.house-app .kanban { gap: 10px !important; }
+.house-app .column { background: var(--portal-subtle) !important; }
+.house-app .column[data-stage="done"] { background: var(--portal-subtle) !important; border-color: var(--portal-line) !important; }
+.house-app .column[data-stage="done"] .completed-tasks > summary { color: var(--portal-green); }
+.house-app .column-head h3, .house-app .task-card h3 { color: var(--portal-text) !important; font-size: 13px !important; font-weight: 600 !important; }
+.house-app :is(.task-card .card-bottom,.column-head,.list-row) { border-color: var(--portal-line) !important; }
+.house-app .task-card .task-action-btn { color: var(--portal-text) !important; background: var(--portal-subtle) !important; border: 1px solid var(--portal-line) !important; }
+.house-app :is(.primary,.approve-button,.welcome .primary,.modal-footer-actions button.primary,.mobile-nav .mobile-create),
+.house-studio .primary, .house-productivity .primary {
+  background: var(--portal-strong) !important;
+  color: var(--portal-on-strong) !important;
+  border-color: var(--portal-strong) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+}
+.house-app :is(.icon-button,.secondary), .house-studio .quiet {
+  background: var(--portal-subtle) !important;
+  color: var(--portal-text) !important;
+  border-color: var(--portal-line) !important;
+}
+.house-app .modal { border-radius: 14px !important; }
+.house-app .modal :is(h2,h3,strong), .house-app .modal .field,
+.house-app .modal .approval-field > span { color: var(--portal-text) !important; }
+.house-app .modal .modal-title-clean { font-size: 18px !important; font-weight: 600 !important; }
+.house-app .modal .field { text-transform: none !important; font-size: 11.5px !important; }
+.house-app .modal .field :is(input,select,textarea) { border-radius: 10px !important; box-shadow: none !important; }
+.house-app .modal .modal-segmented-tabs { background: var(--portal-subtle) !important; border-color: var(--portal-line) !important; }
+.house-app .modal .modal-segmented-tabs .seg-tab.active { background: var(--portal-card) !important; color: var(--portal-text) !important; }
+.house-app .modal .check-add { background: var(--portal-card) !important; border-color: var(--portal-line) !important; }
+.house-app .modal .check-add input { background: transparent; color: var(--portal-text) !important; }
+.house-app .modal .check-add button { background: var(--portal-strong) !important; color: var(--portal-on-strong) !important; }
+.house-app .modal-footer-actions { border-color: var(--portal-line) !important; }
+.house-app .auth-shell, body.house-app:has(.auth-shell) { background: var(--portal-mobile) !important; }
+.house-app .auth-card { border-radius: var(--portal-radius) !important; }
+.house-app .auth-card h2 { color: var(--portal-text) !important; font-size: 22px !important; }
+.house-app .google-auth-btn { border-radius: 12px !important; background: var(--portal-card) !important; color: var(--portal-text) !important; border-color: var(--portal-line) !important; }
+
+.house-studio .studio-header, .house-productivity > header {
+  min-height: 68px;
+  background: var(--portal-card) !important;
+  color: var(--portal-text) !important;
+  border-color: var(--portal-line) !important;
+}
+.house-studio :is(.editor,.board-preview), .house-productivity .notes-sidebar { background: var(--portal-mobile) !important; }
+.house-studio .library { max-width: none; padding: 20px 18px; }
+.house-studio .studio-brand > span { background: var(--portal-strong); color: var(--portal-on-strong); border-radius: 50%; }
+.house-studio :is(#board-title, .selection textarea, .selection input:not([type="color"]), #dialog-body input:not([type="file"]), #dialog-body select, #dialog-body textarea) {
+  color: var(--portal-text);
+  background: var(--portal-subtle);
+  border-color: var(--portal-line);
+}
+.house-studio .icon-tool { color: var(--portal-text); }
+.house-studio .icon-tool[aria-pressed="true"], .house-studio .icon-tool:hover { background: var(--portal-subtle); color: var(--portal-text); }
+.house-productivity main { width: 100%; padding-inline: 18px; }
+.house-productivity > header { padding-inline: 18px; }
+.house-productivity :is(nav,.day[aria-pressed="true"],.note-create,.note-row[aria-current],.note-row:hover) { background: var(--portal-subtle); }
+.house-productivity :is(a,.home,.notes-back,.note-menu > summary,.day[aria-current="date"] strong) { color: var(--portal-text); }
+.house-productivity nav a[aria-current] { background: var(--portal-strong); color: var(--portal-on-strong); }
+.house-productivity :is(button,input,select,textarea,.note-menu > div) { background: var(--portal-card); color: var(--portal-text); border-color: var(--portal-line); }
+.house-productivity :is(.muted,small,.note-row span,.note-date,.note-save-status,.weekday) { color: var(--portal-muted); }
+.house-productivity .notes-sidebar input { background: var(--portal-subtle); }
+.house-productivity .note-form .note-title { font-size: 22px; font-weight: 600; }
+.house-productivity :is(.notes-sidebar,.note-extra) { border-color: var(--portal-line); }
+
+@media (min-width: 769px) {
+  .house-app .mobile-nav { display: none !important; }
+}
+@media (min-width: 769px) and (max-width: 1080px) {
+  .house-app .portal-nav .nav-item { font-size: 0; gap: 0; padding: 0; width: 38px; }
+  .house-app .portal-nav .nav-item svg { width: 16px; height: 16px; }
+}
+@media (max-width: 768px) {
+  body:is(.house-app,.house-studio,.house-productivity) { background: var(--portal-mobile) !important; }
+  .house-app .topbar {
+    height: auto;
+    min-height: 64px;
+    margin: 14px 16px 0;
+    padding: 9px 10px !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    border: 1px solid var(--portal-line) !important;
+    border-radius: 20px;
+    box-shadow: var(--portal-shadow);
+  }
+  .house-app .portal-nav { display: none; }
+  .house-app .main-shell main { padding: 14px 16px 86px !important; }
+  .house-app .portal-brand strong { font-size: 14px; }
+  .house-app .portal-brand small { font-size: 10.5px; }
+  .house-app .topbar .top-actions { gap: 4px; }
+  .house-app .topbar .top-actions :is(a,button) { width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; }
+  .house-app .mobile-nav {
+    display: flex !important;
+    left: 16px !important;
+    right: 16px !important;
+    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    min-height: 56px;
+    padding: 6px !important;
+    background: var(--portal-card) !important;
+    border-color: var(--portal-line) !important;
+    border-radius: 999px !important;
+    box-shadow: var(--portal-shadow) !important;
+    backdrop-filter: none !important;
+  }
+  .house-app .mobile-nav :is(button,.mobile-nav-link) { color: var(--portal-muted) !important; font-size: 0 !important; gap: 0 !important; }
+  .house-app .mobile-nav :is(button,.mobile-nav-link).active { background: var(--portal-subtle) !important; color: var(--portal-text) !important; border-radius: 999px !important; }
+  .house-app .mobile-nav .mobile-create { color: var(--portal-on-strong) !important; margin: 0 2px !important; width: 40px !important; height: 40px !important; min-height: 40px !important; min-width: 40px !important; }
+  .house-app .mobile-nav .mobile-create svg { width: 18px; height: 18px; }
+  .house-productivity main, .house-studio .library { padding-inline: 16px; }
+}
+@media (max-width: 360px) {
+  .house-app .topbar { gap: 4px; }
+  .house-app .portal-brand { gap: 6px; }
+  .house-app .portal-mark { width: 32px; height: 32px; flex-basis: 32px; font-size: 17px; }
+  .house-app .stats-grid { padding-inline: 7px; gap: 4px !important; }
+}
