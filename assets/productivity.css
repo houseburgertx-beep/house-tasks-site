@@ -135,3 +135,34 @@ dialog::backdrop { background: #17263c70; }
   .notes-workspace:not(.has-note) .note-editor-pane, .notes-workspace.has-note .notes-sidebar { display: none; }
   .notes-back { display: inline-flex; align-items: center; min-height: 44px; margin-right: auto; }
 }
+
+.personal-header, .personal-editor-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.personal-demands, .personal-list, .personal-editor, .personal-editor-rows {
+  display: grid;
+  gap: 10px;
+}
+.personal-demand {
+  padding: 12px;
+  background: var(--portal-subtle);
+  border: 1px solid var(--portal-line);
+  border-radius: 14px;
+}
+.personal-demand h3, .personal-editor h3 {
+  margin: 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.personal-checklist { list-style: none; margin: 8px 0 0; padding: 0; }
+.personal-checklist label { display: flex; align-items: center; gap: 8px; min-height: 36px; overflow-wrap: anywhere; }
+.personal-checklist input { margin: 0; min-height: 0; width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--portal-strong); }
+.personal-checklist input:checked + span { text-decoration: line-through; color: var(--portal-muted); }
+.personal-editor input { font-size: 16px; }
+.personal-editor-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }
+.personal-editor-actions { justify-content: flex-end; }
+.personal-message:empty, .personal-demands > p:empty { display: none; }

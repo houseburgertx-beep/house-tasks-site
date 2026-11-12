@@ -87,6 +87,160 @@ function taskList(tasks) {
   return list;
 }
 
+function personalDemandEditor(selected, demand, onSaved) {
+  const dialog = element("dialog", null, { "aria-labelledby": "personal-editor-title" });
+  const form = element("form", null, { class: "personal-editor" });
+  const title = element("input", null, { required: "", maxlength: "120", placeholder: "Ex. Preparar a abertura" });
+  title.value = demand?.title || "";
+  const date = element("input", null, { type: "date", required: "" });
+  date.value = demand?.day || selected;
+  const rows = element("div", null, { class: "personal-editor-rows" });
+  const status = element("p", null, { role: "status", class: "personal-message" });
+  const add = button("Adicionar item", () => appendItem("", false, true));
+  const submit = element("button", "Salvar demanda", { type: "submit", class: "primary" });
+  const cancel = button("Cancelar", () => dialog.close());
+
+  function syncRows() {
+    const items = [...rows.children];
+    items.forEach((row, index) => {
+      row.firstElementChild.setAttribute("aria-label", "Item " + (index + 1));
+      row.lastElementChild.setAttribute("aria-label", "Remover item " + (index + 1));
+      row.lastElementChild.disabled = items.length === 1;
+    });
+    add.disabled = items.length >= 50;
+  }
+  function appendItem(text, done, focus = false) {
+    const row = element("div", null, { class: "personal-editor-row" });
+    const input = element("input", null, { maxlength: "300", placeholder: "O que precisa ser feito?" });
+    input.defaultValue = text;
+    row.dataset.done = String(done);
+    const remove = button("Remover", () => {
+      row.remove();
+      syncRows();
+      add.focus();
+    });
+    row.append(input, remove);
+    rows.append(row);
+    syncRows();
+    if (focus) input.focus();
+  }
+  for (const item of demand?.checklist || [{ text: "", done: false }]) appendItem(item.text, item.done);
+  const actions = element("div", null, { class: "personal-editor-actions" });
+  actions.append(cancel, submit);
+  form.append(element("h2", demand ? "Editar demanda pessoal" : "Nova demanda pessoal", { id: "personal-editor-title" }),
+    field("Nome da demanda", title), field("Data", date),
+    element("h3", "Checklist"), rows, add, status, actions);
+  form.onsubmit = async event => {
+    event.preventDefault();
+    const checklist = [...rows.children].map(row => {
+      const text = row.firstElementChild.value.trim();
+      return { text, done: row.dataset.done === "true" && row.firstElementChild.defaultValue === text };
+    }).filter(item => item.text);
+    if (!title.value.trim() || !checklist.length) {
+      status.textContent = "Informe um nome e pelo menos um item do checklist.";
+      return;
+    }
+    const payload = { title: title.value.trim(), day: date.value, checklist };
+    const controls = [...form.querySelectorAll("input,button")].filter(control => !control.disabled);
+    controls.forEach(control => { control.disabled = true; });
+    status.textContent = "Salvando…";
+    try {
+      await api(demand ? "personal-demands/" + demand.id : "personal-demands", demand ? "PATCH" : "POST",
+        demand ? { ...payload, version: demand.version } : payload);
+      dialog.close();
+      onSaved(payload.day);
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      controls.forEach(control => { control.disabled = false; });
+    }
+  };
+  dialog.addEventListener("cancel", event => { if (submit.disabled) event.preventDefault(); });
+  dialog.addEventListener("close", () => dialog.remove(), { once: true });
+  dialog.append(form);
+  document.body.append(dialog);
+  dialog.showModal();
+}
+
+function renderPersonalDemands(panel, selected, onSaved) {
+  const header = element("div", null, { class: "personal-header" });
+  const progress = element("p", null, { class: "muted", "aria-live": "polite" });
+  const title = element("div");
+  title.append(element("h2", "Minhas demandas"), element("small", dayFormat.format(dateFromKey(selected))));
+  header.append(title, button("+ Demanda pessoal", () => personalDemandEditor(selected, null, onSaved), { class: "primary" }));
+  const content = element("div", null, { class: "personal-list" });
+  panel.replaceChildren(header, progress, content);
+
+  function show(demands) {
+    const items = demands.flatMap(demand => demand.checklist);
+    progress.textContent = items.length ? items.filter(item => item.done).length + " de " + items.length + " itens concluídos" : "";
+    content.replaceChildren();
+    if (!demands.length) content.append(element("p", "Nenhuma demanda pessoal nesta data.", { class: "muted" }));
+    for (const demand of demands) {
+      const card = element("article", null, { class: "personal-demand" });
+      const heading = element("div", null, { class: "personal-header" });
+      heading.append(element("h3", demand.title));
+      const actions = element("div", null, { class: "personal-editor-actions" });
+      actions.append(
+        button("Editar", () => personalDemandEditor(selected, demand, onSaved), { "aria-label": "Editar " + demand.title }),
+        button("Excluir", async () => {
+          if (!confirm("Excluir a demanda “" + demand.title + "”?")) return;
+          await save("DELETE", { version: demand.version });
+        }, { "aria-label": "Excluir " + demand.title }),
+      );
+      heading.append(actions);
+      const list = element("ul", null, { class: "personal-checklist" });
+      const status = element("p", null, { role: "status", class: "personal-message" });
+      async function save(method, payload, checkboxIndex) {
+        const controls = [...panel.querySelectorAll("input,button")];
+        controls.forEach(control => { control.disabled = true; });
+        status.textContent = "Salvando…";
+        try {
+          const result = await api("personal-demands/" + demand.id, method, payload);
+          if (!card.isConnected) return;
+          controls.forEach(control => { control.disabled = false; });
+          show(method === "DELETE" ? demands.filter(item => item.id !== demand.id) :
+            demands.map(item => item.id === demand.id ? result : item));
+          if (checkboxIndex !== undefined) content.querySelectorAll("article")[
+            demands.findIndex(item => item.id === demand.id)
+          ]?.querySelectorAll("input")[checkboxIndex]?.focus();
+        } catch (error) {
+          status.textContent = error.message;
+          controls.forEach(control => { control.disabled = false; });
+        }
+      }
+      demand.checklist.forEach((item, index) => {
+        const checkbox = element("input", null, { type: "checkbox" });
+        checkbox.checked = item.done;
+        checkbox.onchange = () => {
+          const done = checkbox.checked;
+          checkbox.checked = item.done;
+          const checklist = demand.checklist.map((entry, position) => position === index ? { ...entry, done } : entry);
+          void save("PATCH", { day: demand.day, title: demand.title, version: demand.version, checklist }, index);
+        };
+        const row = element("li");
+        const label = element("label");
+        label.append(checkbox, element("span", item.text));
+        row.append(label);
+        list.append(row);
+      });
+      card.append(heading, list, status);
+      content.append(card);
+    }
+  }
+
+  async function load() {
+    content.replaceChildren(element("p", "Carregando demandas pessoais…", { role: "status" }));
+    try {
+      const { demands } = await api("personal-demands?day=" + encodeURIComponent(selected));
+      if (content.isConnected) show(demands);
+    } catch (error) {
+      content.replaceChildren(element("p", error.message, { role: "alert" }), button("Tentar novamente", load));
+    }
+  }
+  void load();
+}
+
 function renderCalendar() {
   let selected = today(), month = dateFromKey(selected);
   const person = select([["", "Todos os responsáveis"], ["none", "Sem responsável"],
@@ -95,9 +249,11 @@ function renderCalendar() {
   const filters = element("div", null, { class: "filters" });
   filters.append(person, unit);
   const section = element("section", null, { class: "surface" });
+  const personal = element("section", null, { class: "surface personal-demands", "aria-label": "Minhas demandas" });
+  let loadedPersonalDay;
   const agenda = element("section", null, { class: "surface", "aria-live": "polite" });
   const undated = element("details", null, { class: "surface" });
-  root.replaceChildren(element("h1", "Meu dia"), filters, section, agenda, undated);
+  root.replaceChildren(element("h1", "Meu dia"), filters, section, personal, agenda, undated);
 
   function draw() {
     const tasks = data.tasks.filter(task => (!unit.value || task.unit_id === unit.value)
@@ -146,6 +302,16 @@ function renderCalendar() {
       grid.append(cell);
     }
     section.replaceChildren(header, grid);
+    if (loadedPersonalDay !== selected) {
+      loadedPersonalDay = selected;
+      renderPersonalDemands(personal, selected, day => {
+        selected = day;
+        month = dateFromKey(day);
+        loadedPersonalDay = null;
+        draw();
+        personal.querySelector("button")?.focus({ preventScroll: true });
+      });
+    }
     agenda.replaceChildren(element("h2", dayFormat.format(dateFromKey(selected))), taskList(byDate.get(selected) || []));
     const noDate = byDate.get(null) || [];
     undated.hidden = !noDate.length;
