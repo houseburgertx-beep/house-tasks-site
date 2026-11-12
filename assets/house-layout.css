@@ -1333,3 +1333,8 @@ body.house-app:has(.auth-shell) {
 .house-notification-settings :is(h3, p) { margin: 0; }
 .house-notification-settings p { font-size: .88rem; }
 .house-notification-settings button { justify-self: start; min-height: 42px; }
+
+@media (max-width: 360px) {
+  .house-app .mobile-nav :is(button, .mobile-nav-link) { font-size: 9px !important; }
+  .house-app .mobile-nav .mobile-create { margin-inline: 1px !important; }
+}

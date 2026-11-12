@@ -1,9 +1,12 @@
-const CACHE_NAME = 'house-tasks-v20261112-board-tools';
+const CACHE_NAME = 'house-tasks-v20261112-productivity';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
   '/house-tasks-site/whiteboards.html',
   '/house-tasks-site/notification.html',
+  '/house-tasks-site/productivity.html',
+  '/house-tasks-site/assets/productivity.css',
+  '/house-tasks-site/assets/productivity.js',
   '/house-tasks-site/assets/notification-task.js',
   '/house-tasks-site/assets/whiteboards.css',
   '/house-tasks-site/assets/house-layout.css',
