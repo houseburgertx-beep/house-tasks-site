@@ -3,8 +3,9 @@ set -eu
 
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 stage=$(mktemp -d)
+trap 'rm -rf -- "$stage"' EXIT
 mkdir -p "$stage/public/house-tasks-site"
-for entry in assets app-config.json favicon.svg index.html whiteboards.html notification.html manifest.webmanifest sw.js; do
+for entry in assets app-config.json favicon.svg index.html whiteboards.html notification.html productivity.html iphone.html manifest.webmanifest sw.js; do
   cp -R "$root/$entry" "$stage/public/house-tasks-site/"
 done
 cat > "$stage/firebase.json" <<'CONFIG'
@@ -21,4 +22,4 @@ cat > "$stage/firebase.json" <<'CONFIG'
 }
 CONFIG
 cd "$stage"
-firebase deploy --only hosting --project house-task-327d6
+firebase deploy --only hosting --project house-task-327d6 --non-interactive
