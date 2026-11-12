@@ -155,9 +155,9 @@ async function library() {
       const tile = button(undefined, () => loadBoard(info.id), "board-tile");
       const preview = svg("svg", { class: "board-preview", viewBox: "0 0 250 130", "aria-hidden": "true" });
       preview.append(
-        svg("path", { d: "M75 65C130 65 116 31 165 31M75 65H165M75 65C130 65 116 100 165 100", fill: "none", stroke: "#ac95dc", "stroke-width": 2 }),
-        svg("rect", { x: 25, y: 52, width: 66, height: 27, rx: 10, fill: "#7252b8" }),
-        ...[31, 65, 100].map((y, index) => svg("rect", { x: 154, y: y - 10, width: 66, height: 20, rx: 8, fill: colors[index + 2] })),
+        svg("path", { d: "M75 65C130 65 116 31 165 31M75 65H165M75 65C130 65 116 100 165 100", fill: "none", stroke: "var(--portal-muted)", "stroke-width": 2 }),
+        svg("rect", { x: 25, y: 52, width: 66, height: 27, rx: 10, fill: "var(--portal-strong)" }),
+        ...[31, 65, 100].map(y => svg("rect", { x: 154, y: y - 10, width: 66, height: 20, rx: 8, fill: "var(--portal-line)" })),
       );
       tile.append(preview, node("strong", info.title), node("small", new Date(info.updated).toLocaleDateString("pt-BR") + (info.role === "owner" ? "" : " · Compartilhado")));
       $("board-list").append(tile);

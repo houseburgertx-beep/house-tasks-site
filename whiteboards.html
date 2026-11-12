@@ -7,14 +7,14 @@
   <title>Quadros visuais · HOUSE TASKS</title>
   <link rel="icon" href="./favicon.svg">
   <link rel="stylesheet" href="./assets/whiteboards.css?v=20261112-board-tools">
-  <script type="module" src="./assets/whiteboards.js?v=20261112-board-tools"></script>
+  <script type="module" src="./assets/whiteboards.js?v=20261112-portal-screens"></script>
   <link rel="stylesheet" href="./assets/house-layout.css?v=20261111t">
-  <script src="./assets/house-theme.js?v=20261112-portal-metrics"></script>
-  <link rel="stylesheet" href="./assets/house-portal.css?v=20261112-portal-metrics">
+  <script src="./assets/house-theme.js?v=20261112-portal-screens"></script>
+  <link rel="stylesheet" href="./assets/house-portal.css?v=20261112-portal-screens">
 </head>
 <body class="house-studio">
   <header class="studio-header">
-    <a href="./" class="studio-brand"><span>h<span>.</span></span> HOUSE TASKS</a>
+    <a href="./" class="studio-brand"><span aria-hidden="true">H</span><strong>House Tasks</strong></a>
     <button id="library-link" class="quiet" type="button" hidden>Todos os quadros</button>
     <input id="board-title" aria-label="Nome do quadro" maxlength="100" hidden>
     <div class="header-end">
@@ -25,7 +25,7 @@
     </div>
   </header>
   <main id="library" class="library">
-    <div class="library-heading"><div><h1>Quadros visuais</h1><p>Organize ideias, processos e projetos em um espaço visual.</p></div>
+    <div class="library-heading"><div><h1>Quadros visuais</h1></div>
     <div class="library-actions"><button id="import" class="quiet" type="button">Importar JSON</button><button id="new-board" class="primary" type="button">+ Novo quadro</button></div></div>
     <p id="library-status" role="status"></p>
     <div id="board-list" class="board-list"></div>
