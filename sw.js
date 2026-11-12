@@ -1,8 +1,10 @@
-const CACHE_NAME = 'house-tasks-v20261111z';
+const CACHE_NAME = 'house-tasks-v20261112-notify';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
   '/house-tasks-site/whiteboards.html',
+  '/house-tasks-site/notification.html',
+  '/house-tasks-site/assets/notification-task.js',
   '/house-tasks-site/assets/whiteboards.css',
   '/house-tasks-site/assets/house-layout.css',
   '/house-tasks-site/assets/whiteboards.js',
@@ -91,4 +93,37 @@ self.addEventListener('fetch', (event) => {
       return cachedResponse || fetchPromise;
     })
   );
+});
+
+self.addEventListener("push", event => {
+  let message = {};
+  try { message = event.data?.json() || {}; } catch {}
+  const url = notificationURL(message.url);
+  event.waitUntil(self.registration.showNotification("HOUSE TASKS", {
+    body: typeof message.body === "string" ? message.body : "Você recebeu um aviso.",
+    icon: "/house-tasks-site/assets/icon-192.png",
+    tag: typeof message.tag === "string" ? message.tag : undefined,
+    data: { url },
+  }));
+});
+
+function notificationURL(value) {
+  const home = new URL("/house-tasks-site/", self.location.origin);
+  try {
+    const url = new URL(value, home);
+    if (url.origin === home.origin && url.pathname === "/house-tasks-site/notification.html" &&
+        /^[a-f0-9-]{36}$/i.test(url.searchParams.get("tarefa") || "")) return url.href;
+  } catch {}
+  return home.href;
+}
+
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+  const url = notificationURL(event.notification.data?.url);
+  event.waitUntil((async () => {
+    const tabs = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const existing = tabs.find(client => client.url === url);
+    if (existing) return existing.focus();
+    return self.clients.openWindow(url);
+  })());
 });

@@ -1293,3 +1293,13 @@ body.house-app:has(.auth-shell) {
 .house-studio .floating { box-shadow: 0 2px 8px #14203414; }
 .house-studio .icon-tool[aria-pressed="true"] { background: var(--house-tint); color: var(--house-accent); }
 
+
+.house-notification-settings {
+  display: grid;
+  gap: 8px;
+  padding: 12px 0;
+  border-block: 1px solid var(--house-line);
+}
+.house-notification-settings :is(h3, p) { margin: 0; }
+.house-notification-settings p { font-size: .88rem; }
+.house-notification-settings button { justify-self: start; min-height: 42px; }
