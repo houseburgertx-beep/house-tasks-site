@@ -107,95 +107,103 @@ body.house-app, body.house-studio {
    HEADER DE BOAS-VINDAS (EXECUTIVE SLEEK CARD)
    ======================================================== */
 .house-app .welcome {
-  background: linear-gradient(135deg, #091224 0%, #11233e 55%, #0d1a30 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: var(--house-radius) !important;
-  box-shadow: 0 10px 30px -8px rgba(9, 18, 36, 0.25), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
-  color: #ffffff !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 4vw, 24px);
   min-height: 0 !important;
-  padding: 20px 20px 18px !important;
   margin-bottom: 16px !important;
-  position: relative !important;
-  overflow: hidden !important;
+  padding: clamp(14px, 4vw, 24px) !important;
+  border: 1px solid #dce5f0 !important;
+  border-radius: 22px !important;
+  background: #fff !important;
+  color: #13243a !important;
+  box-shadow: 0 3px 12px #102a4710 !important;
 }
-
-.house-app .welcome::before {
-  content: "";
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.35), transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.house-app .welcome > :not(.welcome-copy) { display: none !important; }
-.house-app .welcome .welcome-copy {
-  width: 100% !important;
-  max-width: none !important;
-  position: relative;
-  z-index: 1;
-}
-
+.house-app .welcome::before, .house-app .welcome::after { content: none !important; }
+.house-app .welcome .welcome-copy { width: auto !important; max-width: none !important; min-width: 0; }
 .house-app .welcome h1 {
-  color: #ffffff !important;
-  font-size: clamp(1.35rem, 5vw, 1.85rem) !important;
-  font-weight: 750 !important;
+  margin: 0 0 12px !important;
+  color: #13243a !important;
+  font-size: clamp(1.2rem, 5vw, 1.85rem) !important;
   line-height: 1.15 !important;
-  margin: 0 0 4px !important;
-  letter-spacing: -0.03em !important;
+  font-weight: 750 !important;
+  letter-spacing: -.035em;
+  overflow-wrap: anywhere;
 }
-
-.house-app .welcome p {
-  color: #94a3b8 !important;
-  font-size: 0.86rem !important;
-  margin: 0 0 16px !important;
-  line-height: 1.4 !important;
-  font-weight: 450 !important;
-}
-
-.house-app .welcome .welcome-actions {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex-wrap: wrap !important;
-}
-
 .house-app .welcome .primary {
-  background: #2563eb !important;
-  color: #ffffff !important;
-  border: none !important;
-  font-size: 0.84rem !important;
-  font-weight: 650 !important;
-  padding: 8px 16px !important;
-  border-radius: 999px !important;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
   display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  padding: 6px 12px !important;
+  background: #155ad9 !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 13px !important;
+  box-shadow: none !important;
+  font-size: .84rem !important;
+  white-space: nowrap;
 }
+.house-app .welcome .primary:hover { background: #104bc0 !important; }
+.house-app .welcome .welcome-clock {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 9px clamp(10px, 3vw, 20px);
+  border: 1px solid #d7e6fd;
+  border-radius: 16px;
+  background: #eef5ff;
+  color: #133461;
+  white-space: nowrap;
+}
+.house-app .welcome-clock time {
+  font-size: clamp(1.65rem, 7vw, 2.75rem);
+  font-weight: 750;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.045em;
+}
+.house-app .welcome-clock span { font-size: .76rem; color: #4a6080; }
 
-.house-app .welcome .primary:hover {
-  background: #1d4ed8 !important;
-  transform: translateY(-1px) !important;
+.house-app .completed-tasks > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 6px;
+  cursor: pointer;
+  list-style: none;
+  font-size: .88rem;
+  color: #18283c;
 }
-
-.house-app .welcome .date-chip {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #cbd5e1 !important;
-  font-size: 0.78rem !important;
-  font-weight: 500 !important;
-  border-radius: 999px !important;
-  padding: 7px 12px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+.house-app .completed-tasks > summary::-webkit-details-marker { display: none; }
+.house-app .completed-tasks > summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-inline: auto 5px;
+  border-inline-end: 2px solid #526781;
+  border-block-end: 2px solid #526781;
+  transform: rotate(45deg);
 }
+.house-app .completed-tasks[open] > summary::after { transform: rotate(225deg); }
+.house-app .completed-tasks > summary:focus-visible { outline: 2px solid #155ad9; outline-offset: -2px; border-radius: 8px; }
+.house-app .completed-count {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #d8f5e6;
+  color: #087441;
+  font-size: .75rem;
+  font-weight: 750;
+}
+.house-app .completed-tasks[open] > summary { border-bottom: 1px solid #e2e8f0; }
+.house-app .completed-tasks > :is(.column-cards, .completed-list) {
+  max-height: min(55dvh, 520px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+.house-app .completed-tasks[open] > .column-cards { padding-top: 8px; }
 
 /* ========================================================
    CARDS DE MÉTRICAS (KPIs COMPACTOS & ELEGANTES)

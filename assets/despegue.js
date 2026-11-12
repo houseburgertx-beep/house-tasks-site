@@ -127,13 +127,14 @@
     if (!card) return;
     requestAnimationFrame(() => {
       if (!card.isConnected) return;
-      const rect = card.getBoundingClientRect();
-      if (window.innerWidth <= 768 && card.closest(".column")) {
-        card.closest(".column").scrollIntoView({
+      const column = card.closest(".column");
+      if (window.innerWidth <= 768 && column) {
+        column.scrollIntoView({
           behavior: reduce.matches ? "instant" : "smooth", block: "nearest", inline: "center",
         });
       }
-      if (reduce.matches || !card.animate) return;
+      if (reduce.matches || !card.animate || card.closest("details:not([open])")) return;
+      const rect = card.getBoundingClientRect();
       const x = from ? Math.max(-120, Math.min(120, from.left - rect.left)) : 0;
       const y = from ? Math.max(-36, Math.min(36, from.top - rect.top)) : 10;
       card.animate([
