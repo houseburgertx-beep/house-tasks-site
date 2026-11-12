@@ -1,0 +1,134 @@
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+  :root {
+    --desktop-gutter: clamp(20px, 3vw, 56px);
+    --desktop-workspace: 1600px;
+  }
+
+  body:is(.house-app, .house-productivity, .house-studio) {
+    background: var(--portal-mobile) !important;
+    font-size: 14px;
+  }
+
+  .house-app .main-shell { padding-bottom: 0; }
+  .house-app .main-shell main {
+    max-width: var(--desktop-workspace) !important;
+    padding: 24px var(--desktop-gutter) 36px !important;
+  }
+
+  .house-app .topbar {
+    grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
+    min-height: 66px;
+    height: auto;
+    padding: 8px max(var(--desktop-gutter), calc((100% - var(--desktop-workspace)) / 2 + var(--desktop-gutter))) !important;
+  }
+  .house-app .portal-nav { gap: 3px; padding: 4px; box-shadow: none; }
+  .house-app .portal-nav .nav-item {
+    width: auto;
+    gap: 6px;
+    padding-inline: 10px;
+    font-size: 13px;
+  }
+  .house-app .topbar .top-actions :is(a, button) { min-width: 38px !important; min-height: 38px !important; }
+
+  .house-app .welcome {
+    padding: 18px 22px !important;
+    margin-bottom: 16px !important;
+  }
+  .house-app :is(.welcome h1, .page-heading h1),
+  .house-productivity #content h1,
+  .house-studio .library h1 { font-size: 24px !important; }
+  .house-app .welcome-clock time { font-size: 28px; }
+  .house-app .overview-summary { grid-template-columns: minmax(0, 1fr); margin-bottom: 20px; }
+  .house-app .stats-grid { gap: 10px !important; margin-bottom: 0 !important; }
+  .house-app .stats-grid .stat { min-height: 76px !important; }
+  .house-app .stats-grid .stat strong { font-size: 25px !important; }
+  .house-app .stats-grid .stat > span { font-size: 12px !important; }
+  .house-app .section-heading h2 { font-size: 20px !important; }
+  .house-app :is(.page-heading p, .task-card .card-description, .catalog-card p, .task-meta) { font-size: 13px !important; }
+
+  .house-app .filters {
+    display: grid !important;
+    grid-template-columns: minmax(180px, 1.15fr) minmax(0, 3fr);
+    align-items: center;
+    margin-bottom: 16px !important;
+  }
+  .house-app .filters .filter-group { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .house-app .filters .search-field { min-height: 42px; }
+  .house-app .filters .filter-group > * { min-width: 0; }
+
+  .house-app .mobile-status { display: none !important; }
+  .house-app .kanban {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch !important;
+    gap: 14px !important;
+    overflow: visible;
+  }
+  .house-app .kanban .column {
+    display: block;
+    min-width: 0 !important;
+    min-height: 240px;
+  }
+  .house-app :is(.column-cards, .completed-tasks > .completed-list) { max-height: none; overflow: visible; }
+  .house-app .task-card h3 { font-size: 15px !important; overflow-wrap: anywhere; }
+  .house-app .task-list { padding: 12px 16px; }
+
+  .house-app .page-heading { padding: 18px 20px; }
+  .house-app .catalog-search { max-width: 440px; }
+  .house-app .catalog-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 285px), 1fr)); }
+  .house-app .catalog-grid .catalog-card { padding: 16px; }
+  .house-app .catalog-card h3 { font-size: 15px; }
+  .house-app .modal.house-task-dialog {
+    width: min(680px, calc(100vw - 64px)) !important;
+    padding: 24px 28px !important;
+  }
+  .house-app .auth-panel { max-width: 440px; }
+  .house-app .auth-card { padding: 30px !important; }
+  .house-app .auth-card h2 { font-size: 24px !important; }
+
+  .house-productivity > header,
+  .house-studio .studio-header { padding-inline: var(--desktop-gutter); }
+  .house-productivity #content,
+  .house-studio #library {
+    width: 100%;
+    max-width: var(--desktop-workspace);
+    margin-inline: auto;
+    padding: 24px var(--desktop-gutter) 36px;
+  }
+  .house-productivity #content:not(.notes-mode) {
+    grid-template-columns: minmax(0, 1fr) minmax(290px, .68fr);
+    align-items: start;
+    gap: 16px;
+  }
+  .house-productivity #content > :is(h1, .filters) { grid-column: 1 / -1; }
+  .house-productivity #content > .filters select { flex: 0 1 240px; }
+  .house-productivity #content > section:has(.calendar-grid) { grid-column: 1; grid-row: 3 / span 3; }
+  .house-productivity #content > :is(.personal-demands, section[aria-live], details) { grid-column: 2; min-width: 0; }
+  .house-productivity #content .surface { padding: 16px; }
+  .house-productivity .calendar-grid { gap: 6px; }
+  .house-productivity .day { min-height: 75px; padding: 6px; }
+  .house-productivity .notes-workspace { grid-template-columns: minmax(240px, 29%) minmax(0, 1fr); }
+  .house-productivity .note-form { max-width: 850px; margin-inline: auto; }
+  .house-productivity .note-form .note-body { min-height: 220px; }
+
+  .house-studio #library .board-list {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: 16px;
+  }
+  .house-studio #library .board-preview { height: 128px; }
+  .house-studio #library .board-tile strong { font-size: 15px; }
+  .house-studio .library-heading { padding: 18px 20px; }
+  .house-studio main.library:not(#library) { max-width: 720px; margin: 24px auto; padding: 24px; }
+
+  :is(.house-app, .house-productivity, .house-studio) :focus-visible {
+    outline: 2px solid var(--portal-strong);
+    outline-offset: 3px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1000px) and (hover: hover) and (pointer: fine) {
+  .house-app .topbar { grid-template-columns: 1fr auto; gap: 6px 12px; }
+  .house-app .portal-nav { grid-row: 2; grid-column: 1 / -1; justify-self: center; }
+  .house-app .topbar .top-actions { grid-column: 2; grid-row: 1; }
+  .house-app .filters { grid-template-columns: minmax(0, 1fr); }
+}

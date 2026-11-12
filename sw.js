@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-v20261112-personal-day';
+const CACHE_NAME = 'house-tasks-v20261112-desktop';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
@@ -13,6 +13,7 @@ const STATIC_ASSETS = [
   '/house-tasks-site/assets/whiteboards.css',
   '/house-tasks-site/assets/house-layout.css',
   '/house-tasks-site/assets/house-portal.css',
+  '/house-tasks-site/assets/house-desktop.css',
   '/house-tasks-site/assets/house-theme.js',
   '/house-tasks-site/assets/fonts/Inter-Variable.woff2',
   '/house-tasks-site/assets/whiteboards.js',
