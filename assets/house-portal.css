@@ -538,3 +538,33 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
   .house-productivity > header .home { font-size: 11px; font-weight: 600; }
   .house-productivity .filters select { flex-basis: 120px; }
 }
+
+.house-app .apple-task-actions {
+  margin-block: 12px;
+  padding: 12px;
+  border: 1px solid var(--portal-card-line);
+  border-radius: 12px;
+  background: var(--portal-subtle);
+  color: var(--portal-text);
+}
+.apple-task-actions summary { cursor: pointer; font-weight: 600; }
+.apple-task-actions > a { display: inline-block; margin-top: 10px; color: var(--portal-text); }
+.apple-task-controls { display: grid; gap: 8px; margin-top: 10px; }
+.apple-task-controls label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.apple-task-controls input { width: auto; font-size: 16px; }
+.apple-task-controls :is(button,.apple-reminder) {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--portal-line);
+  border-radius: 10px;
+  background: var(--portal-card);
+  color: var(--portal-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+.house-productivity .apple-guide { max-width: 680px; margin: auto; padding: 24px 16px; }
+.apple-guide article { padding: 18px; }
+.apple-guide h2 { margin-top: 1.3em; }
+.apple-guide p, .apple-guide li { margin-block: .65em; }

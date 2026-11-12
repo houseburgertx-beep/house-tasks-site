@@ -1,7 +1,9 @@
-const CACHE_NAME = 'house-tasks-v20261112-portal-screens';
+const CACHE_NAME = 'house-tasks-v20261112-iphone';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
+  '/house-tasks-site/iphone.html',
+  '/house-tasks-site/assets/apple-task.js',
   '/house-tasks-site/whiteboards.html',
   '/house-tasks-site/notification.html',
   '/house-tasks-site/productivity.html',

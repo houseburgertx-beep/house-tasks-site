@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calendário e Lembretes · House Tasks</title>
+  <link rel="stylesheet" href="./assets/house-portal.css?v=20261112-iphone">
+  <script src="./assets/house-theme.js"></script>
+</head>
+<body class="house-productivity">
+  <main class="apple-guide">
+    <a href="./">Voltar ao House Tasks</a>
+    <article class="surface">
+      <h1>Calendário e Lembretes do iPhone</h1>
+      <p>Salve uma tarefa com prazo e abra <strong>Calendário e Lembretes</strong> nos detalhes.</p>
+      <h2>Calendário</h2>
+      <p>Toque em <strong>Adicionar ao Calendário</strong>, abra o arquivo .ics e confirme a importação no Calendário. O prazo entra como evento de dia inteiro.</p>
+      <h2>Lembretes</h2>
+      <p>Configure o atalho uma vez no iPhone:</p>
+      <ol>
+        <li>No app Atalhos, crie um atalho com o nome exato <strong>House Tasks — Lembrete</strong>.</li>
+        <li>Adicione a ação <strong>Obter Dicionário da Entrada</strong> e selecione <strong>Entrada do Atalho</strong>.</li>
+        <li>Adicione três ações <strong>Obter Valor do Dicionário</strong>, todas usando o dicionário da etapa anterior. Use as chaves <code>titulo</code>, <code>quando</code> e <code>link</code>.</li>
+        <li>Adicione <strong>Obter Datas da Entrada</strong> usando o valor de <code>quando</code>.</li>
+        <li>Adicione <strong>Adicionar Novo Lembrete</strong>. Use o valor de <code>titulo</code> como título, a data da etapa anterior como alerta e o valor de <code>link</code> nas notas. Escolha a lista desejada.</li>
+      </ol>
+      <p>Depois, escolha o horário nos detalhes da tarefa e toque em <strong>Criar lembrete</strong>. O iPhone pode pedir permissão na primeira execução.</p>
+      <p>O evento e o lembrete abrem a tarefa original para quem tem acesso. Alterações no House Tasks precisam ser aplicadas aos itens já criados no iPhone.</p>
+      <p><a href="https://support.apple.com/guide/shortcuts/apd624386f42/ios">Guia da Apple para executar atalhos por link</a></p>
+    </article>
+  </main>
+</body>
+</html>
