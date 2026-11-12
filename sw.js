@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-v20261112-white-welcome';
+const CACHE_NAME = 'house-tasks-v20261112-board-tools';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',

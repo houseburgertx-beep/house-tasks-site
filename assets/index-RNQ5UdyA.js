@@ -67,7 +67,15 @@ const movePosition=(0,h.useRef)(null);
  movePosition.current=null;
  window.houseAnimateTask?.(move);
 },[r.tasks,Ee]);
-async function et(){let e=await je(`/api/data`);try{let d=JSON.parse(localStorage.getItem(`house_deleted_tasks`)||`[]`);d.length&&e.tasks&&(e.tasks=e.tasks.filter(t=>!d.includes(t.id)))}catch(e){}return window.__HOUSE_TASKS__=e.tasks,i(e),e}window.__HOUSE_GET_DATA__=et;(0,h.useEffect)(()=>{et().catch(e=>u(e.message)).finally(()=>c(!1))},[]),(0,h.useEffect)(()=>{if(!d)return;let e=setTimeout(()=>f(``),4e3);return()=>clearTimeout(e)},[d]);let tt=r.units.filter(e=>e.active);r.people.filter(e=>e.active);let nt=r.tasks.filter(e=>(!p||[e.title,e.description].some(e=>e.toLocaleLowerCase().includes(p.toLocaleLowerCase())))&&(!g||e.unit_id===g)&&(!v||e.person_id===v)&&(!Se||Ie(e))&&(pe!==`today`||e.due===Fe())&&(pe!==`week`||!!e.due&&e.due>=Fe()&&e.due<=Fe(new Date(Date.now()+6*864e5)))),rt=e=>nt.filter(t=>t.status===e||(e===`doing`&&t.status===`review`)).length,it=nt.filter(Ie),at=rt(`done`),ot=nt.length?Math.round(at/nt.length*100):0,st=r.tasks.filter(e=>e.status!==`done`).length;function j(e){o(e),$e(``)}const saveInFlight=(0,h.useRef)(!1);
+async function et(){let e=await je(`/api/data`);try{let d=JSON.parse(localStorage.getItem(`house_deleted_tasks`)||`[]`);d.length&&e.tasks&&(e.tasks=e.tasks.filter(t=>!d.includes(t.id)))}catch(e){}return window.__HOUSE_TASKS__=e.tasks,i(e),e}window.__HOUSE_GET_DATA__=et;(0,h.useEffect)(()=>{
+ et().then(data=>{
+  const taskId=new URLSearchParams(location.search).get(`tarefa`);
+  if(!taskId)return;
+  const task=data.tasks.find(entry=>entry.id===taskId);
+  if(task)ke(task);
+  else u(`Esta tarefa não está disponível para sua conta.`);
+ }).catch(error=>u(error.message)).finally(()=>c(!1));
+},[]),(0,h.useEffect)(()=>{if(!d)return;let e=setTimeout(()=>f(``),4e3);return()=>clearTimeout(e)},[d]);let tt=r.units.filter(e=>e.active);r.people.filter(e=>e.active);let nt=r.tasks.filter(e=>(!p||[e.title,e.description].some(e=>e.toLocaleLowerCase().includes(p.toLocaleLowerCase())))&&(!g||e.unit_id===g)&&(!v||e.person_id===v)&&(!Se||Ie(e))&&(pe!==`today`||e.due===Fe())&&(pe!==`week`||!!e.due&&e.due>=Fe()&&e.due<=Fe(new Date(Date.now()+6*864e5)))),rt=e=>nt.filter(t=>t.status===e||(e===`doing`&&t.status===`review`)).length,it=nt.filter(Ie),at=rt(`done`),ot=nt.length?Math.round(at/nt.length*100):0,st=r.tasks.filter(e=>e.status!==`done`).length;function j(e){o(e),$e(``)}const saveInFlight=(0,h.useRef)(!1);
 async function ct(e,t,n=!1){
  if(saveInFlight.current)throw new Error(`Aguarde o salvamento atual.`);
  if(!n&&e.status===`done`&&t?.status!==`done`){

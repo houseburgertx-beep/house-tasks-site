@@ -30,6 +30,9 @@ let selected;
 let edgeStart;
 let gesture;
 let pinch;
+const folded = new Set();
+const taskStatuses = { todo: "A fazer", doing: "Em execução", review: "Para aprovar", done: "Concluída" };
+let linkedTasks = new Map();
 let camera = { x: 0, y: 0, zoom: 1 };
 let back = [], forward = [];
 let sequence = 0, saved = 0, saving, saveTimer, saveError, opening = false;
@@ -41,13 +44,13 @@ function signIn() {
   location.replace(base);
 }
 
-async function api(path = "", method = "GET", payload) {
+async function api(path = "", method = "GET", payload, prefix = "/api/whiteboards") {
   const token = sessionStorage.getItem(sessionKey);
   if (!token) {
     signIn();
     throw new Error("Entre para acessar seus quadros.");
   }
-  const response = await fetch(apiBase + "/api/whiteboards" + path, {
+  const response = await fetch(apiBase + prefix + path, {
     method, cache: "no-store",
     headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
     body: payload === undefined ? undefined : JSON.stringify(payload),
@@ -172,6 +175,8 @@ async function loadBoard(id) {
 
 function display(data) {
   board = data;
+  folded.clear();
+  linkedTasks = new Map((data.linkedTasks || []).map(task => [task.id, task]));
   selected = edgeStart = null;
   back = []; forward = [];
   sequence = saved = 0;
@@ -286,7 +291,10 @@ function setTool(value) {
   tool = value;
   edgeStart = null;
   canvas.dataset.tool = value;
-  for (const control of $("tools").children) control.setAttribute("aria-pressed", String(control.dataset.tool === value));
+  for (const control of document.querySelectorAll("#tools [data-tool], #mobile-tools [data-tool]")) {
+    control.setAttribute("aria-pressed", String(control.dataset.tool === value));
+  }
+  $("mobile-add").textContent = tools.find(([type]) => type === value && !["select", "hand"].includes(type))?.[1] || "Adicionar";
 }
 
 function elementShape(element) {
@@ -340,6 +348,26 @@ function renderElement(element, showSelection) {
     });
     group.append(text);
   }
+  if (showSelection && element.taskId) {
+    const task = linkedTasks.get(element.taskId);
+    const status = svg("text", { x: 0, y: element.h + 17, class: "board-task-status", "pointer-events": "none" });
+    status.textContent = task ? taskStatuses[task.status] : "Tarefa vinculada";
+    group.append(status);
+  }
+  if (showSelection && element.type === "topic" && board.document.edges.some(edge => edge.branch && edge.from === element.id)) {
+    const collapsed = folded.has(element.id);
+    const label = collapsed ? "Expandir ramos" : "Recolher ramos";
+    const toggle = svg("g", { transform: `translate(${element.w - 6} -6)`, "data-fold": element.id,
+      role: "button", tabindex: 0, "aria-label": label, "aria-expanded": String(!collapsed), class: "branch-toggle" });
+    toggle.append(svg("circle", { r: 14 }), svg("path", { d: collapsed ? "M-5 0H5 M0 -5V5" : "M-5 0H5" }));
+    toggle.addEventListener("keydown", event => {
+      if (![" ", "Enter"].includes(event.key)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      toggleBranch(element.id, true);
+    });
+    group.append(toggle);
+  }
   if (showSelection && (element.id === selected || element.id === edgeStart)) {
     group.append(svg("rect", { x: -4, y: -4, width: element.w + 8, height: element.h + 8, rx: 6, fill: "none", stroke: "#774bd1", "stroke-width": 2, "pointer-events": "none" }));
     if (element.id === selected && editable() && element.type !== "pen") {
@@ -349,8 +377,41 @@ function renderElement(element, showSelection) {
   return group;
 }
 
-function renderScene(target, showSelection = true) {
+function visibleElements() {
   const { elements, edges } = board.document;
+  if (!folded.size) return elements;
+  const children = new Map();
+  for (const { from, to, branch } of edges) {
+    if (!branch) continue;
+    if (!children.has(from)) children.set(from, []);
+    children.get(from).push(to);
+  }
+  const hidden = new Set();
+  for (const id of folded) {
+    const visited = new Set([id]);
+    const pending = [...(children.get(id) || [])];
+    while (pending.length) {
+      const child = pending.pop();
+      if (visited.has(child)) continue;
+      visited.add(child);
+      hidden.add(child);
+      pending.push(...(children.get(child) || []));
+    }
+  }
+  return elements.filter(element => !hidden.has(element.id));
+}
+
+function toggleBranch(id, restoreFocus = false) {
+  if (folded.has(id)) folded.delete(id);
+  else folded.add(id);
+  if (selected && !visibleElements().some(element => element.id === selected)) selected = null;
+  render();
+  if (restoreFocus) scene.querySelector(`[data-fold="${CSS.escape(id)}"]`)?.focus();
+}
+
+function renderScene(target, showSelection = true) {
+  const elements = showSelection ? visibleElements() : board.document.elements;
+  const { edges } = board.document;
   const byId = new Map(elements.map(element => [element.id, element]));
   const shapes = elements.filter(element => element.type === "frame").map(element => renderElement(element, showSelection));
   for (const edge of edges) {
@@ -374,8 +435,8 @@ function view() {
   $("zoom-value").textContent = Math.round(camera.zoom * 100) + "%";
 }
 
-function bounds() {
-  const items = board.document.elements;
+function bounds(full = false) {
+  const items = full ? board.document.elements : visibleElements();
   if (!items.length) return { x: 0, y: 0, w: 300, h: 200 };
   const x = Math.min(...items.map(e => e.x)), y = Math.min(...items.map(e => e.y - (e.type === "frame" ? 25 : 0)));
   return { x, y, w: Math.max(...items.map(e => e.x + e.w)) - x, h: Math.max(...items.map(e => e.y + e.h)) - y };
@@ -394,6 +455,7 @@ function render() {
   renderScene(scene);
   $("empty").hidden = board.document.elements.length !== 0 || !editable() || tool !== "select";
   for (const control of $("tools").children) control.disabled = !editable() && !["select", "hand"].includes(control.dataset.tool);
+  $("mobile-add").disabled = !editable();
   $("undo").disabled = !editable() || !back.length;
   $("redo").disabled = !editable() || !forward.length;
   renderSelection();
@@ -436,9 +498,91 @@ function renderSelection() {
     color.onchange = () => edit(() => element.color = color.value);
     actions.append(color, button("Duplicar", duplicate));
     if (element.type === "topic") actions.append(button("+ Ramo", () => branch(false)), button("Organizar mapa", organizeMap));
+    if (element.type !== "pen") {
+      const task = linkedTasks.get(element.taskId);
+      if (task) {
+        const url = new URL("./", base);
+        url.searchParams.set("tarefa", task.id);
+        const open = node("a", "Abrir tarefa", { href: url.href, class: "quiet" });
+        open.addEventListener("click", async event => {
+          event.preventDefault();
+          if (await save()) location.assign(url);
+        });
+        actions.append(open);
+      }
+      if (!element.taskId) actions.append(button("Vincular tarefa", () => askTask(element)));
+      else actions.append(button("Desvincular", () => edit(() => delete element.taskId)));
+    }
   }
   actions.append(button("Excluir", removeSelected));
   panel.append(actions);
+}
+
+async function askTask(element) {
+  const current = board;
+  const message = node("p", "Carregando tarefas…", { role: "status" });
+  dialog("Vincular tarefa", message);
+  const dialogBody = $("dialog-body");
+  const studioDialog = $("studio-dialog");
+  try {
+    const { tasks, units, people } = await api("/data", "GET", undefined, "/api");
+    if (board !== current || !studioDialog.open || !dialogBody.contains(message)) return;
+    const select = (label, list, empty) => {
+      const input = node("select", undefined, { "aria-label": label });
+      input.append(node("option", empty, { value: "" }));
+      for (const entry of list) input.append(node("option", entry.name || entry.title, { value: entry.id }));
+      return input;
+    };
+    const existing = select("Tarefa existente", tasks, "Selecione uma tarefa");
+    const title = node("input", undefined, { maxlength: "180", required: "", placeholder: "Nome da tarefa" });
+    title.value = element.text.trim().slice(0, 180);
+    const unit = select("Unidade", units.filter(entry => entry.active), "Sem unidade");
+    const person = select("Responsável", people.filter(entry => entry.active), "Sem responsável");
+    const due = node("input", undefined, { type: "date" });
+    const wrap = (label, input) => {
+      const field = node("label", label);
+      field.append(input);
+      return field;
+    };
+    const valid = () => board === current && editable() && current.document.elements.includes(element) && !element.taskId;
+    const link = task => {
+      if (!valid()) throw new Error("O bloco mudou. Abra novamente para vincular a tarefa.");
+      linkedTasks.set(task.id, task);
+      edit(() => { element.taskId = task.id; });
+      studioDialog.close();
+    };
+    const useExisting = button("Vincular existente", () => {
+      try {
+        const task = tasks.find(entry => entry.id === existing.value);
+        if (!task) throw new Error("Selecione uma tarefa.");
+        link(task);
+      } catch (error) { message.textContent = error.message; }
+    });
+    const form = node("form");
+    const create = node("button", "Criar e vincular", { type: "submit", class: "primary" });
+    form.append(wrap("Nome", title), wrap("Unidade", unit), wrap("Responsável", person), wrap("Prazo", due), create);
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!valid() || create.disabled) return;
+      create.disabled = useExisting.disabled = true;
+      const preventClose = event => event.preventDefault();
+      const close = studioDialog.querySelector(".dialog-close");
+      close.disabled = true;
+      studioDialog.addEventListener("cancel", preventClose);
+      try {
+        const name = title.value.trim();
+        const { id } = await api("/tasks", "POST", { title: name, unit_id: unit.value || null,
+          person_id: person.value || null, due: due.value || null }, "/api");
+        link({ id, title: name, status: "todo" });
+      } catch (error) { message.textContent = error.message; }
+      finally {
+        create.disabled = useExisting.disabled = close.disabled = false;
+        studioDialog.removeEventListener("cancel", preventClose);
+      }
+    });
+    message.textContent = "";
+    dialogBody.append(wrap("Tarefa existente", existing), useExisting, node("h3", "Nova tarefa"), form);
+  } catch (error) { message.textContent = error.message; }
 }
 
 function duplicate() {
@@ -470,6 +614,7 @@ function branch(sibling) {
   const child = item("topic", root.x + root.w + 75, root.y + (children.length ? children.length * 76 : 0), "Novo tópico");
   child.color = parentEdge || board.document.edges.some(edge => edge.branch && edge.to === root.id) ? root.color : colors[children.length % colors.length];
   edit(() => {
+    folded.delete(root.id);
     board.document.elements.push(child);
     board.document.edges.push({ id: uid(), from: root.id, to: child.id, branch: true });
     selected = child.id;
@@ -563,7 +708,7 @@ function finishGesture(cancel = false) {
 }
 
 canvas.addEventListener("pointerdown", event => {
-  if (!board || event.button === 2) return;
+  if (!board || event.button === 2 || event.target.closest("[data-fold]")) return;
   const local = screen(event);
   pointers.set(event.pointerId, local);
   canvas.focus({ preventScroll: true });
@@ -616,6 +761,11 @@ canvas.addEventListener("pointerdown", event => {
     return;
   }
   createAt(tool, point);
+});
+
+canvas.addEventListener("click", event => {
+  const toggle = event.target.closest("[data-fold]");
+  if (toggle) toggleBranch(toggle.dataset.fold, document.activeElement === toggle);
 });
 
 canvas.addEventListener("pointermove", event => {
@@ -699,7 +849,7 @@ canvas.addEventListener("dblclick", event => {
 });
 
 document.addEventListener("keydown", event => {
-  if (!board || $("studio-dialog").open) return;
+  if (!board || $("studio-dialog").open || event.target.closest("[data-fold]")) return;
   const input = event.target.matches("input,textarea,select,[contenteditable]");
   if (input && event.key === "Escape" && $("selection").contains(event.target)) { canvas.focus(); return; }
   if (input || event.altKey) return;
@@ -735,7 +885,7 @@ function exportJSON() {
 }
 
 function exportSVG() {
-  const area = bounds();
+  const area = bounds(true);
   const picture = svg("svg", { viewBox: `${area.x - 30} ${area.y - 30} ${area.w + 60} ${area.h + 60}`,
     width: area.w + 60, height: area.h + 60 });
   const layer = svg("g");
@@ -851,6 +1001,25 @@ for (const [type, label, path, key] of tools) {
   control.title = label + " (" + key + ")";
   $("tools").append(control);
 }
+for (const [type, label, path] of tools.slice(0, 2)) {
+  const control = icon(label, path, () => { setTool(type); render(); }, false);
+  control.dataset.tool = type;
+  control.append(node("span", type === "hand" ? "Mover" : label));
+  $("mobile-tools").append(control);
+}
+const mobileAdd = button("Adicionar", () => {
+  const options = node("div", undefined, { class: "mobile-tool-options" });
+  for (const [type, label] of tools.slice(2)) {
+    options.append(button(label, () => {
+      $("studio-dialog").close();
+      setTool(type);
+      render();
+    }));
+  }
+  dialog("Adicionar ao quadro", options);
+});
+mobileAdd.id = "mobile-add";
+$("mobile-tools").append(mobileAdd, button("Enquadrar", fit));
 const undoButton = icon("Desfazer", "M9 14 4 9l5-5 M4 9h10a5 5 0 0 1 0 10h-2", () => undo());
 undoButton.id = "undo";
 const redoButton = icon("Refazer", "M15 14l5-5-5-5 M20 9H10a5 5 0 0 0 0 10h2", () => undo(true));
@@ -892,6 +1061,11 @@ async function syncBoard() {
     const updated = await api("/" + current.id);
     if (board !== current || sequence !== saved || gesture) return;
     const roleChanged = updated.role !== current.role;
+    const tasks = updated.linkedTasks || [];
+    if (JSON.stringify(tasks) !== JSON.stringify([...linkedTasks.values()])) {
+      linkedTasks = new Map(tasks.map(task => [task.id, task]));
+      renderScene(scene);
+    }
     if (updated.version > current.version) {
       Object.assign(board, updated);
       $("board-title").value = board.title;

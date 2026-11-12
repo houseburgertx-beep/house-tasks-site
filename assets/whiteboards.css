@@ -157,3 +157,30 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   .selection { right: 8px; top: 8px; width: min(240px, calc(100% - 16px)); }
   .notice { left: 8px; bottom: calc(132px + env(safe-area-inset-bottom)); }
 }
+
+.mobile-tools { display: none; }
+.branch-toggle { cursor: pointer; }
+.branch-toggle circle { fill: #fff; stroke: #8c83a5; stroke-width: 1.5; }
+.branch-toggle path { fill: none; stroke: #3e3362; stroke-width: 2; stroke-linecap: round; }
+.branch-toggle:focus-visible circle { stroke: #155ad9; stroke-width: 3; }
+.board-task-status { fill: #243f6b; font: 650 13px system-ui, sans-serif; }
+.selection-actions a { display: inline-flex; align-items: center; text-decoration: none; }
+#dialog-body select { width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 8px; }
+.mobile-tool-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 700px) {
+  #tools { display: none; }
+  .mobile-tools {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    left: 8px;
+    right: 8px;
+    padding: 4px;
+  }
+  .mobile-tools button { min-height: 46px; padding: 4px 2px; font-size: .72rem; }
+  .mobile-tools .icon-tool { display: grid; justify-items: center; gap: 2px; }
+  .mobile-tools svg { width: 17px; height: 17px; }
+  #dialog-body :is(input, select) { font-size: 16px; }
+}
