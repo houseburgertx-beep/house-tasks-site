@@ -114,17 +114,17 @@ body.house-app, body.house-studio {
   min-height: 0 !important;
   margin-bottom: 16px !important;
   padding: clamp(14px, 4vw, 24px) !important;
-  border: 1px solid #cde2d7 !important;
-  border-radius: 22px !important;
-  background: #edf7f1 !important;
-  color: #15382b !important;
+  border: 1px solid #dce5ef !important;
+  border-radius: 24px !important;
+  background: #fff !important;
+  color: #13243a !important;
   box-shadow: 0 3px 12px #102a4710 !important;
 }
 .house-app .welcome::before, .house-app .welcome::after { content: none !important; }
 .house-app .welcome .welcome-copy { width: auto !important; max-width: none !important; min-width: 0; }
 .house-app .welcome h1 {
   margin: 0 0 12px !important;
-  color: #15382b !important;
+  color: #13243a !important;
   font-size: clamp(1.2rem, 5vw, 1.85rem) !important;
   line-height: 1.15 !important;
   font-weight: 750 !important;
@@ -137,7 +137,7 @@ body.house-app, body.house-studio {
   gap: 5px;
   min-height: 44px;
   padding: 6px 12px !important;
-  background: #146447 !important;
+  background: #155ad9 !important;
   color: #fff !important;
   border: 0 !important;
   border-radius: 13px !important;
@@ -145,14 +145,15 @@ body.house-app, body.house-studio {
   font-size: .84rem !important;
   white-space: nowrap;
 }
-.house-app .welcome .primary:hover { background: #104e39 !important; }
+.house-app .welcome .primary:hover { background: #104bc0 !important; }
 .house-app .welcome .welcome-clock {
   display: grid;
   justify-items: end;
   gap: 5px;
-  padding-inline-start: clamp(10px, 3vw, 22px);
-  border-inline-start: 1px solid #bad8c9;
-  color: #124734;
+  padding: 9px clamp(8px, 2.5vw, 16px);
+  border-radius: 17px;
+  background: #f0f5fc;
+  color: #163453;
   white-space: nowrap;
 }
 .house-app .welcome-clock time {
@@ -162,14 +163,9 @@ body.house-app, body.house-studio {
   font-variant-numeric: tabular-nums;
   letter-spacing: -.065em;
 }
-.house-app .welcome-clock span { font-size: .85rem; color: #375a4c; }
+.house-app .welcome-clock span { font-size: .85rem; color: #4a6080; }
 
 .house-app .column[data-stage="done"] {
-  align-self: start;
-  min-height: 0;
-}
-.house-app .column[data-stage="done"]:has(> .completed-tasks:not([open])) {
-  padding-block: 3px !important;
   border-color: #cbe3d6 !important;
   background: #edf7f1 !important;
 }
