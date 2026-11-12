@@ -9,18 +9,20 @@
 :root {
   color-scheme: light;
   --portal-bg: #ffffff;
-  --portal-mobile: #eef0f4;
+  --portal-mobile: #eef1f6;
   --portal-card: #ffffff;
-  --portal-subtle: #eff0f3;
+  --portal-subtle: #f1f3f7;
   --portal-text: #101828;
   --portal-muted: #667085;
-  --portal-line: #eaecf0;
-  --portal-strong: #080808;
+  --portal-line: #e4e7ec;
+  --portal-strong: #0b121f;
   --portal-on-strong: #ffffff;
-  --portal-green: #326b55;
+  --portal-green: #0f7d4f;
   --portal-red: #a82f40;
   --portal-radius: 20px;
-  --portal-shadow: 0 2px 4px #10182812, 0 8px 18px #1018280e;
+  --portal-shadow: 0 1px 3px rgba(31, 45, 80, .08), 0 10px 24px -14px rgba(31, 45, 80, .32);
+  --portal-card-line: rgba(31, 45, 80, .07);
+  --portal-selected: #dadada;
   --house-font: Inter, ui-sans-serif, system-ui, sans-serif;
   --house-paper: var(--portal-card);
   --house-page: var(--portal-bg);
@@ -50,6 +52,8 @@
   --portal-green: #9fd4b7;
   --portal-red: #f3a5af;
   --portal-shadow: 0 2px 7px #0004;
+  --portal-card-line: var(--portal-line);
+  --portal-selected: #343a46;
 }
 
 html { background: var(--portal-bg); }
@@ -60,10 +64,11 @@ body:is(.house-app, .house-studio, .house-productivity) {
   font-family: var(--house-font);
   font-size: 13px;
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  letter-spacing: normal;
 }
 body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,button,input,select,textarea,summary,small,label) {
   font-family: var(--house-font) !important;
+  letter-spacing: normal !important;
 }
 .house-app .app-shell { background: transparent; }
 .house-app .main-shell {
@@ -92,6 +97,7 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
   display: inline-flex;
   align-items: center;
   justify-self: start;
+  min-width: 0;
   gap: 10px;
   color: var(--portal-text) !important;
   text-decoration: none;
@@ -170,7 +176,7 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
 .house-productivity :is(.surface, .notes-workspace, dialog) {
   background: var(--portal-card) !important;
   color: var(--portal-text) !important;
-  border: 1px solid var(--portal-line) !important;
+  border: 1px solid var(--portal-card-line) !important;
   border-radius: var(--portal-radius) !important;
   box-shadow: var(--portal-shadow) !important;
 }
@@ -185,7 +191,7 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
   font-size: 18px !important;
   font-weight: 600 !important;
   line-height: 1.25 !important;
-  letter-spacing: -.02em !important;
+  letter-spacing: normal !important;
 }
 .house-app .welcome .welcome-clock {
   color: var(--portal-text);
@@ -216,19 +222,38 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
   display: flex !important;
   flex-direction: column;
   align-items: center !important;
-  justify-content: center;
-  gap: 2px !important;
-  min-height: 58px !important;
-  padding: 6px 3px !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  min-height: 55.25px !important;
+  padding: 9px 4px !important;
+  text-align: center !important;
   background: var(--portal-subtle) !important;
   color: var(--portal-text) !important;
   border: 0 !important;
   border-radius: 12px !important;
   box-shadow: none !important;
 }
-.house-app .stats-grid .stat > span { order: 2; color: var(--portal-muted) !important; font-size: 9.5px !important; text-transform: none; letter-spacing: 0; }
-.house-app .stats-grid .stat strong { color: var(--portal-text) !important; font-size: 20px !important; line-height: 1.1; font-weight: 600 !important; }
+.house-app .stats-grid .stat > span {
+  order: 2;
+  display: block !important;
+  color: var(--portal-muted) !important;
+  font-size: 9.5px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+.house-app .stats-grid .stat strong {
+  color: var(--portal-text) !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  font-weight: 600 !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.03em !important;
+  margin: 0 !important;
+}
 .house-app .stats-grid .stat:nth-child(3) strong { color: var(--portal-green) !important; }
+.house-app .stats-grid .stat-alert strong { color: var(--portal-red) !important; }
 .house-app .stats-grid .stat :is(svg,small,.stat-bottom) { display: none !important; }
 .house-app .section-heading { margin-bottom: 10px !important; }
 .house-app .filters { padding: 10px 12px !important; margin-bottom: 12px !important; gap: 8px !important; }
@@ -237,6 +262,14 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
   background: var(--portal-subtle) !important;
   border-color: var(--portal-line) !important;
 }
+.house-app .filter-group select {
+  min-width: 0;
+  text-overflow: ellipsis;
+  color: var(--portal-text) !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+}
+.house-app .filter-group > label svg { flex-shrink: 0; }
 .house-app :is(.view-toggle, .mobile-status) { border-radius: 999px !important; }
 .house-app .mobile-status { background: var(--portal-card) !important; box-shadow: var(--portal-shadow); border-color: var(--portal-line) !important; }
 .house-app :is(.view-toggle button.active,.mobile-status button.active) {
@@ -245,6 +278,26 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
   border-radius: 999px !important;
   box-shadow: none !important;
 }
+.house-app .mobile-status button,
+.house-app .view-toggle button { font-weight: 500 !important; color: var(--portal-muted) !important; }
+.house-app .mobile-status button {
+  min-width: 0;
+  min-height: 36px !important;
+  font-size: 12.5px !important;
+  padding-inline: 4px !important;
+}
+.house-app .column-head { padding-inline: 0 !important; }
+.house-app .column-head .icon-button { flex-shrink: 0; }
+.house-app :is(.view-toggle,.mobile-status) button.active { background: var(--portal-selected) !important; font-weight: 600 !important; }
+.house-app .mobile-status button b { background: var(--portal-subtle) !important; color: var(--portal-muted) !important; font-weight: 600 !important; }
+.house-app .mobile-status button.active b { background: var(--portal-strong) !important; color: var(--portal-on-strong) !important; }
+.house-app .column-add, .house-app .column-head .count {
+  background: var(--portal-subtle) !important;
+  color: var(--portal-text) !important;
+  font-weight: 500 !important;
+}
+.house-app .column-head .dot { background: var(--portal-muted) !important; }
+.house-app .column[data-stage="done"] .column-head .dot { background: var(--portal-green) !important; }
 .house-app .kanban { gap: 10px !important; }
 .house-app .column { background: var(--portal-subtle) !important; }
 .house-app .column[data-stage="done"] { background: var(--portal-subtle) !important; border-color: var(--portal-line) !important; }
@@ -322,18 +375,18 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
   body:is(.house-app,.house-studio,.house-productivity) { background: var(--portal-mobile) !important; }
   .house-app .topbar {
     height: auto;
-    min-height: 64px;
+    min-height: 66px;
     margin: 14px 16px 0;
     padding: 9px 10px !important;
     grid-template-columns: minmax(0, 1fr) auto;
-    border: 1px solid var(--portal-line) !important;
+    border: 1px solid var(--portal-card-line) !important;
     border-radius: 20px;
     box-shadow: var(--portal-shadow);
   }
   .house-app .portal-nav { display: none; }
   .house-app .main-shell main { padding: 14px 16px 86px !important; }
-  .house-app .portal-brand strong { font-size: 14px; }
-  .house-app .portal-brand small { font-size: 10.5px; }
+  .house-app .portal-brand strong { font-size: 16px; }
+  .house-app .portal-brand small { font-size: 11.5px; }
   .house-app .topbar .top-actions { gap: 4px; }
   .house-app .topbar .top-actions :is(a,button) { width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; }
   .house-app .mobile-nav {
@@ -350,14 +403,18 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
     backdrop-filter: none !important;
   }
   .house-app .mobile-nav :is(button,.mobile-nav-link) { color: var(--portal-muted) !important; font-size: 0 !important; gap: 0 !important; }
-  .house-app .mobile-nav :is(button,.mobile-nav-link).active { background: var(--portal-subtle) !important; color: var(--portal-text) !important; border-radius: 999px !important; }
+  .house-app .mobile-nav :is(button,.mobile-nav-link).active { background: var(--portal-selected) !important; color: var(--portal-text) !important; border-radius: 999px !important; }
   .house-app .mobile-nav .mobile-create { color: var(--portal-on-strong) !important; margin: 0 2px !important; width: 40px !important; height: 40px !important; min-height: 40px !important; min-width: 40px !important; }
   .house-app .mobile-nav .mobile-create svg { width: 18px; height: 18px; }
   .house-productivity main, .house-studio .library { padding-inline: 16px; }
 }
 @media (max-width: 360px) {
   .house-app .topbar { gap: 4px; }
+  .house-app .portal-brand strong { font-size: 14px; }
   .house-app .portal-brand { gap: 6px; }
   .house-app .portal-mark { width: 32px; height: 32px; flex-basis: 32px; font-size: 17px; }
-  .house-app .stats-grid { padding-inline: 7px; gap: 4px !important; }
+  .house-app .portal-brand small { font-size: 10.5px; }
+  .house-app .mobile-status button { font-size: 11px !important; gap: 3px !important; padding-inline: 2px !important; }
+  .house-app .mobile-status button b { padding-inline: 5px !important; }
+  .house-app .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
