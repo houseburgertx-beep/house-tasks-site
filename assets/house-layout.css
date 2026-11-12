@@ -874,6 +874,15 @@ body.house-app:has(.auth-shell) {
   overflow-y: auto !important;
 }
 
+.house-app .modal.house-task-dialog {
+  position: fixed !important;
+  inset: max(12px, env(safe-area-inset-top)) 0 max(12px, env(safe-area-inset-bottom));
+  margin: auto !important;
+  height: auto;
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom))) !important;
+  scroll-behavior: auto;
+}
+
 .house-app .modal::backdrop {
   background: rgba(15, 23, 42, 0.5) !important;
   -webkit-backdrop-filter: blur(8px) !important;
@@ -1282,6 +1291,12 @@ body.house-app:has(.auth-shell) {
   gap: 6px !important;
   cursor: pointer !important;
   margin-bottom: 8px !important;
+}
+
+@media (pointer: coarse) {
+  .house-app .modal.house-task-dialog :is(input, select, textarea) {
+    font-size: 16px !important;
+  }
 }
 
 /* Studio & Whiteboards */
