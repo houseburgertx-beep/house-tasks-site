@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-v20261112-desktop';
+const CACHE_NAME = 'house-tasks-v20261112-brand';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
@@ -88,7 +88,7 @@ self.addEventListener('fetch', (event) => {
 
   // Stale-While-Revalidate apenas para imagens estáticas e fontes
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
+    (async () => (await caches.match(event.request)) || (await caches.match(url.pathname)))().then((cachedResponse) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
           const responseToCache = networkResponse.clone();

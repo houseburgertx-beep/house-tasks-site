@@ -568,3 +568,24 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
 .apple-guide article { padding: 18px; }
 .apple-guide h2 { margin-top: 1.3em; }
 .apple-guide p, .apple-guide li { margin-block: .65em; }
+
+.house-logo {
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.house-app .portal-mark.house-logo,
+.house-app .auth-card .auth-lock.house-logo {
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+.house-app .portal-brand strong { letter-spacing: .015em; }
+.house-studio .studio-brand .house-logo,
+.house-productivity > header .home .house-logo { width: 32px; height: 32px; }
+.house-productivity > header .home,
+.house-studio .studio-brand { display: inline-flex; align-items: center; gap: 7px; }
+.house-productivity > header .home strong,
+.house-studio .studio-brand strong { font-size: 12px; font-weight: 650; white-space: nowrap; }
+@media (max-width: 700px) {
+  .house-studio:has(#editor:not([hidden])) .studio-brand strong { display: none; }
+}

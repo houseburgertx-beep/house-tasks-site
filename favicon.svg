@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>HOUSE TASKS</title><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#9d83e8"/><stop offset="1" stop-color="#6c55ce"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#g)"/><path d="M19 17v30m26-30v30M19 32h26" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>House Tasks</title>
+  <rect width="64" height="64" rx="16" fill="#172454"/>
+  <path d="M17 30 32 17l15 13v15a2 2 0 0 1-2 2H19a2 2 0 0 1-2-2V30Z"
+        fill="none" stroke="#f7f9ff" stroke-width="3.75" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m25 34 5 5 10-10" fill="none" stroke="#7bf0d4" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
