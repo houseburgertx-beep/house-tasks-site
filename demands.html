@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demandas · House Tasks</title>
+  <link rel="icon" href="./favicon.svg">
+  <link rel="stylesheet" href="./assets/productivity.css">
+  <link rel="stylesheet" href="./assets/house-portal.css">
+  <link rel="stylesheet" href="./assets/demands.css">
+  <script src="./assets/house-theme.js"></script>
+  <script type="module" src="./assets/demands.js"></script>
+</head>
+<body class="house-productivity">
+  <header><a class="home" href="./">← House Tasks</a></header>
+  <main class="demands">
+    <section class="surface">
+      <div class="demand-heading"><h1>Demandas</h1><button class="primary" id="new-request" disabled>+ Solicitar demanda</button></div>
+      <nav class="demand-tabs" aria-label="Fila de demandas"></nav>
+    </section>
+    <p id="demand-status" role="status"></p>
+    <div id="demand-list"></div>
+  </main>
+  <dialog id="demand-dialog"><form id="demand-form"></form></dialog>
+</body>
+</html>

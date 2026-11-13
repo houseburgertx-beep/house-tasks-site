@@ -1,0 +1,16 @@
+.house-productivity .demands { max-width: 900px; }
+.demand-heading, .demand-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: space-between; }
+.demand-tabs { margin-top: 14px; flex-wrap: wrap; background: var(--portal-subtle); border-radius: 16px; }
+.demand-tabs button { border: 0; background: transparent; border-radius: 12px; flex: 1; }
+.demand-tabs button[aria-pressed="true"] { background: var(--portal-selected); color: var(--portal-text); }
+#demand-list { display: grid; gap: 10px; }
+.demand-card { display: grid; gap: 8px; overflow-wrap: anywhere; }
+.demand-card h2 { font-size: 15px; }
+.demand-card .demand-actions { justify-content: flex-start; }
+.demand-evidence { display: flex; gap: 8px; flex-wrap: wrap; }
+#demand-form { gap: 12px; }
+#demand-form :is(input, select, textarea) { font-size: 16px; }
+#demand-form textarea { min-height: 90px; }
+.house-app .demand-entry { color: var(--portal-text); font-size: 13px; }
+.demand-preview { display: grid; gap: 8px; overflow-wrap: anywhere; }
+.demand-preview img { max-width: 100%; max-height: 58vh; object-fit: contain; }

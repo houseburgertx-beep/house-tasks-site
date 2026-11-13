@@ -1,7 +1,10 @@
-const CACHE_NAME = 'house-tasks-v20261112-brand';
+const CACHE_NAME = 'house-tasks-v20261112-demands';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
+  '/house-tasks-site/demands.html',
+  '/house-tasks-site/assets/demands.js',
+  '/house-tasks-site/assets/demands.css',
   '/house-tasks-site/iphone.html',
   '/house-tasks-site/assets/apple-task.js',
   '/house-tasks-site/whiteboards.html',
