@@ -201,17 +201,13 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
 }
 .house-app .welcome-clock time { font-size: 23px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: normal !important; }
 .house-app .welcome-clock span { font-size: 10.5px; color: var(--portal-muted); }
-.house-app .welcome-actions-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-top: 6px; }
-.house-app .welcome-pill-btn {
-  display: inline-flex; align-items: center; gap: 5px; min-height: 38px; padding: 6px 12px;
-  background: var(--portal-subtle); border: 1px solid var(--portal-line); border-radius: 10px;
-  color: var(--portal-text); font-size: 12px; font-weight: 600; text-decoration: none;
+.house-app .welcome-actions-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.house-app .welcome-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 6px 14px;
+  border-radius: 12px; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; border: none;
 }
-.house-app .welcome-pill-btn.approvals-pill { background: #fdf5e8; border-color: #f7ddb2; color: #8f5305; }
-.house-app .welcome-pill-btn .pill-count {
-  background: #d97706; color: #fff; font-size: 10px; font-weight: 700;
-  padding: 1px 6px; border-radius: 999px; margin-left: 2px;
-}
+.house-app .welcome-btn.welcome-create-btn { background: var(--portal-strong); color: var(--portal-on-strong); }
+.house-app .welcome-btn.welcome-demand-btn { background: var(--portal-subtle); border: 1px solid var(--portal-line); color: var(--portal-text); }
 .house-app .page-heading { margin: 0 0 12px; }
 .house-app .page-heading .eyebrow { display: none; }
 .house-app :is(.page-heading p, .section-heading p, .task-card .card-description, .task-meta, .app-footer, .catalog-card p, .empty-list) {

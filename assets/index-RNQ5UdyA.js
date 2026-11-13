@@ -116,9 +116,8 @@ return(0,O.jsxs)(O.Fragment,{children:[(0,O.jsx)(`div`,{className:`mobile-status
  (0,O.jsxs)(`div`,{className:`welcome-copy`,children:[
   (0,O.jsxs)(`h1`,{children:[`Olá, `,e.split(`@`)[0].split(` `)[0]]}),
   (0,O.jsxs)(`div`,{className:`welcome-actions-row`,children:[
-   (0,O.jsxs)(`button`,{className:`primary welcome-create-btn`,onClick:dt,children:[(0,O.jsx)(D,{size:17}),`Nova tarefa`]}),
-   (0,O.jsxs)(`a`,{className:`welcome-pill-btn demands-pill`,href:`./demands.html`,children:[(0,O.jsx)(se,{size:15}),`Demandas`]}),
-   (0,O.jsxs)(`a`,{className:`welcome-pill-btn approvals-pill`,href:`./demands.html`,children:[(0,O.jsx)(te,{size:15}),`Aprovações`,r.tasks.filter(t=>t.status===`review`).length>0&&(0,O.jsx)(`b`,{className:`pill-count`,children:r.tasks.filter(t=>t.status===`review`).length})]})
+   (0,O.jsxs)(`button`,{className:`welcome-btn welcome-create-btn`,onClick:dt,children:[(0,O.jsx)(D,{size:17}),`Nova tarefa`]}),
+   (0,O.jsxs)(`a`,{className:`welcome-btn welcome-demand-btn`,href:`./demands.html#nova`,children:[(0,O.jsx)(D,{size:17}),`Nova demanda`]})
   ]})
  ]}),
  (0,O.jsx)(WelcomeClock,{})

@@ -187,6 +187,10 @@ try {
   await refresh();
   create.disabled = !data;
   create.onclick = request;
+  if (location.hash === "#nova" && data) {
+    history.replaceState(null, "", location.pathname + location.search);
+    request();
+  }
 } catch (error) {
   notice.textContent = error.message;
 }
