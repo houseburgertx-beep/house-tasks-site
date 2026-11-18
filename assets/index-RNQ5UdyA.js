@@ -226,8 +226,10 @@ var Ye=`house-tasks-activation`;function Xe(){let e=new URLSearchParams(location
  return (0,O.jsxs)(`section`,{className:`house-notification-settings`,children:[
   (0,O.jsx)(`h3`,{children:`Notificações`}),
   settings&&(0,O.jsxs)(O.Fragment,{children:[
-   (0,O.jsx)(`p`,{children:!supported?`No iPhone, adicione o app à Tela de Início para ativar avisos.`:pushEnabled?`Avisos de atribuições e prazos ativos neste dispositivo.`:`Receba um aviso quando uma tarefa for atribuída a você.`}),
+   (0,O.jsx)(`p`,{children:!supported?`No iPhone, adicione o app à Tela de Início para ativar avisos.`:pushEnabled?`Avisos ativos para atribuições, atualizações, prazos e checklists pessoais.`:`Receba atribuições, mudanças nas tarefas e lembretes do Meu dia.`}),
    supported&&(0,O.jsx)(`button`,{type:`button`,className:`secondary`,disabled:busy||!settings.pushKey,onClick:togglePush,children:pushEnabled?`Desativar neste dispositivo`:`Ativar notificações no celular`}),
+   pushEnabled&&(0,O.jsx)(`button`,{type:`button`,className:`secondary`,disabled:busy,onClick:async()=>{setBusy(true);try{await je("/api/notifications/test","POST",{endpoint:subscription.endpoint});setNotice({text:"O serviço de push aceitou o teste. Confira a Central de Notificações."})}catch(error){setNotice({error:true,text:error.message})}finally{setBusy(false)}},children:"Enviar aviso de teste"}),
+   (0,O.jsx)("a",{href:"./iphone.html",children:"Calendário e Lembretes do iPhone"}),
    (0,O.jsx)(`p`,{children:settings.emailAvailable?`Lembrete por e-mail no dia do prazo.`:`Envio por e-mail aguardando configuração da House.`}),
    (0,O.jsx)(`button`,{type:`button`,className:`secondary`,disabled:busy||(!settings.emailAvailable&&!settings.emailEnabled),onClick:toggleEmail,children:settings.emailEnabled?`Desativar lembretes por e-mail`:`Ativar lembretes por e-mail`}),
   ]}),

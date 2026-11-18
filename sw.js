@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-v20261112-actions-clean';
+const CACHE_NAME = 'house-tasks-mobile-20261118';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
@@ -123,6 +123,7 @@ function notificationURL(value) {
   const home = new URL("/house-tasks-site/", self.location.origin);
   try {
     const url = new URL(value, home);
+    if (url.origin === home.origin && url.pathname === "/house-tasks-site/productivity.html") return new URL("productivity.html",home).href;
     if (url.origin === home.origin && url.pathname === "/house-tasks-site/notification.html" &&
         /^[a-f0-9-]{36}$/i.test(url.searchParams.get("tarefa") || "")) return url.href;
   } catch {}

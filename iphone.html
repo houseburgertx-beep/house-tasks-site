@@ -13,11 +13,27 @@
     <a href="./">Voltar ao House Tasks</a>
     <article class="surface">
       <h1>Calendário e Lembretes do iPhone</h1>
-      <p>Salve uma tarefa com prazo e abra <strong>Calendário e Lembretes</strong> nos detalhes.</p>
-      <h2>Calendário automático</h2>
-      <p>Novas tarefas com prazo e responsável com e-mail recebem convite automático quando a integração com o Google está disponível. No iPhone, ative o Calendário da mesma conta Google em Ajustes. Se o Google pedir confirmação para adicionar um convite, aceite-o.</p>
-      <h2>Avisos automáticos de prazo</h2>
-      <p>Adicione o House Tasks à Tela de Início e ative as notificações no seu perfil. Você recebe um aviso nas tarefas atribuídas a você que vencem no dia, a partir das 8h (horário da Bahia).</p>
+      <section id="apple-sync">
+        <h2>Minha assinatura</h2>
+        <p>Acompanhe tarefas com prazo que você criou ou recebeu e demandas pessoais abertas. O Calendário atualiza a assinatura no intervalo definido pelo iPhone.</p>
+        <button id="generate">Gerar links pessoais</button>
+        <button id="revoke">Revogar links</button>
+        <p role="status" aria-live="polite"></p>
+        <div id="sync-links" hidden>
+          <p><a id="subscribe">Assinar no Calendário Apple</a></p>
+          <button id="copy-reminders">Copiar link para Lembretes</button>
+        </div>
+      </section>
+      <h2>Lembretes automáticos</h2>
+      <ol>
+        <li>Gere os links acima e copie o link para Lembretes.</li>
+        <li><a href="./assets/House-Tasks.shortcut" download="House Tasks.shortcut">Instale o atalho House Tasks</a> e cole o link na configuração. Execute uma vez e permita o acesso aos Lembretes.</li>
+        <li>Em Atalhos → Automação, escolha “Hora do dia”, selecione seu horário, marque “Executar imediatamente” e escolha House Tasks.</li>
+      </ol>
+      <p>A cada execução, o atalho cria um lembrete com as pendências do dia, caso ainda não exista o resumo daquela data.</p>
+      <h2>Avisos na tela bloqueada</h2>
+      <p>Abra o House Tasks pela Tela de Início. Em Perfil → Notificações, toque em “Ativar notificações no celular”, permita os avisos e use “Enviar aviso de teste”.</p>
+      <script type="module" src="./assets/apple-sync.js"></script>
       <h2>Exportação manual para o Calendário</h2>
       <p>Toque em <strong>Adicionar ao Calendário</strong>, abra o arquivo .ics e confirme a importação no Calendário. O prazo entra como evento de dia inteiro.</p>
       <h2>App Lembretes via Atalhos</h2>
