@@ -596,3 +596,8 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
 @media (max-width: 700px) {
   .house-studio:has(#editor:not([hidden])) .studio-brand strong { display: none; }
 }
+
+.task-wordmark { display:block; width:84px; height:auto; object-fit:contain; }
+.house-app .portal-brand { flex-direction:column; align-items:flex-start; gap:3px; }
+.house-app .task-login-logo { width:132px; margin:0 auto 18px; }
+[data-house-theme="dark"] .task-wordmark { background:#fff; border-radius:5px; padding:3px 5px; box-sizing:content-box; }

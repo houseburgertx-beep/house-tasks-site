@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-device-20261118';
+const CACHE_NAME = 'house-tasks-brand-teal';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
@@ -22,6 +22,7 @@ const STATIC_ASSETS = [
   '/house-tasks-site/assets/whiteboards.js',
   '/house-tasks-site/manifest.webmanifest',
   '/house-tasks-site/favicon.svg',
+  '/house-tasks-site/assets/task.svg',
   '/house-tasks-site/app-config.json',
   '/house-tasks-site/assets/google-integrations.js',
   '/house-tasks-site/assets/despegue.css',
