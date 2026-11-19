@@ -1499,3 +1499,7 @@ body.house-app:has(.auth-shell) {
   .house-app .mobile-nav :is(button, .mobile-nav-link) { font-size: 9px !important; }
   .house-app .mobile-nav .mobile-create { margin-inline: 1px !important; }
 }
+
+.house-received { margin: 12px 0; padding: 16px; border-radius: 18px; background: var(--surface, Canvas); color: var(--text, CanvasText); }
+.house-received h2 { margin: 0 0 6px; font-size: 1rem; }
+.house-received button { display: block; width: 100%; min-height: 44px; text-align: left; color: inherit; background: transparent; border: 0; border-bottom: 1px solid #8893a333; cursor: pointer; overflow-wrap: anywhere; }
