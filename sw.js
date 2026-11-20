@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-first-party-auth-20261120';
+const CACHE_NAME = 'house-tasks-auth-safe-20261120';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
