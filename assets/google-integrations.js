@@ -127,8 +127,14 @@
 
   const identityObserver = new MutationObserver(renderIdentityButton);
   identityObserver.observe(document.documentElement, { childList: true, subtree: true });
+  document.querySelector('script[src*="accounts.google.com/gsi/client"]')?.addEventListener("load", renderIdentityButton);
   window.addEventListener("load", renderIdentityButton);
   setTimeout(renderIdentityButton, 0);
+  let gsiTries = 0;
+  const gsiPoll = setInterval(() => {
+    renderIdentityButton();
+    if (document.querySelector(".google-identity-button") || ++gsiTries >= 40) clearInterval(gsiPoll);
+  }, 250);
 
   // Start Firebase initialization before the first tap. Login can then call
   // signInWithPopup directly from the button without waiting on setup.

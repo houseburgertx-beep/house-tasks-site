@@ -16,7 +16,11 @@ cat > "$stage/firebase.json" <<'CONFIG'
     "redirects": [{ "source": "/", "destination": "/house-tasks-site/", "type": 302 }],
     "headers": [{
       "source": "/house-tasks-site/**",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" },
+        { "key": "Referrer-Policy", "value": "no-referrer-when-downgrade" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" }
+      ]
     }]
   }
 }

@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f2f5fa">
-  <meta name="referrer" content="no-referrer">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <script>
+    if (location.hostname === 'house-task-327d6.web.app' || location.hostname === 'houseburgertx-beep.github.io') {
+      location.replace('https://house-task-327d6.firebaseapp.com' + location.pathname + location.search + location.hash);
+    }
+  </script>
   
   <!-- SEO & Meta -->
   <title>HOUSE TASKS · Grupo House190</title>
@@ -92,7 +97,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-  <script src="/house-tasks-site/assets/google-integrations.js?v=20261120-canonical-login" defer></script>
+  <script src="/house-tasks-site/assets/google-integrations.js?v=20261120-google-origin" defer></script>
 
   <!-- Componente Despegue Oficial (Foguete de Papel, Pista com Mola, Fumaça e Confetes) -->
   <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261112-iphone-auto">
@@ -102,7 +107,7 @@
   <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261120-wa-akg"></script>
   <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261112-actions-clean">
   <link rel="stylesheet" href="/house-tasks-site/assets/house-layout.css?v=20261120-wa-akg">
-  <script src="./assets/house-theme.js?v=20261112-actions-clean"></script>
+  <script src="./assets/house-theme.js?v=20261120-google-origin"></script>
   <link rel="stylesheet" href="./assets/house-portal.css?v=task-teal">
   <link rel="stylesheet" href="./assets/house-desktop.css?v=20261112-actions-clean" media="(min-width: 769px) and (hover: hover) and (pointer: fine)">
   <link rel="stylesheet" href="./assets/demands.css?v=20261112-actions-clean">
