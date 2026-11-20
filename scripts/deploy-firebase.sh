@@ -22,4 +22,8 @@ cat > "$stage/firebase.json" <<'CONFIG'
 }
 CONFIG
 cd "$stage"
-firebase deploy --only hosting --project house-task-327d6 --non-interactive
+if command -v firebase >/dev/null 2>&1; then
+  firebase deploy --only hosting --project house-task-327d6 --non-interactive
+else
+  npx --yes firebase-tools@latest deploy --only hosting --project house-task-327d6 --non-interactive
+fi

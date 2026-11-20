@@ -62,9 +62,7 @@ house-tasks-site/
 
 ## Entrada no aplicativo instalado
 
-O fluxo por redirecionamento usa o site `house-task-327d6.firebaseapp.com`,
-que também fornece o auxiliar de autenticação do Firebase. Publique o mesmo
-aplicativo nesse domínio com `./scripts/deploy-firebase.sh`, usando o Firebase
-CLI autenticado com permissão para publicar no projeto `house-task-327d6`.
-Após publicar, abra `/house-tasks-site/` nesse domínio e instale o aplicativo
-a partir desse endereço para usar a entrada por redirecionamento.
+O endereço oficial é `https://house-task-327d6.firebaseapp.com/house-tasks-site/`.
+Ele usa o botão oficial do Google Identity e mantém login, PWA e sessão no mesmo
+domínio. O alias `house-task-327d6.web.app` é redirecionado automaticamente para
+esse endereço para evitar sessões divididas e bloqueios de origem do Google.
