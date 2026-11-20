@@ -1,6 +1,13 @@
 (() => {
   const config = window.__HOUSE_CONFIG__?.firebaseConfig;
-  const sameOrigin = location.hostname === config?.authDomain;
+  const firebaseHosting = new Set([
+    "house-task-327d6.web.app",
+    "house-task-327d6.firebaseapp.com",
+  ]);
+  const effectiveConfig = firebaseHosting.has(location.hostname)
+    ? { ...config, authDomain: location.hostname }
+    : config;
+  const sameOrigin = location.hostname === effectiveConfig?.authDomain;
   const messages = {
     "auth/unauthorized-domain": "O domínio do site precisa ser autorizado no Firebase.",
     "auth/operation-not-allowed": "O login Google ainda não foi ativado no Firebase.",
@@ -11,8 +18,8 @@
   };
 
   function authClient() {
-    if (!window.firebase || !config?.apiKey) throw new Error("Login Google indisponível.");
-    const app = firebase.apps[0] || firebase.initializeApp(config);
+    if (!window.firebase || !effectiveConfig?.apiKey) throw new Error("Login Google indisponível.");
+    const app = firebase.apps[0] || firebase.initializeApp(effectiveConfig);
     return app.auth();
   }
 
@@ -66,5 +73,5 @@
 
   // Start Firebase initialization before the first tap. Login can then call
   // signInWithPopup directly from the button without waiting on setup.
-  if (window.firebase && config?.apiKey) authClient();
+  if (window.firebase && effectiveConfig?.apiKey) authClient();
 })();
