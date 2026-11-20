@@ -1,5 +1,8 @@
 (() => {
   const config = window.__HOUSE_CONFIG__?.firebaseConfig;
+  const googleClientId = "664192166444-cmmm8p9mt7l43dd881gm9oaqrf40bnrh.apps.googleusercontent.com";
+  const apiBase = window.__HOUSE_CONFIG__?.apiBaseUrl?.replace(/\/$/, "") ||
+    "https://house-tasks-api.brunohouse.workers.dev";
   const sameOrigin = location.hostname === config?.authDomain;
   const messages = {
     "auth/unauthorized-domain": "O domínio do site precisa ser autorizado no Firebase.",
@@ -63,6 +66,69 @@
   }
 
   window.HouseGoogle = { login, resume };
+
+  function showIdentityError(message) {
+    const card = document.querySelector(".auth-card");
+    if (!card) return;
+    let status = card.querySelector(".google-identity-error");
+    if (!status) {
+      status = document.createElement("p");
+      status.className = "form-error google-identity-error";
+      status.setAttribute("role", "alert");
+      card.querySelector(".google-identity-button")?.after(status);
+    }
+    status.textContent = message;
+  }
+
+  async function finishIdentity(credential) {
+    try {
+      const response = await fetch(apiBase + "/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken: credential }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "O Google não confirmou sua identidade.");
+      sessionStorage.setItem("house-tasks-session", result.token);
+      location.reload();
+    } catch (error) {
+      showIdentityError(error.message || "Não foi possível entrar com Google.");
+    }
+  }
+
+  let identityInitialized = false;
+  function renderIdentityButton() {
+    const original = document.querySelector(".google-auth-btn");
+    if (!original || original.dataset.identityReplaced || !window.google?.accounts?.id) return;
+    original.dataset.identityReplaced = "true";
+    original.hidden = true;
+    const container = document.createElement("div");
+    container.className = "google-identity-button";
+    original.after(container);
+    if (!identityInitialized) {
+      google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: response => finishIdentity(response.credential),
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+      identityInitialized = true;
+    }
+    google.accounts.id.renderButton(container, {
+      type: "standard",
+      theme: "outline",
+      size: "large",
+      text: "signin_with",
+      shape: "rectangular",
+      logo_alignment: "left",
+      width: Math.max(240, Math.min(400, Math.round(original.getBoundingClientRect().width || 320))),
+    });
+  }
+
+  const identityObserver = new MutationObserver(renderIdentityButton);
+  identityObserver.observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener("load", renderIdentityButton);
+  setTimeout(renderIdentityButton, 0);
 
   // Start Firebase initialization before the first tap. Login can then call
   // signInWithPopup directly from the button without waiting on setup.

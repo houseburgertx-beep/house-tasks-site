@@ -1557,6 +1557,17 @@ body.house-app:has(.auth-shell) {
   font: inherit;
   resize: vertical;
 }
+.google-identity-button {
+  width: 100%;
+  min-height: 46px;
+  display: grid;
+  place-items: center;
+  margin-top: 2px;
+  overflow: hidden;
+}
+.google-identity-button > div,
+.google-identity-button iframe { max-width: 100% !important; }
+.google-identity-error { margin-top: 10px !important; }
 @media (max-width: 700px) {
   .operation-queue { align-items: stretch; flex-direction: column; padding: 16px; }
   .operation-queue-actions a { flex: 1 1 135px; justify-content: space-between; }
