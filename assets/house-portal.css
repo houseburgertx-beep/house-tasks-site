@@ -598,6 +598,31 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
 }
 
 .task-wordmark { display:block; width:84px; height:auto; object-fit:contain; }
+.house-header-start { display:flex; align-items:center; gap:10px; min-width:0; }
+.house-back-link {
+  display:grid;
+  place-items:center;
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+  border:1px solid var(--portal-line);
+  border-radius:13px;
+  background:var(--portal-subtle);
+  color:var(--portal-text) !important;
+  text-decoration:none;
+  transition:background-color .18s ease, transform .18s ease, border-color .18s ease;
+}
+.house-back-link svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.house-back-link:hover { background:var(--portal-selected); border-color:var(--portal-muted); }
+.house-back-link:active { transform:scale(.94); }
+.house-back-link:focus-visible { outline:3px solid color-mix(in srgb, var(--portal-text) 22%, transparent); outline-offset:2px; }
+.house-studio:has(#editor:not([hidden])) .studio-home-start { display:none; }
+#library-link::before { content:"←"; margin-right:6px; font-size:1.05em; }
+@media (max-width:520px) {
+  .house-header-start { gap:8px; }
+  .house-back-link { width:38px; height:38px; flex-basis:38px; border-radius:12px; }
+  .house-header-start .task-wordmark { width:72px; }
+}
 .house-app .portal-brand { flex-direction:column; align-items:flex-start; gap:3px; }
 .house-app .task-login-logo { width:132px; margin:0 auto 18px; }
 [data-house-theme="dark"] .task-wordmark { background:#fff; border-radius:5px; padding:3px 5px; box-sizing:content-box; }

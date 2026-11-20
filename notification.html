@@ -9,19 +9,21 @@
   <link rel="stylesheet" href="./assets/whiteboards.css">
   <link rel="stylesheet" href="./assets/house-layout.css">
   <script type="module" src="./assets/notification-task.js"></script>
-  <script src="./assets/house-theme.js?v=20261112-portal-screens"></script>
-  <link rel="stylesheet" href="./assets/house-portal.css?v=task-teal">
+  <script src="./assets/house-theme.js?v=20261120-back-navigation"></script>
+  <link rel="stylesheet" href="./assets/house-portal.css?v=20261120-back-navigation">
   <link rel="stylesheet" href="./assets/house-desktop.css?v=20261112-brand" media="(min-width: 769px) and (hover: hover) and (pointer: fine)">
 </head>
 <body class="house-studio">
   <header class="studio-header">
-    <a href="./" class="studio-brand"><img class="task-wordmark" src="./assets/task.svg" alt="TASK"></a>
+    <div class="house-header-start">
+      <a class="house-back-link" href="./" aria-label="Voltar ao início"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+      <a href="./" class="studio-brand"><img class="task-wordmark" src="./assets/task.svg" alt="TASK"></a>
+    </div>
   </header>
   <main class="library">
     <h1 id="task-title">Tarefa</h1>
     <p id="task-status" role="status">Carregando tarefa…</p>
     <p id="task-due"></p>
-    <a href="./">Voltar ao início</a>
   </main>
 </body>
 </html>

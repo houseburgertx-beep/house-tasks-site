@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-canonical-login-20261120';
+const CACHE_NAME = 'house-tasks-back-navigation-20261120';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',

@@ -8,13 +8,16 @@
   <link rel="icon" href="./favicon.svg?v=task-teal">
   <link rel="stylesheet" href="./assets/productivity.css?v=20261120-flow-fixes">
   <script type="module" src="./assets/productivity.js?v=20261120-flow-fixes"></script>
-  <script src="./assets/house-theme.js?v=20261112-portal-screens"></script>
-  <link rel="stylesheet" href="./assets/house-portal.css?v=task-teal">
+  <script src="./assets/house-theme.js?v=20261120-back-navigation"></script>
+  <link rel="stylesheet" href="./assets/house-portal.css?v=20261120-back-navigation">
   <link rel="stylesheet" href="./assets/house-desktop.css?v=20261112-brand" media="(min-width: 769px) and (hover: hover) and (pointer: fine)">
 </head>
 <body class="house-productivity">
   <header>
-    <a class="home" href="./"><img class="task-wordmark" src="./assets/task.svg" alt="TASK"></a>
+    <div class="house-header-start">
+      <a class="house-back-link" href="./" aria-label="Voltar ao início"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+      <a class="home" href="./"><img class="task-wordmark" src="./assets/task.svg" alt="TASK"></a>
+    </div>
     <nav aria-label="Produtividade">
       <a id="day-tab" href="./productivity.html">Meu dia</a>
       <a id="pages-tab" href="./productivity.html?view=pages">Notas</a>
