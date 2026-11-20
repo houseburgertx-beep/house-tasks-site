@@ -1572,3 +1572,163 @@ body.house-app:has(.auth-shell) {
   .operation-queue { align-items: stretch; flex-direction: column; padding: 16px; }
   .operation-queue-actions a { flex: 1 1 135px; justify-content: space-between; }
 }
+
+/* WhatsApp WA-AKG Notification & Gateway Panel */
+.wa-settings-block {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  margin-bottom: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  background: rgba(16, 185, 129, 0.06);
+}
+.wa-user-actions,
+.wa-gateway-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.wa-gateway-panel {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--house-line);
+}
+.wa-gateway-panel > summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--house-accent, #0064d9);
+  user-select: none;
+  padding: 4px 0;
+}
+.wa-gateway-body {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+.wa-gateway-form {
+  display: grid;
+  gap: 8px;
+}
+.wa-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.wa-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.wa-status-pill.online {
+  background: rgba(16, 185, 129, 0.16);
+  color: #047857;
+}
+.wa-status-pill.offline {
+  background: rgba(239, 68, 68, 0.14);
+  color: #b91c1c;
+}
+[data-theme="dark"] .wa-status-pill.online { color: #6ee7b7; }
+[data-theme="dark"] .wa-status-pill.offline { color: #fca5a5; }
+.wa-muted {
+  font-size: 0.8rem;
+  opacity: 0.78;
+  word-break: break-word;
+}
+.wa-stats-line {
+  font-size: 0.82rem;
+}
+.wa-error-inline {
+  color: #b91c1c;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.wa-ok-inline {
+  color: #047857;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+[data-theme="dark"] .wa-error-inline { color: #fca5a5; }
+[data-theme="dark"] .wa-ok-inline { color: #6ee7b7; }
+.wa-mini-btn {
+  min-height: 36px !important;
+  padding: 6px 12px !important;
+  font-size: 0.82rem !important;
+}
+.wa-test-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+.wa-test-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--house-line);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.84rem;
+}
+.wa-qr-box {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #0f172a;
+}
+.wa-qr-box img {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+}
+.wa-jobs-wrap {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 0.8rem;
+}
+.wa-jobs-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.wa-jobs-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(148, 163, 184, 0.1);
+}
+.wa-job-badge {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.wa-job-badge.sent { background: rgba(16, 185, 129, 0.18); color: #047857; }
+.wa-job-badge.pending { background: rgba(245, 158, 11, 0.18); color: #b45309; }
+.wa-job-badge.failed { background: rgba(239, 68, 68, 0.18); color: #b91c1c; }
+.wa-job-badge.cancelled { background: rgba(148, 163, 184, 0.22); color: #475569; }
+[data-theme="dark"] .wa-job-badge.sent { color: #6ee7b7; }
+[data-theme="dark"] .wa-job-badge.pending { color: #fcd34d; }
+[data-theme="dark"] .wa-job-badge.failed { color: #fca5a5; }
+[data-theme="dark"] .wa-job-badge.cancelled { color: #cbd5e1; }
