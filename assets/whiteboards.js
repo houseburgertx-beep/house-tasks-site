@@ -115,7 +115,8 @@ function template(name) {
 
 function askNew() {
   const form = node("form");
-  const name = node("input", undefined, { required: "", maxlength: "100", value: "Novo quadro" });
+  const defaults = { blank: "Quadro de ideias", mind: "Mapa mental", process: "Fluxo de trabalho" };
+  const name = node("input", undefined, { required: "", maxlength: "100", value: defaults.blank, placeholder: "Ex. Abertura da loja" });
   const mode = node("select");
   [["blank", "Quadro em branco"], ["mind", "Mapa mental"], ["process", "Fluxograma"]].forEach(([value, text]) => mode.append(node("option", text, { value })));
   const nameLabel = node("label", "Nome");
@@ -124,6 +125,14 @@ function askNew() {
   templateLabel.append(mode);
   const submit = node("button", "Criar quadro", { class: "primary", type: "submit" });
   const error = node("p", "", { role: "alert" });
+  let automaticName = true;
+  name.addEventListener("input", () => { automaticName = false; });
+  mode.addEventListener("change", () => {
+    if (automaticName || Object.values(defaults).includes(name.value)) {
+      name.value = defaults[mode.value];
+      automaticName = true;
+    }
+  });
   form.append(nameLabel, templateLabel, submit, error);
   form.onsubmit = async event => {
     event.preventDefault();
@@ -159,7 +168,11 @@ async function library() {
         svg("rect", { x: 25, y: 52, width: 66, height: 27, rx: 10, fill: "var(--portal-strong)" }),
         ...[31, 65, 100].map(y => svg("rect", { x: 154, y: y - 10, width: 66, height: 20, rx: 8, fill: "var(--portal-line)" })),
       );
-      tile.append(preview, node("strong", info.title), node("small", new Date(info.updated).toLocaleDateString("pt-BR") + (info.role === "owner" ? "" : " · Compartilhado")));
+      const previewLabel = (info.preview || "Quadro em branco").slice(0, 42);
+      const label = svg("text", { x: 125, y: 121, "text-anchor": "middle", fill: "var(--portal-text)", "font-size": 10 });
+      label.textContent = previewLabel;
+      preview.append(label);
+      tile.append(preview, node("strong", info.title), node("small", `${info.element_count || 0} itens · ${new Date(info.updated).toLocaleDateString("pt-BR")}${info.role === "owner" ? "" : " · Compartilhado"}`));
       $("board-list").append(tile);
     }
   } catch (error) { $("library-status").textContent = error.message; }

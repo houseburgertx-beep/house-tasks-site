@@ -7,7 +7,8 @@ const create = document.querySelector("#new-request");
 const sessionKey = "house-tasks-session";
 const categories = { maintenance: "Manutenção", purchases: "Compras", support: "Suporte" };
 const stages = { todo: "A fazer", doing: "Em execução", review: "Para aprovar", done: "Concluída" };
-let selected = "review";
+let selected = ["review", "inbox", "sent"].includes(new URLSearchParams(location.search).get("view"))
+  ? new URLSearchParams(location.search).get("view") : "review";
 let data;
 let user;
 const config = await fetch("./app-config.json").then(response => response.json())
@@ -133,7 +134,13 @@ function render() {
     sent: data.tasks.filter(task => task.request_category && owned(task)),
   };
   tabs.replaceChildren(...Object.entries({ review: "Para aprovar", inbox: "Triagem", sent: "Enviadas" }).map(([key, label]) => {
-    const tab = action(label + " · " + groups[key].length, () => { selected = key; render(); });
+    const tab = action(label + " · " + groups[key].length, () => {
+      selected = key;
+      const url = new URL(location.href);
+      url.searchParams.set("view", key);
+      history.replaceState(null, "", url);
+      render();
+    });
     tab.setAttribute("aria-pressed", String(selected === key));
     return tab;
   }));

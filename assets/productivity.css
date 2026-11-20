@@ -42,6 +42,15 @@ textarea { resize: vertical; }
 .muted, small { color: #51647e; }
 .filters, .inline { display: flex; flex-wrap: wrap; gap: 8px; }
 .filters select, .inline :is(input:not([type="checkbox"]), select) { flex: 1 1 135px; }
+.completed-toggle {
+  min-height: 44px;
+  padding: 8px 13px;
+  border: 1px solid var(--portal-line);
+  border-radius: 12px;
+  background: #fff;
+  color: #687386;
+}
+.completed-toggle[aria-pressed="true"] { color: #0b69df; background: #edf5ff; }
 .calendar-header, .section-header { display: flex; align-items: center; gap: 6px; }
 .calendar-header { margin-bottom: 9px; }
 .calendar-header h2, .section-header h1 { margin-right: auto; }

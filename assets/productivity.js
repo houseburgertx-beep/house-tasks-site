@@ -14,6 +14,7 @@ const dateFromKey = key => new Date(key + "T12:00:00Z");
 const dateKey = date => date.toISOString().slice(0, 10);
 const dayAt = (year, month, day) => new Date(Date.UTC(year, month, day, 12));
 let data;
+let currentUser;
 let draftDirty = false;
 
 function signIn() {
@@ -166,8 +167,8 @@ function renderPersonalDemands(panel, selected, onSaved) {
   const header = element("div", null, { class: "personal-header" });
   const progress = element("p", null, { class: "muted", "aria-live": "polite" });
   const title = element("div");
-  title.append(element("h2", "Minhas demandas"), element("small", dayFormat.format(dateFromKey(selected))));
-  header.append(title, button("+ Demanda pessoal", () => personalDemandEditor(selected, null, onSaved), { class: "primary" }));
+  title.append(element("h2", "Meu checklist"), element("small", dayFormat.format(dateFromKey(selected))));
+  header.append(title, button("+ Item pessoal", () => personalDemandEditor(selected, null, onSaved), { class: "primary" }));
   const content = element("div", null, { class: "personal-list" });
   panel.replaceChildren(header, progress, content);
 
@@ -246,8 +247,17 @@ function renderCalendar() {
   const person = select([["", "Todos os responsáveis"], ["none", "Sem responsável"],
     ...data.people.map(item => [item.id, item.name])], "Filtrar responsável");
   const unit = select([["", "Todas as unidades"], ...data.units.map(item => [item.id, item.name])], "Filtrar unidade");
+  const ownPerson = data.people.find(item => item.email?.trim().toLowerCase() === currentUser?.email?.trim().toLowerCase());
+  if (ownPerson) person.value = ownPerson.id;
+  let showCompleted = false;
+  const completedToggle = button("Mostrar concluídas", () => {
+    showCompleted = !showCompleted;
+    completedToggle.textContent = showCompleted ? "Ocultar concluídas" : "Mostrar concluídas";
+    completedToggle.setAttribute("aria-pressed", String(showCompleted));
+    draw();
+  }, { class: "completed-toggle", "aria-pressed": "false" });
   const filters = element("div", null, { class: "filters" });
-  filters.append(person, unit);
+  filters.append(person, unit, completedToggle);
   const section = element("section", null, { class: "surface" });
   const personal = element("section", null, { class: "surface personal-demands", "aria-label": "Minhas demandas" });
   let loadedPersonalDay;
@@ -256,7 +266,8 @@ function renderCalendar() {
   root.replaceChildren(element("h1", "Meu dia"), filters, section, personal, agenda, undated);
 
   function draw() {
-    const tasks = data.tasks.filter(task => (!unit.value || task.unit_id === unit.value)
+    const tasks = data.tasks.filter(task => (showCompleted || task.status !== "done")
+      && (!unit.value || task.unit_id === unit.value)
       && (!person.value || (person.value === "none" ? !task.person_id : task.person_id === person.value)));
     const byDate = new Map();
     for (const task of tasks) {
@@ -615,7 +626,9 @@ try {
       if (document.hidden && draftDirty) void saveActiveNote?.();
     });
   } else {
-    data = await api("data");
+    const [taskData, auth] = await Promise.all([api("data"), api("auth/me")]);
+    data = taskData;
+    currentUser = auth.user;
     renderCalendar();
   }
 } catch (error) {
