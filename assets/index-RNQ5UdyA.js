@@ -128,7 +128,7 @@ function HouseWhatsAppGatewayAdmin({onConfigChanged}){
   const live=data?.liveStatus;
   const cfg=data?.config;
   const stats=data?.stats;
-  const sourceLabels={discovered:"Automático (Folgas 3.0)",database:"URL manual",env:"Variável do Worker",none:"Não definida"};
+  const sourceLabels={relay:"Automático (Relay Folgas 3.0 · Redmi 13)",discovered:"Automático (Folgas 3.0)",database:"URL manual",env:"Variável do Worker",none:"Não definida"};
 
   return(0,O.jsxs)("details",{className:"wa-gateway-panel",open:open,onToggle:event=>{const next=event.currentTarget.open;setOpen(next);if(next&&!data&&!loading)void loadGateway()},children:[
     (0,O.jsx)("summary",{children:"Configurar Gateway WhatsApp (WA-AKG)"}),
