@@ -24,33 +24,22 @@
   <meta name="apple-mobile-web-app-title" content="HOUSE TASKS">
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- Runtime Config & Dynamic API Fallback -->
+  <!-- Runtime Config inline (zero XHR bloqueante na abertura) -->
+  <link rel="preconnect" href="https://house-tasks-api.brunohouse.workers.dev" crossorigin>
   <script>
-    window.__HOUSE_CONFIG__ = null;
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', '/house-tasks-site/app-config.json', false);
-      xhr.send(null);
-      if (xhr.status === 200) {
-        window.__HOUSE_CONFIG__ = JSON.parse(xhr.responseText);
+    window.__HOUSE_CONFIG__ = {
+      apiBaseUrl: "https://house-tasks-api.brunohouse.workers.dev",
+      firebaseConfig: {
+        apiKey: "AIzaSyD47HVe-1-DerpUUAVDeZjlTFx6qLTpjrQ",
+        authDomain: "house-task-327d6.firebaseapp.com",
+        databaseURL: "https://house-task-327d6-default-rtdb.firebaseio.com",
+        projectId: "house-task-327d6",
+        storageBucket: "house-task-327d6.firebasestorage.app",
+        messagingSenderId: "664192166444",
+        appId: "1:664192166444:web:5b6b30e8cd2ab9d5ca7f89",
+        measurementId: "G-2RJKB5FPJK"
       }
-    } catch (e) {
-      console.warn('[HOUSE TASKS] Fallback para a configuração padrão');
-    }
-
-    if (window.__HOUSE_CONFIG__ && window.__HOUSE_CONFIG__.apiBaseUrl) {
-      const configuredApi = window.__HOUSE_CONFIG__.apiBaseUrl.replace(/\/$/, '');
-      const defaultApi = 'https://house-tasks-api.brunohouse.workers.dev';
-      if (configuredApi !== defaultApi) {
-        const _fetch = window.fetch;
-        window.fetch = function (url, opts) {
-          if (typeof url === 'string' && url.startsWith(defaultApi)) {
-            url = url.replace(defaultApi, configuredApi);
-          }
-          return _fetch.call(this, url, opts);
-        };
-      }
-    }
+    };
 
     if ('serviceWorker' in navigator) {
       const worker = navigator.serviceWorker;
@@ -80,8 +69,8 @@
           registration = await worker.register('/house-tasks-site/sw.js', { updateViaCache: 'none' });
           setInterval(() => {
             if (document.visibilityState === 'visible') registration.update().catch(() => {});
-          }, 60000);
-          setInterval(refreshWhenIdle, 2000);
+          }, 120000);
+          setInterval(refreshWhenIdle, 3000);
         } catch (error) {
           console.warn('[HOUSE TASKS] Service Worker indisponível:', error);
         }
@@ -89,26 +78,25 @@
     }
   </script>
 
-  <!-- Firebase Compat SDK para Autenticação Google / Gmail -->
+  <!-- Firebase Compat SDK com defer (não bloqueia a renderização inicial) -->
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://accounts.google.com" crossorigin>
-  <link rel="preconnect" href="https://house-task-327d6.firebaseapp.com" crossorigin>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js" defer></script>
 
-  <script src="/house-tasks-site/assets/google-integrations.js?v=20261121-firebase-register" defer></script>
+  <script src="/house-tasks-site/assets/google-integrations.js?v=20261121-turbo" defer></script>
 
   <!-- Componente Despegue Oficial (Foguete de Papel, Pista com Mola, Fumaça e Confetes) -->
-  <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261112-iphone-auto">
-  <script src="/house-tasks-site/assets/despegue.js?v=20261112-iphone-auto" defer></script>
+  <link rel="stylesheet" href="/house-tasks-site/assets/despegue.css?v=20261121-turbo">
+  <script src="/house-tasks-site/assets/despegue.js?v=20261121-turbo" defer></script>
 
   <!-- App Principal -->
-  <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261121-wa-confirm"></script>
-  <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261112-actions-clean">
-  <link rel="stylesheet" href="/house-tasks-site/assets/house-layout.css?v=20261121-no-zoom">
+  <script type="module" crossorigin src="/house-tasks-site/assets/index-RNQ5UdyA.js?v=20261121-turbo"></script>
+  <link rel="stylesheet" crossorigin href="/house-tasks-site/assets/index-B5_nnLOS.css?v=20261121-turbo">
+  <link rel="stylesheet" href="/house-tasks-site/assets/house-layout.css?v=20261121-turbo">
   <script src="./assets/house-theme.js?v=20261120-google-origin"></script>
-  <link rel="stylesheet" href="./assets/house-portal.css?v=20261121-safe-top">
+  <link rel="stylesheet" href="./assets/house-portal.css?v=20261121-turbo">
   <link rel="stylesheet" href="./assets/house-desktop.css?v=20261112-actions-clean" media="(min-width: 769px) and (hover: hover) and (pointer: fine)">
   <link rel="stylesheet" href="./assets/demands.css?v=20261112-actions-clean">
 </head>

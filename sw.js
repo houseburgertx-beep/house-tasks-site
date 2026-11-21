@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-safe-top-20261121';
+const CACHE_NAME = 'house-tasks-turbo-20261121';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
@@ -47,7 +47,6 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key.startsWith('house-tasks-') && key !== CACHE_NAME) {
-            console.log('[SW] Apagando cache antigo:', key);
             return caches.delete(key);
           }
         })
@@ -60,52 +59,50 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
   // Bypass cache para chamadas de API ou recursos de outros domínios
-  if (event.request.method !== 'GET' || url.origin !== self.location.origin || !url.pathname.startsWith('/house-tasks-site/') || url.pathname.includes('/api/')) {
-    return;
-  }
-
-  // Network-First para código JS, CSS e navegação HTML (garante atualizações instantâneas)
   if (
-    event.request.mode === 'navigate' ||
-    url.pathname.endsWith('.js') ||
-    url.pathname.endsWith('.css') ||
-    url.pathname.endsWith('.html') ||
-    url.pathname.endsWith('.json')
+    event.request.method !== 'GET' ||
+    url.origin !== self.location.origin ||
+    !url.pathname.startsWith('/house-tasks-site/') ||
+    url.pathname.includes('/api/')
   ) {
-    event.respondWith(
-      fetch(event.request, { cache: 'no-cache' })
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(async () => (await caches.match(event.request)) ||
-          (event.request.mode === 'navigate' ? await caches.match('/house-tasks-site/index.html') : await caches.match(url.pathname)) ||
-          Response.error())
-    );
     return;
   }
 
-  // Stale-While-Revalidate apenas para imagens estáticas e fontes
-  event.respondWith(
-    (async () => (await caches.match(event.request)) || (await caches.match(url.pathname)))().then((cachedResponse) => {
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
+  // Stale-While-Revalidate instantâneo para navegação HTML, JS, CSS, fontes e imagens:
+  // Abre qualquer tela em ~5ms do cache local e atualiza em segundo plano automaticamente.
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cacheKey = event.request.mode === 'navigate'
+      ? (url.pathname === '/house-tasks-site/' ? '/house-tasks-site/index.html' : url.pathname)
+      : event.request;
+
+    const cached =
+      (await cache.match(event.request)) ||
+      (await cache.match(url.pathname)) ||
+      (event.request.mode === 'navigate' ? await cache.match(cacheKey) : undefined);
+
+    const networkUpdate = fetch(event.request)
+      .then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+          const copyA = networkResponse.clone();
+          const copyB = networkResponse.clone();
+          void cache.put(event.request, copyA).catch(() => {});
+          if (url.search) {
+            void cache.put(url.pathname, copyB).catch(() => {});
+          }
         }
         return networkResponse;
-      }).catch(() => cachedResponse);
+      })
+      .catch(() => cached);
 
-      return cachedResponse || fetchPromise;
-    })
-  );
+    if (cached) {
+      event.waitUntil(networkUpdate);
+      return cached;
+    }
+    return (await networkUpdate) ||
+      (event.request.mode === 'navigate' ? await cache.match('/house-tasks-site/index.html') : undefined) ||
+      Response.error();
+  })());
 });
 
 self.addEventListener("push", event => {

@@ -3,10 +3,23 @@ const uid = () => crypto.randomUUID();
 const clone = value => structuredClone(value);
 const svgNS = "http://www.w3.org/2000/svg";
 const base = new URL("./", location.href);
-const apiBase = await fetch(new URL("app-config.json", base))
-  .then(response => response.json()).then(config => config.apiBaseUrl)
-  .catch(() => "https://house-tasks-api.brunohouse.workers.dev");
+const apiBase = (window.__HOUSE_CONFIG__?.apiBaseUrl || "https://house-tasks-api.brunohouse.workers.dev").replace(/\/$/, "");
 const sessionKey = "house-tasks-session";
+function readBoardCache() {
+  try {
+    const tok = sessionStorage.getItem(sessionKey);
+    if (!tok) return null;
+    const parsed = JSON.parse(sessionStorage.getItem("house-cache-boards-v1") || "null");
+    return parsed && parsed.t === tok ? parsed.v : null;
+  } catch { return null; }
+}
+function writeBoardCache(boards) {
+  try {
+    const tok = sessionStorage.getItem(sessionKey);
+    if (!tok) return;
+    sessionStorage.setItem("house-cache-boards-v1", JSON.stringify({ t: tok, v: boards }));
+  } catch {}
+}
 const canvas = $("canvas");
 const scene = $("scene");
 const emptyDocument = () => ({ elements: [], edges: [] });
@@ -147,6 +160,27 @@ function askNew() {
   dialog("Novo quadro", form);
 }
 
+function renderBoardList(boards) {
+  $("library-status").textContent = boards.length ? "" : "Nenhum quadro criado.";
+  const frag = document.createDocumentFragment();
+  for (const info of boards) {
+    const tile = button(undefined, () => loadBoard(info.id), "board-tile");
+    const preview = svg("svg", { class: "board-preview", viewBox: "0 0 250 130", "aria-hidden": "true" });
+    preview.append(
+      svg("path", { d: "M75 65C130 65 116 31 165 31M75 65H165M75 65C130 65 116 100 165 100", fill: "none", stroke: "var(--portal-muted)", "stroke-width": 2 }),
+      svg("rect", { x: 25, y: 52, width: 66, height: 27, rx: 10, fill: "var(--portal-strong)" }),
+      ...[31, 65, 100].map(y => svg("rect", { x: 154, y: y - 10, width: 66, height: 20, rx: 8, fill: "var(--portal-line)" })),
+    );
+    const previewLabel = (info.preview || "Quadro em branco").slice(0, 42);
+    const label = svg("text", { x: 125, y: 121, "text-anchor": "middle", fill: "var(--portal-text)", "font-size": 10 });
+    label.textContent = previewLabel;
+    preview.append(label);
+    tile.append(preview, node("strong", info.title), node("small", `${info.element_count || 0} itens · ${new Date(info.updated).toLocaleDateString("pt-BR")}${info.role === "owner" ? "" : " · Compartilhado"}`));
+    frag.append(tile);
+  }
+  $("board-list").replaceChildren(frag);
+}
+
 async function library() {
   if (board && sequence !== saved && !await save()) return;
   board = null;
@@ -155,27 +189,18 @@ async function library() {
   $("editor").hidden = true;
   ["board-title", "library-link", "export", "comments", "share"].forEach(id => $(id).hidden = true);
   $("save-status").textContent = "";
-  $("library-status").textContent = "Carregando quadros…";
-  $("board-list").replaceChildren();
+  const cachedBoards = readBoardCache();
+  if (cachedBoards) {
+    renderBoardList(cachedBoards);
+  } else {
+    $("library-status").textContent = "Carregando quadros…";
+    $("board-list").replaceChildren();
+  }
   try {
     const { boards } = await api();
-    $("library-status").textContent = boards.length ? "" : "Nenhum quadro criado.";
-    for (const info of boards) {
-      const tile = button(undefined, () => loadBoard(info.id), "board-tile");
-      const preview = svg("svg", { class: "board-preview", viewBox: "0 0 250 130", "aria-hidden": "true" });
-      preview.append(
-        svg("path", { d: "M75 65C130 65 116 31 165 31M75 65H165M75 65C130 65 116 100 165 100", fill: "none", stroke: "var(--portal-muted)", "stroke-width": 2 }),
-        svg("rect", { x: 25, y: 52, width: 66, height: 27, rx: 10, fill: "var(--portal-strong)" }),
-        ...[31, 65, 100].map(y => svg("rect", { x: 154, y: y - 10, width: 66, height: 20, rx: 8, fill: "var(--portal-line)" })),
-      );
-      const previewLabel = (info.preview || "Quadro em branco").slice(0, 42);
-      const label = svg("text", { x: 125, y: 121, "text-anchor": "middle", fill: "var(--portal-text)", "font-size": 10 });
-      label.textContent = previewLabel;
-      preview.append(label);
-      tile.append(preview, node("strong", info.title), node("small", `${info.element_count || 0} itens · ${new Date(info.updated).toLocaleDateString("pt-BR")}${info.role === "owner" ? "" : " · Compartilhado"}`));
-      $("board-list").append(tile);
-    }
-  } catch (error) { $("library-status").textContent = error.message; }
+    writeBoardCache(boards);
+    if (!board) renderBoardList(boards);
+  } catch (error) { if (!cachedBoards) $("library-status").textContent = error.message; }
 }
 
 async function loadBoard(id) {

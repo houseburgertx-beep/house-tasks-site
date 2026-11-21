@@ -70,8 +70,6 @@ body.house-app, body.house-studio {
   z-index: 20;
   height: 58px;
   background: rgba(255, 255, 255, 0.85) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid var(--house-line) !important;
   padding: 0 16px;
   display: flex;
@@ -93,7 +91,7 @@ body.house-app, body.house-studio {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .house-app .profile-trigger {
   background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
@@ -152,7 +150,7 @@ body.house-app, body.house-studio {
   text-decoration: none !important;
   white-space: nowrap !important;
   cursor: pointer !important;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), color 0.18s cubic-bezier(0.16, 1, 0.3, 1)!important;
   border: none !important;
 }
 
@@ -420,7 +418,7 @@ body.house-app, body.house-studio {
   display: flex !important;
   align-items: center !important;
   gap: 5px !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
   cursor: pointer !important;
 }
 
@@ -457,7 +455,7 @@ body.house-app, body.house-studio {
   width: 100% !important;
   max-width: none !important;
   box-sizing: border-box !important;
-  transition: all 0.2s ease !important;
+  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease!important;
 }
 
 .house-app .search-field:focus-within {
@@ -526,7 +524,7 @@ body.house-app, body.house-studio {
   gap: 6px !important;
   cursor: pointer !important;
   min-height: 42px !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
 }
 
 .house-app .filter-late.active {
@@ -565,7 +563,7 @@ body.house-app, body.house-studio {
   justify-content: center !important;
   gap: 6px !important;
   padding: 6px 8px !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1)!important;
   cursor: pointer !important;
 }
 
@@ -659,7 +657,7 @@ body.house-app, body.house-studio {
   background: var(--stage-tint) !important;
   border: 0 !important;
   cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
 }
 
 .house-app .task-card {
@@ -668,7 +666,7 @@ body.house-app, body.house-studio {
   border-radius: 16px !important;
   box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
   margin-bottom: 10px !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1)!important;
   overflow: hidden !important;
 }
 
@@ -721,8 +719,6 @@ body.house-app, body.house-studio {
     right: 12px !important;
     z-index: 99 !important;
     background: rgba(255, 255, 255, 0.9) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
     box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.04) !important;
     border-radius: 30px !important;
@@ -745,7 +741,7 @@ body.house-app, body.house-studio {
     background: transparent !important;
     border: none !important;
     flex: 1 !important;
-    transition: all 0.15s ease !important;
+    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
   }
   .house-app .mobile-nav button:hover,
   .house-app .mobile-nav .mobile-nav-link:hover,
@@ -886,7 +882,7 @@ body.house-app:has(.auth-shell) {
   gap: 12px !important;
   cursor: pointer !important;
   box-shadow: 0 2px 6px rgba(20, 32, 52, 0.04) !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1)!important;
 }
 
 .house-app .google-auth-btn:hover:not(:disabled) {
@@ -942,8 +938,6 @@ body.house-app:has(.auth-shell) {
 
 .house-app .modal::backdrop {
   background: rgba(15, 23, 42, 0.5) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  backdrop-filter: blur(8px) !important;
 }
 
 /* Botão Fechar (X) */
@@ -963,7 +957,7 @@ body.house-app:has(.auth-shell) {
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
   z-index: 10 !important;
   padding: 0 !important;
 }
@@ -1009,7 +1003,7 @@ body.house-app:has(.auth-shell) {
   font-weight: 650 !important;
   color: #64748b !important;
   background: transparent !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
   cursor: pointer !important;
   text-align: center !important;
 }
@@ -1056,7 +1050,7 @@ body.house-app:has(.auth-shell) {
   font-weight: 550 !important;
   color: #0f172a !important;
   font-family: inherit !important;
-  transition: all 0.2s ease !important;
+  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease!important;
 }
 
 .house-app .house-task-dialog .field :is(input, select, textarea):focus,
@@ -1145,7 +1139,7 @@ body.house-app:has(.auth-shell) {
   align-items: center !important;
   justify-content: space-between !important;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02) !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
 }
 
 .house-app .check-item:hover {
@@ -1190,7 +1184,7 @@ body.house-app:has(.auth-shell) {
   justify-content: center !important;
   border: none !important;
   cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
 }
 
 .house-app .check-item .icon-button:hover {
@@ -1208,7 +1202,7 @@ body.house-app:has(.auth-shell) {
   align-items: center !important;
   gap: 8px !important;
   margin-top: 8px !important;
-  transition: all 0.2s ease !important;
+  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease!important;
   cursor: text !important;
 }
 
@@ -1247,7 +1241,7 @@ body.house-app:has(.auth-shell) {
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
   box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3) !important;
 }
 
@@ -1270,7 +1264,7 @@ body.house-app:has(.auth-shell) {
   justify-content: space-between !important;
   margin-top: 8px !important;
   cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
 }
 
 .house-app .approval-field:hover {
@@ -1323,7 +1317,7 @@ body.house-app:has(.auth-shell) {
   justify-content: center !important;
   gap: 8px !important;
   cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease!important;
 }
 
 .house-app .modal-footer-actions button.primary:hover {

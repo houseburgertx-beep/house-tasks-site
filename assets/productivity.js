@@ -601,20 +601,47 @@ window.addEventListener("pageshow", event => {
   if (event.persisted && !pagesMode) location.reload();
 });
 
-const apiOrigin = await fetch(new URL("app-config.json", base))
-  .then(response => response.json()).then(config => config.apiBaseUrl.replace(/\/$/, ""))
-  .catch(() => "https://house-tasks-api.brunohouse.workers.dev");
+const apiOrigin = (window.__HOUSE_CONFIG__?.apiBaseUrl || "https://house-tasks-api.brunohouse.workers.dev").replace(/\/$/, "");
+function readProdCache(key) {
+  try {
+    const tok = sessionStorage.getItem(sessionKey);
+    if (!tok) return null;
+    const parsed = JSON.parse(sessionStorage.getItem(key) || "null");
+    return parsed && parsed.t === tok ? parsed.v : null;
+  } catch { return null; }
+}
+function writeProdCache(key, value) {
+  try {
+    const tok = sessionStorage.getItem(sessionKey);
+    if (!tok) return;
+    sessionStorage.setItem(key, JSON.stringify({ t: tok, v: value }));
+  } catch {}
+}
 try {
   if (pagesMode) {
     const id = params.get("id");
+    const cachedData = readProdCache("house-cache-data-v1");
+    const cachedPages = readProdCache("house-cache-pages-v1");
+    if (cachedData && cachedPages && !id) {
+      data = cachedData;
+      notes = cachedPages;
+      notesLayout();
+      if (params.get("new") === "1") pageEditor(blankNote());
+      else currentPanel.append(element("p", "Selecione uma nota ou crie uma nova.", { class: "notes-empty" }));
+      root.setAttribute("aria-busy", "false");
+    }
     const requests = [api("data"), api("pages")];
     if (id) requests.push(api("pages/" + encodeURIComponent(id)));
     const [taskData, library, page] = await Promise.all(requests);
     data = taskData;
     notes = library.pages;
-    notesLayout();
-    if (page || params.get("new") === "1") pageEditor(page || blankNote());
-    else currentPanel.append(element("p", "Selecione uma nota ou crie uma nova.", { class: "notes-empty" }));
+    writeProdCache("house-cache-data-v1", taskData);
+    writeProdCache("house-cache-pages-v1", library.pages);
+    if (!(cachedData && cachedPages && !id && draftDirty)) {
+      notesLayout();
+      if (page || params.get("new") === "1") pageEditor(page || blankNote());
+      else currentPanel.append(element("p", "Selecione uma nota ou crie uma nova.", { class: "notes-empty" }));
+    }
     document.addEventListener("click", async event => {
       const link = event.target.closest("a[href]");
       if (!link || !draftDirty || event.defaultPrevented || event.button !== 0 ||
@@ -626,14 +653,26 @@ try {
       if (document.hidden && draftDirty) void saveActiveNote?.();
     });
   } else {
-    const [taskData, auth] = await Promise.all([api("data"), api("auth/me")]);
-    data = taskData;
-    currentUser = auth.user;
+    const cachedAuth = readProdCache("house-cache-auth-v1");
+    const cachedData = readProdCache("house-cache-data-v1");
+    if (cachedAuth?.user && cachedData) {
+      data = cachedData;
+      currentUser = cachedAuth.user;
+      renderCalendar();
+      root.setAttribute("aria-busy", "false");
+    }
+    const boot = await api("auth/me?withData=1");
+    data = boot.data || await api("data");
+    currentUser = boot.user;
+    writeProdCache("house-cache-auth-v1", { user: boot.user, features: boot.features });
+    writeProdCache("house-cache-data-v1", data);
     renderCalendar();
   }
 } catch (error) {
-  root.replaceChildren(element("p", error.message, { role: "alert" }));
-  if (pagesMode) root.append(element("a", "Todas as notas", { href: pageUrl() }));
+  if (!data) {
+    root.replaceChildren(element("p", error.message, { role: "alert" }));
+    if (pagesMode) root.append(element("a", "Todas as notas", { href: pageUrl() }));
+  }
 } finally {
   root.setAttribute("aria-busy", "false");
 }

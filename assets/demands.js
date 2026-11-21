@@ -11,8 +11,23 @@ let selected = ["review", "inbox", "sent"].includes(new URLSearchParams(location
   ? new URLSearchParams(location.search).get("view") : "review";
 let data;
 let user;
-const config = await fetch("./app-config.json").then(response => response.json())
-  .catch(() => ({ apiBaseUrl: "https://house-tasks-api.brunohouse.workers.dev" }));
+const apiBase = (window.__HOUSE_CONFIG__?.apiBaseUrl || "https://house-tasks-api.brunohouse.workers.dev").replace(/\/$/, "");
+
+function readCache(key) {
+  try {
+    const tok = sessionStorage.getItem(sessionKey);
+    if (!tok) return null;
+    const parsed = JSON.parse(sessionStorage.getItem(key) || "null");
+    return parsed && parsed.t === tok ? parsed.v : null;
+  } catch { return null; }
+}
+function writeCache(key, value) {
+  try {
+    const tok = sessionStorage.getItem(sessionKey);
+    if (!tok) return;
+    sessionStorage.setItem(key, JSON.stringify({ t: tok, v: value }));
+  } catch {}
+}
 
 function element(tag, label, attrs = {}) {
   const node = document.createElement(tag);
@@ -28,7 +43,7 @@ function action(label, handler) {
 }
 
 async function api(path, method = "GET", payload) {
-  const response = await fetch(config.apiBaseUrl + "/api/" + path, {
+  const response = await fetch(apiBase + "/api/" + path, {
     method,
     headers: { Authorization: "Bearer " + sessionStorage.getItem(sessionKey), "Content-Type": "application/json" },
     body: payload === undefined ? undefined : JSON.stringify(payload),
@@ -181,6 +196,7 @@ function render() {
 async function refresh() {
   try {
     data = await (await api("data")).json();
+    writeCache("house-cache-data-v1", data);
     render();
     create.disabled = false;
   } catch (error) {
@@ -190,8 +206,25 @@ async function refresh() {
 }
 
 try {
-  ({ user } = await (await api("auth/me")).json());
-  await refresh();
+  const cachedAuth = readCache("house-cache-auth-v1");
+  const cachedData = readCache("house-cache-data-v1");
+  if (cachedAuth?.user && cachedData) {
+    user = cachedAuth.user;
+    data = cachedData;
+    render();
+    create.disabled = false;
+    create.onclick = request;
+    if (location.hash === "#nova") {
+      history.replaceState(null, "", location.pathname + location.search);
+      request();
+    }
+  }
+  const boot = await (await api("auth/me?withData=1")).json();
+  user = boot.user;
+  data = boot.data || await (await api("data")).json();
+  writeCache("house-cache-auth-v1", { user: boot.user, features: boot.features });
+  writeCache("house-cache-data-v1", data);
+  render();
   create.disabled = !data;
   create.onclick = request;
   if (location.hash === "#nova" && data) {
@@ -199,5 +232,5 @@ try {
     request();
   }
 } catch (error) {
-  notice.textContent = error.message;
+  if (!data) notice.textContent = error.message;
 }

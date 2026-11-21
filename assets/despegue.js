@@ -222,14 +222,35 @@
     });
   }
 
-  const observer = new MutationObserver(() => {
-    decorarKanbanCards();
+  let decorateQueued = false;
+  function scheduleDecorate() {
+    if (decorateQueued) return;
+    decorateQueued = true;
+    requestAnimationFrame(() => {
+      decorateQueued = false;
+      decorarKanbanCards();
+    });
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    for (let i = 0; i < mutations.length; i++) {
+      const m = mutations[i];
+      if (!m.addedNodes.length && !m.removedNodes.length) continue;
+      if (m.target instanceof Element && m.target.classList.contains("card-bottom")) {
+        const onlyOwn = Array.from(m.addedNodes).every(
+          (n) => n instanceof Element && n.classList.contains("task-action-btn")
+        );
+        if (onlyOwn) continue;
+      }
+      scheduleDecorate();
+      return;
+    }
   });
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       decorarKanbanCards();
-        observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, { childList: true, subtree: true });
     });
   } else {
     decorarKanbanCards();

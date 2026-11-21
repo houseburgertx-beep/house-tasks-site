@@ -329,6 +329,12 @@
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "O Google não confirmou sua identidade.");
       sessionStorage.setItem("house-tasks-session", result.token);
+      try {
+        sessionStorage.setItem("house-cache-auth-v1", JSON.stringify({
+          t: result.token,
+          v: { user: result.user, features: result.features },
+        }));
+      } catch {}
       await Promise.race([
         syncGoogleToFirebase(credential, result.token),
         new Promise((resolve) => setTimeout(resolve, 2500)),
@@ -379,15 +385,32 @@
     });
   }
 
-  const identityObserver = new MutationObserver(renderIdentityButton);
+  let identityScheduled = false;
+  function scheduleRenderIdentity() {
+    if (identityScheduled) return;
+    identityScheduled = true;
+    requestAnimationFrame(() => {
+      identityScheduled = false;
+      renderIdentityButton();
+    });
+  }
+
+  const identityObserver = new MutationObserver(() => {
+    if (!document.querySelector(".auth-card")) return;
+    scheduleRenderIdentity();
+  });
   identityObserver.observe(document.documentElement, { childList: true, subtree: true });
-  document.querySelector('script[src*="accounts.google.com/gsi/client"]')?.addEventListener("load", renderIdentityButton);
-  window.addEventListener("load", renderIdentityButton);
-  setTimeout(renderIdentityButton, 0);
+  document.querySelector('script[src*="accounts.google.com/gsi/client"]')?.addEventListener("load", scheduleRenderIdentity);
+  window.addEventListener("load", scheduleRenderIdentity);
+  setTimeout(scheduleRenderIdentity, 0);
   let gsiTries = 0;
   const gsiPoll = setInterval(() => {
+    if (!document.querySelector(".auth-card")) {
+      if (++gsiTries >= 8) clearInterval(gsiPoll);
+      return;
+    }
     renderIdentityButton();
-    if (document.querySelector(".google-identity-button") || ++gsiTries >= 40) clearInterval(gsiPoll);
+    if (document.querySelector(".google-identity-button") || ++gsiTries >= 24) clearInterval(gsiPoll);
   }, 250);
 
   if (window.firebase && config?.apiKey) authClient();
