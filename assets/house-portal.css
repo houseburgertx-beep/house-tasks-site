@@ -618,6 +618,24 @@ body:is(.house-app, .house-studio, .house-productivity) :is(h1,h2,h3,h4,p,a,butt
 .house-back-link:focus-visible { outline:3px solid color-mix(in srgb, var(--portal-text) 22%, transparent); outline-offset:2px; }
 .house-studio:has(#editor:not([hidden])) .studio-home-start { display:none; }
 #library-link::before { content:"←"; margin-right:6px; font-size:1.05em; }
+
+/* Desativa zoom automatico no iOS/mobile (foco em campos e toque duplo) na tela inicial e em todo o sistema */
+html, body {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+button, a, label, summary, [role="button"], [role="tab"] {
+  touch-action: manipulation;
+}
+@media (hover: none), (pointer: coarse), (max-width: 1024px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select,
+  [contenteditable="true"] {
+    font-size: 16px !important;
+  }
+}
 @media (max-width:520px) {
   .house-header-start { gap:8px; }
   .house-back-link { width:38px; height:38px; flex-basis:38px; border-radius:12px; }

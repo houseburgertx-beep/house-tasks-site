@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-firebase-register-20261121';
+const CACHE_NAME = 'house-tasks-no-zoom-20261121';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
