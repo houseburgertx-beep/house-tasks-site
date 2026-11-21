@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-wa-relay-20261120';
+const CACHE_NAME = 'house-tasks-firebase-password-20261121';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',

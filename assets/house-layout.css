@@ -1732,3 +1732,158 @@ body.house-app:has(.auth-shell) {
 [data-theme="dark"] .wa-job-badge.pending { color: #fcd34d; }
 [data-theme="dark"] .wa-job-badge.failed { color: #fca5a5; }
 [data-theme="dark"] .wa-job-badge.cancelled { color: #cbd5e1; }
+
+/* Firebase Email/Password Login & Password Management */
+.house-app .auth-password-form {
+  width: 100%;
+  display: grid;
+  gap: 12px;
+  text-align: left;
+}
+.house-app .auth-password-form .field {
+  margin: 0;
+  text-align: left;
+  color: var(--portal-text, #142034);
+}
+.house-app .auth-password-form .field input {
+  background: var(--portal-subtle, #f8fafc);
+  color: var(--portal-text, #142034);
+  border: 1px solid var(--portal-line, #dce4ef);
+  border-radius: 12px;
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 0.94rem;
+}
+.house-app .auth-card > p {
+  margin: 0 0 18px !important;
+}
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.password-input-wrap input {
+  width: 100%;
+  padding-right: 68px !important;
+}
+.pw-eye-btn {
+  position: absolute;
+  right: 8px;
+  min-height: 30px !important;
+  padding: 4px 10px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: rgba(148, 163, 184, 0.18) !important;
+  color: var(--portal-text, inherit) !important;
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+}
+.pw-eye-btn:hover {
+  background: rgba(148, 163, 184, 0.3) !important;
+}
+.house-app .auth-submit {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  font-weight: 700;
+}
+.house-app .auth-link-btn {
+  justify-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--house-accent, #0064d9);
+  font-size: 0.86rem;
+  font-weight: 650;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.house-app .auth-link-btn:hover {
+  text-decoration: underline;
+}
+.house-app .auth-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0;
+  color: var(--portal-muted, #94a3b8);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: lowercase;
+}
+.house-app .auth-divider::before,
+.house-app .auth-divider::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--portal-line, #e2e8f0);
+}
+.house-app .auth-status-ok {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: left;
+}
+.house-app .auth-resend-btn {
+  width: 100%;
+  min-height: 40px;
+}
+.house-password-panel {
+  margin: 10px 0 4px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--portal-line, var(--house-line));
+  background: rgba(0, 100, 217, 0.05);
+}
+.house-password-panel > summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  user-select: none;
+}
+.house-password-body {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+.pw-active-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.16);
+  color: #047857;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+[data-house-theme="dark"] .pw-active-badge { color: #6ee7b7; }
+[data-house-theme="dark"] .house-app .auth-status-ok { color: #6ee7b7; }
+[data-house-theme="dark"] .wa-status-pill.online { color: #6ee7b7; }
+[data-house-theme="dark"] .wa-status-pill.offline { color: #fca5a5; }
+[data-house-theme="dark"] .wa-error-inline { color: #fca5a5; }
+[data-house-theme="dark"] .wa-ok-inline { color: #6ee7b7; }
+[data-house-theme="dark"] .wa-job-badge.sent { color: #6ee7b7; }
+[data-house-theme="dark"] .wa-job-badge.pending { color: #fcd34d; }
+[data-house-theme="dark"] .wa-job-badge.failed { color: #fca5a5; }
+[data-house-theme="dark"] .wa-job-badge.cancelled { color: #cbd5e1; }
+.member-pw-reset-row {
+  display: grid;
+  gap: 6px;
+  margin-top: 2px;
+}
