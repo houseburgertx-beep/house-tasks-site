@@ -636,6 +636,30 @@ button, a, label, summary, [role="button"], [role="tab"] {
     font-size: 16px !important;
   }
 }
+
+/* Protege o topo contra Dynamic Island / barra de status no iPhone (PWA e Safari) */
+body:is(.house-app, .house-studio, .house-productivity)::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--portal-mobile, #f1f5f9);
+  z-index: 60;
+  pointer-events: none;
+}
+.house-app .app-shell,
+body.house-productivity,
+body.house-studio {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.house-app .topbar {
+  top: env(safe-area-inset-top, 0px) !important;
+}
+.house-app .auth-shell {
+  padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important;
+}
 @media (max-width:520px) {
   .house-header-start { gap:8px; }
   .house-back-link { width:38px; height:38px; flex-basis:38px; border-radius:12px; }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'house-tasks-wa-confirm-20261121';
+const CACHE_NAME = 'house-tasks-safe-top-20261121';
 const STATIC_ASSETS = [
   '/house-tasks-site/',
   '/house-tasks-site/index.html',
