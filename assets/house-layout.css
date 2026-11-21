@@ -1887,3 +1887,59 @@ body.house-app:has(.auth-shell) {
   gap: 6px;
   margin-top: 2px;
 }
+.house-app .auth-mode-tabs {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background: var(--portal-subtle, #f1f5f9);
+  border: 1px solid var(--portal-line, #e2e8f0);
+}
+.house-app .auth-mode-tab {
+  min-height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--portal-muted, #475569);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+.house-app .auth-mode-tab.active {
+  background: var(--portal-card, #ffffff);
+  color: var(--house-accent, #0064d9);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+}
+[data-house-theme="dark"] .house-app .auth-mode-tab.active {
+  background: rgba(59, 130, 246, 0.22);
+  color: #93c5fd;
+  box-shadow: none;
+}
+.house-app .auth-field-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--portal-muted, #64748b);
+  line-height: 1.35;
+}
+.house-app .auth-google-slot {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+}
+.house-app .auth-google-slot[hidden] {
+  display: none !important;
+}
+.house-app .auth-register-cta {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  border-radius: 13px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}

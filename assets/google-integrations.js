@@ -109,6 +109,43 @@
     }
   }
 
+  async function registerWithPassword(name, email, password) {
+    const cleanName = String(name || "").trim();
+    const cleanEmail = String(email || "").trim().toLowerCase();
+    const cleanPass = String(password || "");
+    if (cleanName.length < 2) throw new Error("Informe seu nome completo.");
+    if (!cleanEmail || !cleanEmail.includes("@")) throw new Error("Informe um endereço de e-mail válido.");
+    if (cleanPass.length < 8) throw new Error("Escolha uma senha com pelo menos 8 caracteres.");
+
+    const auth = authClient();
+    try {
+      await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(() => {});
+      const result = await auth.createUserWithEmailAndPassword(cleanEmail, cleanPass);
+      if (!result.user) throw new Error("Não foi possível concluir o cadastro no Firebase.");
+      await result.user.updateProfile({ displayName: cleanName }).catch(() => {});
+      const idToken = await result.user.getIdToken(true);
+      return {
+        idToken,
+        rollback: async () => {
+          try {
+            await result.user.delete();
+          } catch {
+            await auth.signOut().catch(() => {});
+          }
+        },
+      };
+    } catch (error) {
+      if (error?.code === "auth/email-already-in-use") {
+        const err = new Error(
+          "Este e-mail já possui cadastro no Firebase. Volte para Entrar e use sua senha ou 'Esqueci minha senha'."
+        );
+        err.code = "auth/email-already-in-use";
+        throw err;
+      }
+      throw friendlyError(error, "Não foi possível criar seu cadastro no Firebase.");
+    }
+  }
+
   async function sendPasswordReset(email) {
     const clean = String(email || "").trim();
     if (!clean || !clean.includes("@")) {
@@ -261,6 +298,7 @@
   window.HouseGoogle = { login, resume };
   window.HouseFirebaseAuth = {
     signInWithPassword,
+    registerWithPassword,
     sendPasswordReset,
     setOwnPassword,
     provisionMemberPassword,
@@ -304,7 +342,16 @@
   let identityInitialized = false;
   function renderIdentityButton() {
     const original = document.querySelector(".google-auth-btn");
-    if (!original || original.dataset.identityReplaced || !window.google?.accounts?.id) return;
+    if (!original) {
+      document.querySelectorAll(".google-identity-button").forEach((el) => el.remove());
+      return;
+    }
+    if (original.dataset.identityReplaced || !window.google?.accounts?.id) return;
+    if (original.nextElementSibling?.classList.contains("google-identity-button")) {
+      original.dataset.identityReplaced = "true";
+      original.hidden = true;
+      return;
+    }
     original.dataset.identityReplaced = "true";
     original.hidden = true;
     const container = document.createElement("div");
@@ -319,6 +366,8 @@
       });
       identityInitialized = true;
     }
+    const widthTarget = original.closest(".auth-card")?.getBoundingClientRect().width;
+    const rawWidth = original.getBoundingClientRect().width || (widthTarget ? widthTarget - 48 : 320);
     google.accounts.id.renderButton(container, {
       type: "standard",
       theme: "outline",
@@ -326,7 +375,7 @@
       text: "signin_with",
       shape: "rectangular",
       logo_alignment: "left",
-      width: Math.max(240, Math.min(400, Math.round(original.getBoundingClientRect().width || 320))),
+      width: Math.max(240, Math.min(400, Math.round(rawWidth || 320))),
     });
   }
 
